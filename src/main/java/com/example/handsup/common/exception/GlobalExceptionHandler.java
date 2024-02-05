@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
-public class ApiExceptionHandler {
+public class GlobalExceptionHandler {
 
 	private static final String ARGUMENT_NOT_VALID_MESSAGE = "잘못된 입력 값 입니다";
 	private static final String ARGUMENT_NOT_VALID_ERROR_CODE = "G_001";
