@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import com.example.handsup.common.TimeBaseEntity;
 import com.example.handsup.domain.user.User;
 
 import jakarta.persistence.Column;
@@ -21,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class UserReviewLabel {
+public class UserReviewLabel extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "user_review_label_id")

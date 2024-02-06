@@ -5,6 +5,7 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import com.example.handsup.common.TimeBaseEntity;
 import com.example.handsup.domain.auction.Auction;
 import com.example.handsup.domain.user.Address;
 import com.example.handsup.domain.user.User;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class Review {
+public class Review extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "review_id")
