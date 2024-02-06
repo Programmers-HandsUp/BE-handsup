@@ -21,7 +21,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -77,7 +76,7 @@ public class Auction extends TimeBaseEntity {
 	private AuctionStatus auctionStatus;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "product_category_id",foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ProductCategory category;
 
 	@Column(name = "bookmark_count")

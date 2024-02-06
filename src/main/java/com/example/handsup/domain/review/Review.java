@@ -7,11 +7,9 @@ import static lombok.AccessLevel.*;
 
 import com.example.handsup.common.TimeBaseEntity;
 import com.example.handsup.domain.auction.Auction;
-import com.example.handsup.domain.user.Address;
 import com.example.handsup.domain.user.User;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
