@@ -1,0 +1,34 @@
+version: "3"
+services:
+  server:
+    image: openjdk:17-alpine
+    container_name: spring_server_hands_up
+    restart: always
+    depends_on:
+      - db-master
+      - redis
+    volumes:
+      - ./api/build/libs:/home
+    command: [ "java", "-jar", "/home/api-0.0.1-SNAPSHOT.jar" ]
+    ports:
+      - '8080:8080'
+    platform: linux/amd64
+
+  db-master:
+    image: mysql:8.0
+    container_name: master_db_hands_up
+    environment:
+      MYSQL_DATABASE: master_db_hands_up
+      MYSQL_ROOT_PASSWORD: ${MASTER_PASSWORD}
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:latest
+    container_name: redis_hands_up
+    ports:
+      - '6379:6379'
+    platform: linux/amd64
+
+volumes:
+  postgresql_data:
