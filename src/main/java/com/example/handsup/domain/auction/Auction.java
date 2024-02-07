@@ -73,7 +73,7 @@ public class Auction extends TimeBaseEntity {
 
 	@Column(name = "auction_status")
 	@Enumerated(STRING)
-	private AuctionStatus auctionStatus;
+	private AuctionStatus status;
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
@@ -85,7 +85,7 @@ public class Auction extends TimeBaseEntity {
 	@Builder
 	public Auction(User user, String title, int initPrice, LocalDate endDate, String description,
 		ProductStatus productStatus, PurchaseTime purchaseTime, Coordinate coordinate, TradeMethod tradeMethod,
-		AuctionStatus auctionStatus, ProductCategory category, int bookmarkCount) {
+		AuctionStatus status, ProductCategory category, int bookmarkCount) {
 		this.user = user;
 		this.title = title;
 		this.initPrice = initPrice;
@@ -95,7 +95,7 @@ public class Auction extends TimeBaseEntity {
 		this.purchaseTime = purchaseTime;
 		this.coordinate = coordinate;
 		this.tradeMethod = tradeMethod;
-		this.auctionStatus = auctionStatus;
+		this.status = status;
 		this.category = category;
 		this.bookmarkCount = bookmarkCount;
 	}
