@@ -9,7 +9,7 @@ services:
       - redis
     volumes:
       - ./api/build/libs:/home
-    command: [ "java", "-jar", "/home/api-0.0.1-SNAPSHOT.jar" ]
+    command: ["java", "-jar", "/home/api-0.0.1-SNAPSHOT.jar"]
     ports:
       - '8080:8080'
     platform: linux/amd64
@@ -29,6 +29,3 @@ services:
     ports:
       - '6379:6379'
     platform: linux/amd64
-
-volumes:
-  postgresql_data:
