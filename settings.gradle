@@ -1,5 +1,4 @@
 rootProject.name = 'hands-up'
 
 include 'api'
-include 'client'
 include 'core'

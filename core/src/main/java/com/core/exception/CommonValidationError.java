@@ -1,9 +1,10 @@
-package hello.api.common.exception;
+package com.core.exception;
 
-import lombok.AccessLevel;
+import static lombok.AccessLevel.*;
+
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = PRIVATE)
 public final class CommonValidationError {
 
 	private static final String NOT_NULL_POSTFIX = " 는 Null 이 될 수 없습니다";

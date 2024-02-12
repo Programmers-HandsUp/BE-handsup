@@ -1,4 +1,4 @@
-package hello.api.common.exception;
+package com.api.exception;
 
 public record ErrorResponseTemplate(
 	String message,

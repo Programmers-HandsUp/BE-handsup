@@ -1,32 +1,31 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.0'
+    id 'org.springframework.boot' version '3.2.0' apply(false)
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
-subprojects {
-
-    apply plugin: 'java'
-    apply plugin: 'java-library'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: "java-test-fixtures"
-
-    group = 'com.example'
+allprojects {
+    group = 'com'
     version = '0.0.1-SNAPSHOT'
-    sourceCompatibility = '17'
 
+    java {
+        sourceCompatibility = '17'
+    }
     repositories {
         mavenCentral()
     }
+}
 
-    // 공통 dependencies
+subprojects {
+    apply { plugin('java') }
+    apply { plugin('org.springframework.boot') }
+    apply { plugin('io.spring.dependency-management') }
+
     dependencies {
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
         testCompileOnly 'org.projectlombok:lombok'
         testAnnotationProcessor 'org.projectlombok:lombok'
-        implementation 'org.springframework.boot:spring-boot-starter-validation'
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
 
@@ -34,4 +33,12 @@ subprojects {
         useJUnitPlatform()
     }
 
+    tasks.named('bootJar') {
+        enabled = false
+        //루트에서는 스프링부트가 필요하지 않음; 실제 플러그인은 서브 프로젝트에서 명시적 적용
+    }
+
+    tasks.named('jar') {
+        enabled = true
+    }
 }

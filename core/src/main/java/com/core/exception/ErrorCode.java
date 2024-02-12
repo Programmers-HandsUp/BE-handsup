@@ -1,4 +1,4 @@
-package hello.api.common.exception;
+package com.core.exception;
 
 public interface ErrorCode {
 

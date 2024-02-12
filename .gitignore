@@ -38,3 +38,4 @@ out/
 .DS_Store
 core/src/main/resources/application.yml
 application-core.yml
+/api/src/main/resources/application.yml

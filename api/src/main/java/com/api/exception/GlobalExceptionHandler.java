@@ -1,4 +1,4 @@
-package hello.api.common.exception;
+package com.api.exception;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.core.exception.ValidationException;
 
 import lombok.extern.slf4j.Slf4j;
 
