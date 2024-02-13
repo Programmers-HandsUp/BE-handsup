@@ -36,7 +36,7 @@ public class Review extends TimeBaseEntity {
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User buyer;
 
 	@ManyToOne(fetch = LAZY)

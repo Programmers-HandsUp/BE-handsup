@@ -23,10 +23,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class BiddingHistory extends TimeBaseEntity {
+public class SellingHistory extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "bidding_history_id")
+	@Column(name = "selling_history_id")
 	private Long id;
 
 	@Column(name = "bidding_price")
@@ -37,13 +37,13 @@ public class BiddingHistory extends TimeBaseEntity {
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "bidder_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private User bidder;
+	@JoinColumn(name = "seller_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private User seller;
 
 	@Builder
-	public BiddingHistory(int biddingPrice, Auction auction, User bidder) {
+	public SellingHistory(int biddingPrice, Auction auction, User seller) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
-		this.bidder = bidder;
+		this.seller = seller;
 	}
 }
