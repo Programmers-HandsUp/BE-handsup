@@ -1,4 +1,4 @@
-package com.core.exception;
+package com.handsup.exception;
 
 public interface ErrorCode {
 

@@ -1,4 +1,4 @@
-package com.api.config;
+package com.handsup.config;
 
 import static org.springframework.http.HttpHeaders.*;
 

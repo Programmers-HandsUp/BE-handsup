@@ -1,4 +1,4 @@
-package com.api;
+package com.handsup;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
