@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class User extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "member_id")
+	@Column(name = "user_id")
 	private Long id;
 
 	@Column(name = "email")
