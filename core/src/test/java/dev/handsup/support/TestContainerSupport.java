@@ -31,7 +31,7 @@ public abstract class TestContainerSupport {
 
 	// 동적으로 속성 할당
 	@DynamicPropertySource
-	public static void setUp(DynamicPropertyRegistry registry){
+	public static void setUp(DynamicPropertyRegistry registry) {
 		registry.add("spring.data.redis.host", REDIS::getHost);
 		registry.add("spring.data.redis.port", () -> String.valueOf(REDIS.getMappedPort(REDIS_PORT)));
 
