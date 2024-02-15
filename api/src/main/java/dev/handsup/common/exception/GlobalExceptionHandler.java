@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import dev.handsup.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
