@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.hibernate.sql: info
+
+jwt:
+  secret: fdflsjhflkwejfblkjhvuixochvuhsofiuesafbidsfab223411
+  token-validity-in-seconds: 240000
