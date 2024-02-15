@@ -1,4 +1,4 @@
-package dev.core.common.entity;
+package dev.handsup.common.entity;
 
 import java.time.LocalDateTime;
 

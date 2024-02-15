@@ -1,6 +1,6 @@
-package dev.core.domain.auction;
+package dev.handsup.domain.auction;
 
-import static dev.core.domain.auction.auction_field.AuctionStatus.*;
+import static dev.handsup.domain.auction.auction_field.AuctionStatus.*;
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
@@ -9,14 +9,14 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 
-import dev.core.common.entity.TimeBaseEntity;
-import dev.core.domain.auction.auction_category.ProductCategory;
-import dev.core.domain.auction.auction_field.AuctionStatus;
-import dev.core.domain.auction.auction_field.Coordinate;
-import dev.core.domain.auction.auction_field.ProductStatus;
-import dev.core.domain.auction.auction_field.PurchaseTime;
-import dev.core.domain.auction.auction_field.TradeMethod;
-import dev.core.domain.user.User;
+import dev.handsup.common.entity.TimeBaseEntity;
+import dev.handsup.domain.auction.auction_category.ProductCategory;
+import dev.handsup.domain.auction.auction_field.AuctionStatus;
+import dev.handsup.domain.auction.auction_field.Coordinate;
+import dev.handsup.domain.auction.auction_field.ProductStatus;
+import dev.handsup.domain.auction.auction_field.PurchaseTime;
+import dev.handsup.domain.auction.auction_field.TradeMethod;
+import dev.handsup.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

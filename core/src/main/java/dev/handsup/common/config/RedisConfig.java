@@ -1,4 +1,4 @@
-package dev.core.common.config;
+package dev.handsup.common.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

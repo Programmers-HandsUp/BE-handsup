@@ -1,9 +1,9 @@
-package dev.core.domain.user;
+package dev.handsup.domain.user;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import dev.core.common.entity.TimeBaseEntity;
+import dev.handsup.common.entity.TimeBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

@@ -1,4 +1,4 @@
-package dev.core.domain.user;
+package dev.handsup.domain.user;
 
 import static lombok.AccessLevel.*;
 

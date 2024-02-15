@@ -1,4 +1,4 @@
-package dev.core.domain.auction.auction_category;
+package dev.handsup.domain.auction.auction_category;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;

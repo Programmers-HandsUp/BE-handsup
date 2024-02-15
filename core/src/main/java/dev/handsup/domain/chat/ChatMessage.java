@@ -1,11 +1,11 @@
-package dev.core.domain.chat;
+package dev.handsup.domain.chat;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import dev.core.common.entity.TimeBaseEntity;
+import dev.handsup.common.entity.TimeBaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package dev.core.domain.auction.auction_field;
+package dev.handsup.domain.auction.auction_field;
 
 import static lombok.AccessLevel.*;
 

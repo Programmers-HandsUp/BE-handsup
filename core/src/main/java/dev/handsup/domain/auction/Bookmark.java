@@ -1,12 +1,12 @@
-package dev.core.domain.auction;
+package dev.handsup.domain.auction;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import dev.core.common.entity.TimeBaseEntity;
-import dev.core.domain.user.User;
+import dev.handsup.common.entity.TimeBaseEntity;
+import dev.handsup.domain.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,4 +1,4 @@
-package dev.core.domain.notification;
+package dev.handsup.domain.notification;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

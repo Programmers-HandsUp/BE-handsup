@@ -1,4 +1,4 @@
-package dev.core.domain.review;
+package dev.handsup.domain.review;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

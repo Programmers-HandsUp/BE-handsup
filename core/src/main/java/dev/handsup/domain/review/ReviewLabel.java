@@ -1,4 +1,4 @@
-package dev.core.domain.review;
+package dev.handsup.domain.review;
 
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;
