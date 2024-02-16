@@ -10,5 +10,6 @@ public enum ReviewLabelValue {
 	CHEAP("저렴하게 구매했어요."),
 	MANNER("친절하고 매너있어요"),
 	TIME("시간 약속을 잘 지켜요");
+
 	private final String description;
 }
