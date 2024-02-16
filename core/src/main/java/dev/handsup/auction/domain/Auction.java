@@ -9,12 +9,10 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 
-import dev.handsup.auction.domain.auction_category.ProductCategory;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.Coordinate;
-import dev.handsup.auction.domain.auction_field.ProductStatus;
-import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.product.Product;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -26,6 +24,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,22 +46,15 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "title")
 	private String title;
 
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private Product product;
+
 	@Column(name = "init_price")
 	private int initPrice;
 
 	@Column(name = "end_date")
 	private LocalDate endDate;
-
-	@Column(name = "description")
-	private String description;
-
-	@Column(name = "product_status")
-	@Enumerated(STRING)
-	private ProductStatus productStatus;
-
-	@Column(name = "purchase_time")
-	@Enumerated(STRING)
-	private PurchaseTime purchaseTime;
 
 	@Embedded
 	private Coordinate coordinate;
@@ -75,10 +67,6 @@ public class Auction extends TimeBaseEntity {
 	@Enumerated(STRING)
 	private AuctionStatus status;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private ProductCategory category;
-
 	@Column(name = "bidding_count")
 	private int biddingCount;
 
@@ -86,19 +74,15 @@ public class Auction extends TimeBaseEntity {
 	private int bookmarkCount;
 
 	@Builder
-	public Auction(User seller, String title, int initPrice, LocalDate endDate, String description,
-		ProductStatus productStatus, PurchaseTime purchaseTime, Coordinate coordinate, TradeMethod tradeMethod,
-		ProductCategory category) {
+	public Auction(User seller, String title, Product product, int initPrice, LocalDate endDate,
+		Coordinate coordinate, TradeMethod tradeMethod) {
 		this.seller = seller;
 		this.title = title;
+		this.product = product;
 		this.initPrice = initPrice;
 		this.endDate = endDate;
-		this.description = description;
-		this.productStatus = productStatus;
-		this.purchaseTime = purchaseTime;
 		this.coordinate = coordinate;
 		this.tradeMethod = tradeMethod;
-		this.category = category;
 		biddingCount = 0;
 		bookmarkCount = 0;
 		status = PROGRESS;
