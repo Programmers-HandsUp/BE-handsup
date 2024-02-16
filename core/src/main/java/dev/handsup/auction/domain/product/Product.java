@@ -6,7 +6,6 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import dev.handsup.auction.domain.auction_field.ProductStatus;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.common.entity.TimeBaseEntity;
