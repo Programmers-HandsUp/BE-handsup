@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain.auction_field;
+package dev.handsup.auction.domain.product.product_category;
 
 import static dev.handsup.auction.exception.AuctionErrorCode.*;
 
@@ -10,20 +10,17 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PurchaseTime {
+public enum Category {
 
-	UNDER_ONE_MONTH("1개월 이하"),
-	UNDER_THREE_MONTH("3개월 이하"),
-	UNDER_SIX_MONTH("6개월 이하"),
-	UNDER_ONE_YEAR("1년 이하"),
-	ABOVE_ONE_YEAR("1년 이상"),
-	UNKNOWN("모름");
+	DIGITAL("디지털 기기"),
+	FURNITURE("가구"),
+	FASHION("패션");
 
 	private final String description;
 
-	public static PurchaseTime of(String input){
+	public static Category of(String input){
 		return Arrays.stream(values())
-			.filter(time -> time.isEqual(input))
+			.filter(value -> value.isEqual(input))
 			.findAny()
 			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_STATUS));
 	}
