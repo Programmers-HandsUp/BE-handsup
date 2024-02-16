@@ -19,6 +19,6 @@ public class ProductCategory {
 	@Column(name = "product_category_id")
 	private Long id;
 
-	@Column(name = "product_category_value")
+	@Column(name = "product_category_value", nullable = false)
 	private ProductCategoryValue value;
 }

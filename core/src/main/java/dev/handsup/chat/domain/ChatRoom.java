@@ -29,11 +29,15 @@ public class ChatRoom extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "seller_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "seller_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "buyer_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User buyer;
 
 	@Builder

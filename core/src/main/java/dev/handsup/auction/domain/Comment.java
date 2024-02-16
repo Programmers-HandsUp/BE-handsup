@@ -28,15 +28,19 @@ public class Comment extends TimeBaseEntity {
 	@Column(name = "comment_id")
 	private Long id;
 
-	@Column(name = "content")
+	@Column(name = "content", nullable = false)
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "user_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User user;
 
 	@Builder

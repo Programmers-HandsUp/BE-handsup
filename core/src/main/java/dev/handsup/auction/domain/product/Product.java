@@ -32,19 +32,21 @@ public class Product extends TimeBaseEntity {
 	@Column(name = "product_id")
 	private Long id;
 
-	@Column(name = "status")
+	@Column(name = "status", nullable = false)
 	@Enumerated(STRING)
 	private ProductStatus status;
 
-	@Column(name = "description")
+	@Column(name = "description", nullable = false)
 	private String description;
 
-	@Column(name = "purchase_time")
+	@Column(name = "purchase_time", nullable = false)
 	@Enumerated(STRING)
 	private PurchaseTime purchaseTime;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_category_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ProductCategory category;
 
 	@Builder

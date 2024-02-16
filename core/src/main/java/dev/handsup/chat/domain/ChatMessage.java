@@ -27,14 +27,16 @@ public class ChatMessage extends TimeBaseEntity {
 	@Column(name = "chat_message_id")
 	private Long id;
 
-	@Column(name = "content")
+	@Column(name = "content", nullable = false)
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "chat_room_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "chat_room_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ChatRoom chatRoom;
 
-	@Column(name = "is_read")
+	@Column(name = "is_read", nullable = false)
 	private Boolean isRead;
 
 	@Builder

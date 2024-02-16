@@ -22,7 +22,7 @@ public class ReviewLabel {
 	@Column(name = "review_label_id")
 	private Long id;
 
-	@Column(name = "review_label_value")
+	@Column(name = "review_label_value", nullable = false)
 	@Enumerated(STRING)
 	private ReviewLabelValue value;
 }

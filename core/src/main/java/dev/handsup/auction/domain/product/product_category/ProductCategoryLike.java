@@ -28,11 +28,15 @@ public class ProductCategoryLike extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "user_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_category_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ProductCategory productCategory;
 
 	@Builder

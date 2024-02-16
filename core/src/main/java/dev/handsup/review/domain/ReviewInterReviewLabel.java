@@ -26,10 +26,14 @@ public class ReviewInterReviewLabel {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "review_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "review_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Review review;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "review_label_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "review_label_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ReviewLabel reviewLabel;
 }

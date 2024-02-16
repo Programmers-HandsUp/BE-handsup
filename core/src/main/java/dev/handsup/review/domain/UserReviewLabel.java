@@ -29,14 +29,18 @@ public class UserReviewLabel extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "review_label_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "review_label_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ReviewLabel reviewLabel;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "user_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User user;
 
-	@Column(name = "count")
+	@Column(name = "count", nullable = false)
 	private int count;
 
 	@Builder

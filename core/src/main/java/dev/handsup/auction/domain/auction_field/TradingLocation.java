@@ -13,13 +13,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class TradingLocation {
 
-	@Column(name = "si")
+	@Column(name = "si", nullable = false)
 	private String si;
 
-	@Column(name = "gu")
+	@Column(name = "gu", nullable = false)
 	private String gu;
 
-	@Column(name = "dong")
+	@Column(name = "dong", nullable = false)
 	private String dong;
 
 	@Builder

@@ -28,15 +28,19 @@ public class BiddingHistory extends TimeBaseEntity {
 	@Column(name = "bidding_history_id")
 	private Long id;
 
-	@Column(name = "bidding_price")
+	@Column(name = "bidding_price", nullable = false)
 	private int biddingPrice;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "bidder_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "bidder_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User bidder;
 
 	@Builder

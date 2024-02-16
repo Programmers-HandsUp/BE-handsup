@@ -29,11 +29,15 @@ public class Bookmark extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "user_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@Builder

@@ -29,22 +29,28 @@ public class Review extends TimeBaseEntity {
 	@Column(name = "review_id")
 	private Long id;
 
-	@Column(name = "score")
+	@Column(name = "score", nullable = false)
 	private int score;
 
 	@Column(name = "content")
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "writer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "writer_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User writer;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "review_label_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "review_label_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ReviewLabel reviewLabel;
 
 	@Builder

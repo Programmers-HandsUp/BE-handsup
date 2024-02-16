@@ -40,37 +40,44 @@ public class Auction extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "seller_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
-	@Column(name = "title")
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private User buyer;
+
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@OneToOne(fetch = LAZY)
-	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_id",
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
 
-	@Column(name = "init_price")
+	@Column(name = "init_price", nullable = false)
 	private int initPrice;
 
-	@Column(name = "end_date")
+	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 
 	@Embedded
 	private TradingLocation tradingLocation;
 
-	@Column(name = "trade_method")
+	@Column(name = "trade_method", nullable = false)
 	@Enumerated(STRING)
 	private TradeMethod tradeMethod;
 
-	@Column(name = "auction_status")
+	@Column(name = "auction_status", nullable = false)
 	@Enumerated(STRING)
 	private AuctionStatus status;
 
-	@Column(name = "bidding_count")
+	@Column(name = "bidding_count", nullable = false)
 	private int biddingCount;
 
-	@Column(name = "bookmark_count")
+	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount;
 
 	@Builder
