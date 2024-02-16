@@ -20,5 +20,4 @@ public abstract class TimeBaseEntity {
 
 	@LastModifiedDate
 	private LocalDateTime updatedAt;
-
 }
