@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain.auction_category;
+package dev.handsup.auction.domain.product.product_category;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

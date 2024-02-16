@@ -9,12 +9,10 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 
-import dev.handsup.auction.domain.auction_category.ProductCategory;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.domain.auction_field.Coordinate;
-import dev.handsup.auction.domain.auction_field.ProductStatus;
-import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
+import dev.handsup.auction.domain.product.Product;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -26,6 +24,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,64 +40,56 @@ public class Auction extends TimeBaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "seller_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
-	@Column(name = "title")
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private User buyer;
+
+	@Column(name = "title", nullable = false)
 	private String title;
 
-	@Column(name = "init_price")
+	@OneToOne(fetch = LAZY)
+	@JoinColumn(name = "product_id",
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private Product product;
+
+	@Column(name = "init_price", nullable = false)
 	private int initPrice;
 
-	@Column(name = "end_date")
+	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 
-	@Column(name = "description")
-	private String description;
-
-	@Column(name = "product_status")
-	@Enumerated(STRING)
-	private ProductStatus productStatus;
-
-	@Column(name = "purchase_time")
-	@Enumerated(STRING)
-	private PurchaseTime purchaseTime;
-
 	@Embedded
-	private Coordinate coordinate;
+	private TradingLocation tradingLocation;
 
-	@Column(name = "trade_method")
+	@Column(name = "trade_method", nullable = false)
 	@Enumerated(STRING)
 	private TradeMethod tradeMethod;
 
-	@Column(name = "auction_status")
+	@Column(name = "auction_status", nullable = false)
 	@Enumerated(STRING)
 	private AuctionStatus status;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private ProductCategory category;
-
-	@Column(name = "bidding_count")
+	@Column(name = "bidding_count", nullable = false)
 	private int biddingCount;
 
-	@Column(name = "bookmark_count")
+	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount;
 
 	@Builder
-	public Auction(User seller, String title, int initPrice, LocalDate endDate, String description,
-		ProductStatus productStatus, PurchaseTime purchaseTime, Coordinate coordinate, TradeMethod tradeMethod,
-		ProductCategory category) {
+	public Auction(User seller, String title, Product product, int initPrice, LocalDate endDate,
+		TradingLocation tradingLocation, TradeMethod tradeMethod) {
 		this.seller = seller;
 		this.title = title;
+		this.product = product;
 		this.initPrice = initPrice;
 		this.endDate = endDate;
-		this.description = description;
-		this.productStatus = productStatus;
-		this.purchaseTime = purchaseTime;
-		this.coordinate = coordinate;
+		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
-		this.category = category;
 		biddingCount = 0;
 		bookmarkCount = 0;
 		status = PROGRESS;

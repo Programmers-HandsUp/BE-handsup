@@ -8,6 +8,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 public abstract class TestContainerSupport {
+
 	private static final String REDIS_IMAGE = "redis:latest";
 	private static final String MYSQL_IMAGE = "mysql:8.0";
 	private static final int REDIS_PORT = 6379;

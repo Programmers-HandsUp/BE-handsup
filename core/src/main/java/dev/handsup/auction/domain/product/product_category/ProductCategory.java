@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain.auction_category;
+package dev.handsup.auction.domain.product.product_category;
 
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -19,6 +19,6 @@ public class ProductCategory {
 	@Column(name = "product_category_id")
 	private Long id;
 
-	@Column(name = "product_category_value")
+	@Column(name = "product_category_value", nullable = false)
 	private ProductCategoryValue value;
 }

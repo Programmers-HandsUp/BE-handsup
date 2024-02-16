@@ -7,6 +7,7 @@ import dev.handsup.support.TestContainerSupport;
 
 @SpringBootTest
 class HandsUpApplicationTests extends TestContainerSupport {
+
 	@Test
 	void contextLoads() {
 	}

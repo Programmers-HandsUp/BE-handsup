@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PurchaseTime {
+
 	UNDER_ONE_MONTH("1개월 이하"),
 	UNDER_THREE_MONTH("3개월 이하"),
 	UNDER_SIX_MONTH("6개월 이하"),

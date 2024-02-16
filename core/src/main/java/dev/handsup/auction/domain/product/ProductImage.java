@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain;
+package dev.handsup.auction.domain.product;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
@@ -20,23 +20,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class AuctionImage extends TimeBaseEntity {
+public class ProductImage extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "auction_image_id")
+	@Column(name = "product_image_id")
 	private Long id;
 
-	@Column(name = "image_url")
+	@Column(name = "image_url", nullable = false)
 	private String imageUrl;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private Auction auction;
+	@JoinColumn(name = "product_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private Product product;
 
 	@Builder
-	public AuctionImage(String imageUrl, Auction auction) {
+	public ProductImage(String imageUrl, Product product) {
 		this.imageUrl = imageUrl;
-		this.auction = auction;
+		this.product = product;
 	}
 }

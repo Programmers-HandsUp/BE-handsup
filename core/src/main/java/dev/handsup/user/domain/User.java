@@ -26,16 +26,16 @@ public class User extends TimeBaseEntity {
 	@Column(name = "user_id")
 	private Long id;
 
-	@Column(name = "email")
+	@Column(name = "email", nullable = false, unique = true)
 	private String email;
 
-	@Column(name = "password")
+	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "nickname")
+	@Column(name = "nickname", nullable = false)
 	private String nickname;
 
-	@Column(name = "score")
+	@Column(name = "score", nullable = false)
 	private int score;
 
 	@Embedded
@@ -44,7 +44,7 @@ public class User extends TimeBaseEntity {
 	@Column(name = "profile_image_url")
 	private String profileImageUrl;
 
-	@Column(name = "report_count")
+	@Column(name = "report_count", nullable = false)
 	private int reportCount;
 
 	@Builder

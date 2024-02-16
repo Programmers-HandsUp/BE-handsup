@@ -23,34 +23,41 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class Review extends TimeBaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "review_id")
 	private Long id;
 
-	@Column(name = "score")
+	@Column(name = "score", nullable = false)
 	private int score;
 
 	@Column(name = "content")
 	private String content;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private User buyer;
+	@JoinColumn(name = "writer_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
+	private User writer;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "review_label_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "review_label_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ReviewLabel reviewLabel;
 
 	@Builder
-	public Review(int score, String content, User buyer, Auction auction, ReviewLabel reviewLabel) {
+	public Review(int score, String content, User writer, Auction auction, ReviewLabel reviewLabel) {
 		this.score = score;
 		this.content = content;
-		this.buyer = buyer;
+		this.writer = writer;
 		this.auction = auction;
 		this.reviewLabel = reviewLabel;
 	}

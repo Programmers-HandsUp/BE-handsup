@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain;
+package dev.handsup.auction.domain.product.product_category;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
@@ -21,11 +21,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Bookmark extends TimeBaseEntity {
-
+public class ProductCategoryLike extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "chat_room_id")
+	@Column(name = "product_category_like_id")
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
@@ -35,14 +34,14 @@ public class Bookmark extends TimeBaseEntity {
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id",
+	@JoinColumn(name = "product_category_id",
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private Auction auction;
+	private ProductCategory productCategory;
 
 	@Builder
-	public Bookmark(User user, Auction auction) {
+	public ProductCategoryLike(User user, ProductCategory productCategory) {
 		this.user = user;
-		this.auction = auction;
+		this.productCategory = productCategory;
 	}
 }

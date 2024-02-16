@@ -22,30 +22,27 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class ChatRoom extends TimeBaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "chat_room_id")
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "seller_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "seller_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "buyer_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "buyer_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User buyer;
-
-	@Column(name = "is_seller_confirmed")
-	private Boolean isSellerConfirmed;
-
-	@Column(name = "is_buyer_confirmed")
-	private Boolean isBuyerConfirmed;
 
 	@Builder
 	public ChatRoom(User seller, User buyer) {
 		this.seller = seller;
 		this.buyer = buyer;
-		isSellerConfirmed = false;
-		isBuyerConfirmed = false;
 	}
 }

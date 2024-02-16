@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ProductStatus {
+
 	NEW("미개봉"),
 	CLEAN("깨끗함"),
 	DIRTY("더러움");

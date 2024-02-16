@@ -24,27 +24,32 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Notification {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "notification_id")
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "user_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User user;
 
-	@Column(name = "content")
+	@Column(name = "content", nullable = false)
 	private String content;
 
-	@Column(name = "is_read")
+	@Column(name = "is_read", nullable = false)
 	private Boolean isRead;
 
-	@Column(name = "type")
+	@Column(name = "type", nullable = false)
 	@Enumerated(STRING)
 	private NotificationType type;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "auction_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "auction_id",
+		nullable = false,
+		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Auction auction;
 
 	@Builder

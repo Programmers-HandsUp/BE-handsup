@@ -1,4 +1,4 @@
-package dev.handsup.user.domain;
+package dev.handsup.auction.domain.auction_field;
 
 import static lombok.AccessLevel.*;
 
@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Address {
+public class TradingLocation {
+
 	@Column(name = "si", nullable = false)
 	private String si;
 
@@ -22,7 +23,7 @@ public class Address {
 	private String dong;
 
 	@Builder
-	public Address(String si, String gu, String dong) {
+	public TradingLocation(String si, String gu, String dong) {
 		this.si = si;
 		this.gu = gu;
 		this.dong = dong;
