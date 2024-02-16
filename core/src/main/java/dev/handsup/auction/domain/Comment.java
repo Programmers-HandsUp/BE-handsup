@@ -22,11 +22,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Comment extends TimeBaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "comment_id")
 	private Long id;
 
+	@Column(name = "content")
 	private String content;
 
 	@ManyToOne(fetch = LAZY)

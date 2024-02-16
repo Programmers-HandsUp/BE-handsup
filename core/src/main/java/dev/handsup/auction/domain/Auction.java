@@ -10,7 +10,7 @@ import static lombok.AccessLevel.*;
 import java.time.LocalDate;
 
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.domain.auction_field.Coordinate;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.common.entity.TimeBaseEntity;
@@ -57,7 +57,7 @@ public class Auction extends TimeBaseEntity {
 	private LocalDate endDate;
 
 	@Embedded
-	private Coordinate coordinate;
+	private TradingLocation tradingLocation;
 
 	@Column(name = "trade_method")
 	@Enumerated(STRING)
@@ -75,13 +75,13 @@ public class Auction extends TimeBaseEntity {
 
 	@Builder
 	public Auction(User seller, String title, Product product, int initPrice, LocalDate endDate,
-		Coordinate coordinate, TradeMethod tradeMethod) {
+		TradingLocation tradingLocation, TradeMethod tradeMethod) {
 		this.seller = seller;
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
 		this.endDate = endDate;
-		this.coordinate = coordinate;
+		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
 		biddingCount = 0;
 		bookmarkCount = 0;

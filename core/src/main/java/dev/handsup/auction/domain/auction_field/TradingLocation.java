@@ -11,16 +11,20 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Coordinate {
-	@Column(name = "latitude")
-	private String latitude;
+public class TradingLocation {
+	@Column(name = "si")
+	private String si;
 
-	@Column(name = "longitude")
-	private String longitude;
+	@Column(name = "gu")
+	private String gu;
+
+	@Column(name = "dong")
+	private String dong;
 
 	@Builder
-	public Coordinate(String latitude, String longitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
+	public TradingLocation(String si, String gu, String dong) {
+		this.si = si;
+		this.gu = gu;
+		this.dong = dong;
 	}
 }
