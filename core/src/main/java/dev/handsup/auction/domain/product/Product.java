@@ -43,7 +43,6 @@ public class Product extends TimeBaseEntity {
 	@Enumerated(STRING)
 	private PurchaseTime purchaseTime;
 
-
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "product_category_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ProductCategory category;

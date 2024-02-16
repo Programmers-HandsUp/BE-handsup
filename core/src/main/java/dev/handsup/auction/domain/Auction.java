@@ -10,8 +10,8 @@ import static lombok.AccessLevel.*;
 import java.time.LocalDate;
 
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;

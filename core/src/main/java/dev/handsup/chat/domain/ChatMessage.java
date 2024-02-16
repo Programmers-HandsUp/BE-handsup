@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class ChatMessage extends TimeBaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "chat_message_id")

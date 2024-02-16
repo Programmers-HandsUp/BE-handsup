@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class UserReviewLabel extends TimeBaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "user_review_label_id")

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class TradingLocation {
+
 	@Column(name = "si")
 	private String si;
 

@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Notification {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "notification_id")

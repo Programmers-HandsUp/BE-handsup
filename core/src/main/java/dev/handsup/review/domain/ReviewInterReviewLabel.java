@@ -19,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 public class ReviewInterReviewLabel {
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "review_inter_review_label_id")
