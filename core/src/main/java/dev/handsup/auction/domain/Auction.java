@@ -43,7 +43,6 @@ public class Auction extends TimeBaseEntity {
 
 	private static final String AUCTION = "auction";
 
-
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "auction_id")
@@ -105,6 +104,7 @@ public class Auction extends TimeBaseEntity {
 		bookmarkCount = 0;
 		status = PROGRESS;
 	}
+
 	public static Auction of(
 		String title,
 		ProductCategory productCategory,

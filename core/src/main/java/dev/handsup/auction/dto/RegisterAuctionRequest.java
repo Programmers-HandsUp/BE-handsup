@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record RegisterAuctionRequest(
+
 	String title,
 	String productCategory,
 	int initPrice,

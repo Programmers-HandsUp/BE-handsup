@@ -17,7 +17,7 @@ public enum TradeMethod {
 
 	private final String label;
 
-	public static TradeMethod of(String input){
+	public static TradeMethod of(String input) {
 		return Arrays.stream(values())
 			.filter(method -> method.isEqual(input))
 			.findAny()

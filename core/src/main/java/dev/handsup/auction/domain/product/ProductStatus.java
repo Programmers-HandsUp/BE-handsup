@@ -18,7 +18,7 @@ public enum ProductStatus {
 
 	private final String label;
 
-	public static ProductStatus of(String input){
+	public static ProductStatus of(String input) {
 		return Arrays.stream(values())
 			.filter(status -> status.isEqual(input))
 			.findAny()

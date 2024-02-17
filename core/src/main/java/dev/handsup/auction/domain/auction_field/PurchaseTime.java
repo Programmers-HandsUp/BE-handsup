@@ -21,7 +21,7 @@ public enum PurchaseTime {
 
 	private final String label;
 
-	public static PurchaseTime of(String input){
+	public static PurchaseTime of(String input) {
 		return Arrays.stream(values())
 			.filter(time -> time.isEqual(input))
 			.findAny()

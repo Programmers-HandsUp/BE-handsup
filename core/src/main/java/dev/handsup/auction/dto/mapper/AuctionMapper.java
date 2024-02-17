@@ -34,6 +34,7 @@ public class AuctionMapper {
 			request.dong()
 		);
 	}
+
 	public static AuctionResponse toAuctionResponse(Auction auction) {
 		return AuctionResponse.builder()
 			.auctionId(auction.getId())

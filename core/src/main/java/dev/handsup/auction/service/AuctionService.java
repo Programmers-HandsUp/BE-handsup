@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class AuctionService {
+
 	private final AuctionRepository auctionRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 
@@ -27,6 +28,6 @@ public class AuctionService {
 
 	private ProductCategory findProductCategoryEntity(RegisterAuctionRequest request) {
 		return productCategoryRepository.findByCategoryValue(request.productCategory()).
-			orElseThrow(()-> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
+			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
 }
