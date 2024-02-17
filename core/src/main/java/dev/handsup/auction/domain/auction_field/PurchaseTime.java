@@ -19,7 +19,7 @@ public enum PurchaseTime {
 	ABOVE_ONE_YEAR("1년 이상"),
 	UNKNOWN("모름");
 
-	private final String description;
+	private final String label;
 
 	public static PurchaseTime of(String input){
 		return Arrays.stream(values())
@@ -29,6 +29,6 @@ public enum PurchaseTime {
 	}
 
 	private boolean isEqual(String input) {
-		return input.equalsIgnoreCase(this.description);
+		return input.equalsIgnoreCase(this.label);
 	}
 }

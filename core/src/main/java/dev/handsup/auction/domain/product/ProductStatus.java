@@ -16,7 +16,7 @@ public enum ProductStatus {
 	CLEAN("깨끗함"),
 	DIRTY("더러움");
 
-	private final String description;
+	private final String label;
 
 	public static ProductStatus of(String input){
 		return Arrays.stream(values())
@@ -26,6 +26,6 @@ public enum ProductStatus {
 	}
 
 	private boolean isEqual(String input) {
-		return input.equalsIgnoreCase(this.description);
+		return input.equalsIgnoreCase(this.label);
 	}
 }

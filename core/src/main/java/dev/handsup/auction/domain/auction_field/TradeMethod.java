@@ -15,7 +15,7 @@ public enum TradeMethod {
 	DIRECT("직거래"),
 	DELIVER("택배");
 
-	private final String description;
+	private final String label;
 
 	public static TradeMethod of(String input){
 		return Arrays.stream(values())
@@ -25,6 +25,6 @@ public enum TradeMethod {
 	}
 
 	private boolean isEqual(String input) {
-		return input.equalsIgnoreCase(this.description);
+		return input.equalsIgnoreCase(this.label);
 	}
 }
