@@ -22,7 +22,7 @@ public enum Category {
 		return Arrays.stream(values())
 			.filter(value -> value.isEqual(input))
 			.findAny()
-			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_STATUS));
+			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_CATEGORY));
 	}
 
 	private boolean isEqual(String input) {

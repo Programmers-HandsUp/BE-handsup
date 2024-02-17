@@ -25,7 +25,7 @@ public enum PurchaseTime {
 		return Arrays.stream(values())
 			.filter(time -> time.isEqual(input))
 			.findAny()
-			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_STATUS));
+			.orElseThrow(() -> new ValidationException(NOT_FOUND_PURCHASE_TIME));
 	}
 
 	private boolean isEqual(String input) {

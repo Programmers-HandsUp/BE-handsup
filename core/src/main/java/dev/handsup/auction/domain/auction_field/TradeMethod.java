@@ -21,7 +21,7 @@ public enum TradeMethod {
 		return Arrays.stream(values())
 			.filter(method -> method.isEqual(input))
 			.findAny()
-			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_STATUS));
+			.orElseThrow(() -> new ValidationException(NOT_FOUND_TADE_METHOD));
 	}
 
 	private boolean isEqual(String input) {
