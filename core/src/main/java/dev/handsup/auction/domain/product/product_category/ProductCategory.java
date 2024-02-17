@@ -20,9 +20,9 @@ public class ProductCategory {
 	private Long id;
 
 	@Column(name = "product_category_value", nullable = false)
-	private Category category;
+	private String categoryValue;
 
-	public ProductCategory(Category category) {
-		this.category = category;
+	public ProductCategory(String categoryValue) {
+		this.categoryValue = categoryValue;
 	}
 }
