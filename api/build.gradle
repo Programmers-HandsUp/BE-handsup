@@ -7,4 +7,12 @@ dependencies {
 
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+    tasks.named('bootJar') {
+        enabled = true
+    }
+
+    tasks.named('jar') {
+        enabled = true
+    }
 }
