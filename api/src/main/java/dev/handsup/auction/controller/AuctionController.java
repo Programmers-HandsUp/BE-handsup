@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/auctions")
 public class AuctionController {
+
 	private final AuctionService auctionService;
 
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
