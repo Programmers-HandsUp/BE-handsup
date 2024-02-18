@@ -39,7 +39,7 @@ public class AuctionMapper {
 		return AuctionResponse.builder()
 			.auctionId(auction.getId())
 			.title(auction.getTitle())
-			.category(auction.getProduct().getProductCategory().getCategoryValue())
+			.productCategory(auction.getProduct().getProductCategory().getCategoryValue())
 			.initPrice(auction.getInitPrice())
 			.endDate(auction.getEndDate())
 			.productStatus(auction.getProduct().getStatus().getLabel())

@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,14 @@ public class ProductCategory {
 	@Column(name = "product_category_value", nullable = false)
 	private String categoryValue;
 
+	@Builder(access = PRIVATE)
 	public ProductCategory(String categoryValue) {
 		this.categoryValue = categoryValue;
+	}
+
+	public static ProductCategory of(String categoryValue) {
+		return ProductCategory.builder()
+			.categoryValue(categoryValue)
+			.build();
 	}
 }

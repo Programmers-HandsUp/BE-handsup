@@ -23,11 +23,11 @@ import dev.handsup.fixture.ProductFixture;
 
 class AuctionControllerTest extends ApiTestSupport {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-	private final String DIGITAL_DEVICE = "디지털 기기";
 
 	@BeforeEach
 	void setUp() {

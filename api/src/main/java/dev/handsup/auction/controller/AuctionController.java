@@ -24,7 +24,7 @@ public class AuctionController {
 
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
 	@PostMapping
-	public ResponseEntity<AuctionResponse> registerAuction(@Valid @RequestBody RegisterAuctionApiRequest request){
+	public ResponseEntity<AuctionResponse> registerAuction(@Valid @RequestBody RegisterAuctionApiRequest request) {
 		RegisterAuctionRequest registerAuctionRequest = ApiAuctionMapper.toRegisterAuctionRequest(request);
 		AuctionResponse response = auctionService.registerAuction(registerAuctionRequest);
 		return ResponseEntity.ok(response);

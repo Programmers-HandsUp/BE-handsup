@@ -1,4 +1,4 @@
-package dev.handsup.auction.dtos;
+package dev.handsup.auction.dto;
 
 import java.time.LocalDate;
 
