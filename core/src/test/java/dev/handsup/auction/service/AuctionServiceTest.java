@@ -47,7 +47,7 @@ class AuctionServiceTest {
 		RegisterAuctionRequest registerAuctionRequest =
 			RegisterAuctionRequest.builder()
 				.title("거의 새상품 버즈 팔아요")
-				.tradeMethod(TradeMethod.DIRECT.getLabel())
+				.tradeMethod(TradeMethod.DELIVER.getLabel())
 				.purchaseTime(PurchaseTime.UNDER_ONE_MONTH.getLabel())
 				.productCategory(DIGITAL_DEVICE)
 				.productStatus(ProductStatus.NEW.getLabel())

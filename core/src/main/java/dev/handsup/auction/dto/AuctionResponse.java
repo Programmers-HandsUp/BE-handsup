@@ -8,10 +8,9 @@ import lombok.Builder;
 public record AuctionResponse(
 
 	Long auctionId,
-
 	String title,
 
-	String category,
+	String productCategory,
 
 	int initPrice,
 
