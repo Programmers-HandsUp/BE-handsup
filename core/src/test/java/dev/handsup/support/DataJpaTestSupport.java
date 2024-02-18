@@ -1,4 +1,4 @@
-package dev.handsup.support;
+package dev.handsup.common.support;
 
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
 
