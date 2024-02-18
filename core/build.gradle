@@ -17,8 +17,13 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-    // test container
-    testImplementation "org.testcontainers:junit-jupiter:1.19.5"
-    testImplementation "org.testcontainers:testcontainers:1.19.5"
-    testImplementation "org.testcontainers:mysql:1.19.2" //mysql test container
+    // testFixtures 의존성
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testFixturesImplementation "org.testcontainers:junit-jupiter:1.19.5"
+    testFixturesImplementation "org.testcontainers:testcontainers:1.19.5"
+    testFixturesImplementation "org.testcontainers:mysql:1.19.2" //mysql test container
+
+    testFixturesCompileOnly 'org.projectlombok:lombok'
+    testFixturesAnnotationProcessor 'org.projectlombok:lombok'
+    testFixturesCompileOnly 'org.springframework.boot:spring-boot-starter-security'
 }
