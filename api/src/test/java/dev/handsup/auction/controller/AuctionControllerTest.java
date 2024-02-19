@@ -24,6 +24,7 @@ import dev.handsup.fixture.ProductFixture;
 class AuctionControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
+
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
@@ -35,7 +36,7 @@ class AuctionControllerTest extends ApiTestSupport {
 		productCategoryRepository.save(productCategory);
 	}
 
-	@DisplayName("경매를 등록할 수 있다.")
+	@DisplayName("[경매를 등록할 수 있다.]")
 	@Test
 	void registerAuction() throws Exception {
 		RegisterAuctionApiRequest request = RegisterAuctionApiRequest.builder()
@@ -64,5 +65,28 @@ class AuctionControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.si").isEmpty())
 			.andExpect(jsonPath("$.gu").isEmpty())
 			.andExpect(jsonPath("$.dong").isEmpty());
+	}
+
+	@DisplayName("[경매를 등록 시 상품 카테고리가 DB에 없으면 예외가 발생한다.]")
+	@Test
+	void registerAuctionFails() throws Exception {
+		final String NOT_EXIST_CATEGORY = "아";
+		RegisterAuctionApiRequest request = RegisterAuctionApiRequest.builder()
+			.title("아이패드 팔아요")
+			.description("아이패드 팔아요. 오래 되어서 싸게 팔아요")
+			.productStatus(ProductStatus.DIRTY.getLabel())
+			.tradeMethod(TradeMethod.DIRECT.getLabel())
+			.endDate(LocalDate.parse("2023-02-19"))
+			.initPrice(300000)
+			.purchaseTime(PurchaseTime.ABOVE_ONE_YEAR.getLabel())
+			.productCategory(NOT_EXIST_CATEGORY)
+			.build();
+
+		mockMvc.perform(post("/api/auctions")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(request)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("존재하지 않는 상품 카테고리입니다."))
+			.andExpect(jsonPath("$.code").value("AU_004"));
 	}
 }

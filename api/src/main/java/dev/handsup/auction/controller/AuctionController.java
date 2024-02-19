@@ -12,9 +12,11 @@ import dev.handsup.auction.dto.RegisterAuctionApiRequest;
 import dev.handsup.auction.dto.RegisterAuctionRequest;
 import dev.handsup.auction.service.AuctionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "경매 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auctions")

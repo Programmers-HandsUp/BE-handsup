@@ -29,6 +29,6 @@ public enum PurchaseTime {
 	}
 
 	private boolean isEqual(String input) {
-		return input.equalsIgnoreCase(this.label);
+		return input.equals(this.label);
 	}
 }
