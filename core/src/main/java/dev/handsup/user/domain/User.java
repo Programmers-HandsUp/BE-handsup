@@ -1,8 +1,12 @@
 package dev.handsup.user.domain;
 
 import static dev.handsup.common.exception.CommonValidationError.*;
+import static dev.handsup.user.exception.UserErrorCode.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.util.Assert;
 
@@ -36,7 +40,7 @@ public class User extends TimeBaseEntity {
 	private String nickname;
 
 	@Column(name = "score", nullable = false)
-	private int score;
+	private int score = 100;
 
 	@Embedded
 	private Address address;
@@ -45,25 +49,7 @@ public class User extends TimeBaseEntity {
 	private String profileImageUrl;
 
 	@Column(name = "report_count", nullable = false)
-	private int reportCount;
-
-	@Builder
-	public User(
-		String email,
-		String password,
-		String nickname,
-		Address address,
-		String profileImageUrl
-	) {
-		validateUser(email, password, nickname, address, profileImageUrl);
-		this.email = email;
-		this.password = password;
-		this.nickname = nickname;
-		this.score = 100;
-		this.address = address;
-		this.profileImageUrl = profileImageUrl;
-		this.reportCount = 0;
-	}
+	private int reportCount = 0;
 
 	private void validateUser(
 		String email,
@@ -77,6 +63,57 @@ public class User extends TimeBaseEntity {
 		Assert.hasText(nickname, getNotEmptyMessage("User", "nickname"));
 		Assert.notNull(address, getNotNullMessage("User", "address"));
 		Assert.hasText(profileImageUrl, getNotEmptyMessage("User", "profileImageUrl"));
+		// 이메일 패턴 검증
+		String emailRegex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}"
+			+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}[.][a-zA-Z]{2,3}$";
+		Pattern pattern = Pattern.compile(emailRegex);
+		Matcher matcher = pattern.matcher(email);
+		Assert.isTrue(matcher.matches(), NON_VALIDATED_EMAIL.getMessage());
 	}
 
+	private User(
+		Long id,
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.address = address;
+		this.profileImageUrl = profileImageUrl;
+	}
+
+	@Builder
+	public User(
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		validateUser(email, password, nickname, address, profileImageUrl);
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.address = address;
+		this.profileImageUrl = profileImageUrl;
+	}
+
+	/**
+	 * 테스트 용 생성자
+	 */
+	public static User getTestUser(
+		Long id,
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		return new User(id, email, password, nickname, address, profileImageUrl);
+	}
 }
