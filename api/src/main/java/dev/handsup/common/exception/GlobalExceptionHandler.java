@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import dev.handsup.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -39,6 +38,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(ValidationException.class)
 	public ErrorResponseTemplate handleValidationException(ValidationException e) {
 		log.error("ValidationException : ", e);
+		return new ErrorResponseTemplate(e.getMessage(), e.getCode());
+	}
+
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(NotFoundException.class)
+	public ErrorResponseTemplate handleNotFoundException(NotFoundException e) {
+		log.error("NotFoundException : ", e);
 		return new ErrorResponseTemplate(e.getMessage(), e.getCode());
 	}
 }

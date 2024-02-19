@@ -1,5 +1,6 @@
 dependencies {
     implementation project(path: ':core')
+    testImplementation(testFixtures(project(':core')))
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -12,6 +13,6 @@ dependencies {
     }
 
     tasks.named('jar') {
-        enabled = false
+        enabled = true
     }
 }

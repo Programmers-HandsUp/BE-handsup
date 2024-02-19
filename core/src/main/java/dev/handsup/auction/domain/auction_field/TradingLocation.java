@@ -12,14 +12,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class TradingLocation {
+	private static final String TRADING_LOCATION = "TradingLocation";
 
-	@Column(name = "si", nullable = false)
+	@Column(name = "si")
 	private String si;
 
-	@Column(name = "gu", nullable = false)
+	@Column(name = "gu")
 	private String gu;
 
-	@Column(name = "dong", nullable = false)
+	@Column(name = "dong")
 	private String dong;
 
 	@Builder

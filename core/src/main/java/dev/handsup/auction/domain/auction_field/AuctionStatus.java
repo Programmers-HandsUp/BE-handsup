@@ -12,5 +12,5 @@ public enum AuctionStatus {
 	COMPLETED("완료"),
 	CANCELED("취소");
 
-	private final String description;
+	private final String label;
 }

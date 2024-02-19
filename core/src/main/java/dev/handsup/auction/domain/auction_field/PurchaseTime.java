@@ -1,5 +1,10 @@
 package dev.handsup.auction.domain.auction_field;
 
+import static dev.handsup.auction.exception.AuctionErrorCode.*;
+
+import java.util.Arrays;
+
+import dev.handsup.common.exception.ValidationException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,5 +19,16 @@ public enum PurchaseTime {
 	ABOVE_ONE_YEAR("1년 이상"),
 	UNKNOWN("모름");
 
-	private final String description;
+	private final String label;
+
+	public static PurchaseTime of(String input) {
+		return Arrays.stream(values())
+			.filter(time -> time.isEqual(input))
+			.findAny()
+			.orElseThrow(() -> new ValidationException(NOT_FOUND_PURCHASE_TIME));
+	}
+
+	private boolean isEqual(String input) {
+		return input.equalsIgnoreCase(this.label);
+	}
 }

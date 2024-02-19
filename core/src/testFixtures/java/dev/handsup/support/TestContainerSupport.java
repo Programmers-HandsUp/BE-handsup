@@ -1,5 +1,7 @@
 package dev.handsup.support;
 
+import static lombok.AccessLevel.*;
+
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -7,6 +9,9 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = PROTECTED)
 public abstract class TestContainerSupport {
 
 	private static final String REDIS_IMAGE = "redis:latest";

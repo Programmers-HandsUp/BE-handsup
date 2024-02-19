@@ -1,6 +1,8 @@
 package dev.handsup.auction.domain;
 
 import static dev.handsup.auction.domain.auction_field.AuctionStatus.*;
+import static dev.handsup.common.exception.CommonValidationError.*;
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
@@ -9,10 +11,15 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 
+import org.springframework.util.Assert;
+
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
+import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.Product;
+import dev.handsup.auction.domain.product.ProductStatus;
+import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -34,6 +41,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Auction extends TimeBaseEntity {
 
+	private static final String AUCTION = "auction";
+
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "auction_id")
@@ -41,7 +50,7 @@ public class Auction extends TimeBaseEntity {
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "seller_id",
-		nullable = false,
+		// nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
@@ -52,7 +61,7 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "title", nullable = false)
 	private String title;
 
-	@OneToOne(fetch = LAZY)
+	@OneToOne(fetch = LAZY, cascade = ALL)
 	@JoinColumn(name = "product_id",
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
@@ -81,9 +90,10 @@ public class Auction extends TimeBaseEntity {
 	private int bookmarkCount;
 
 	@Builder
-	public Auction(User seller, String title, Product product, int initPrice, LocalDate endDate,
+	public Auction(String title, Product product, int initPrice, LocalDate endDate,
 		TradingLocation tradingLocation, TradeMethod tradeMethod) {
-		this.seller = seller;
+		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
+		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
@@ -93,5 +103,37 @@ public class Auction extends TimeBaseEntity {
 		biddingCount = 0;
 		bookmarkCount = 0;
 		status = PROGRESS;
+	}
+
+	public static Auction of(
+		String title,
+		ProductCategory productCategory,
+		int initPrice,
+		LocalDate endDate,
+		ProductStatus status,
+		PurchaseTime purchaseTime,
+		String description,
+		TradeMethod tradeMethod,
+		String si,
+		String gu,
+		String dong
+	) {
+		return Auction.builder()
+			.title(title)
+			.product(Product.builder()
+				.productCategory(productCategory)
+				.status(status)
+				.description(description)
+				.purchaseTime(purchaseTime)
+				.build())
+			.initPrice(initPrice)
+			.endDate(endDate)
+			.tradingLocation(TradingLocation.builder()
+				.si(si)
+				.gu(gu)
+				.dong(dong)
+				.build())
+			.tradeMethod(tradeMethod)
+			.build();
 	}
 }

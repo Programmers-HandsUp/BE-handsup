@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain.auction_field;
+package dev.handsup.auction.domain.product;
 
 import static dev.handsup.auction.exception.AuctionErrorCode.*;
 
@@ -10,18 +10,19 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum TradeMethod {
+public enum ProductStatus {
 
-	DIRECT("직거래"),
-	DELIVER("택배");
+	NEW("미개봉"),
+	CLEAN("깨끗함"),
+	DIRTY("더러움");
 
 	private final String label;
 
-	public static TradeMethod of(String input) {
+	public static ProductStatus of(String input) {
 		return Arrays.stream(values())
-			.filter(method -> method.isEqual(input))
+			.filter(status -> status.isEqual(input))
 			.findAny()
-			.orElseThrow(() -> new ValidationException(NOT_FOUND_TADE_METHOD));
+			.orElseThrow(() -> new ValidationException(NOT_FOUND_PRODUCT_STATUS));
 	}
 
 	private boolean isEqual(String input) {

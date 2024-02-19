@@ -1,12 +1,14 @@
 package dev.handsup.auction.domain.product;
 
+import static dev.handsup.common.exception.CommonValidationError.*;
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import dev.handsup.auction.domain.auction_field.ProductStatus;
+import org.springframework.util.Assert;
+
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.common.entity.TimeBaseEntity;
@@ -26,6 +28,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Product extends TimeBaseEntity {
+	private static final String PRODUCT = "product";
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -47,13 +50,15 @@ public class Product extends TimeBaseEntity {
 	@JoinColumn(name = "product_category_id",
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private ProductCategory category;
+	private ProductCategory productCategory;
 
 	@Builder
-	public Product(ProductStatus status, String description, PurchaseTime purchaseTime, ProductCategory category) {
+	public Product(ProductStatus status, String description, PurchaseTime purchaseTime,
+		ProductCategory productCategory) {
+		Assert.hasText(description, getNotEmptyMessage(PRODUCT, "description"));
 		this.status = status;
 		this.description = description;
 		this.purchaseTime = purchaseTime;
-		this.category = category;
+		this.productCategory = productCategory;
 	}
 }
