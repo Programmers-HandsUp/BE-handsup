@@ -1,6 +1,6 @@
 package dev.handsup.user.dto.response;
 
-public record UserJoinResponse(
+public record JoinUserResponse(
 
 	Long userId
 ) {

@@ -1,14 +1,13 @@
-package dev.handsup.user.dto.request;
+package dev.handsup.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record UserJoinRequest(
-
+public record JoinUserApiRequest(
 	@NotBlank
 	@Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}"
-		+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}+[.][a-zA-Z]{2,3}$",
-		message = "이메일 주소 양식을 확인해주세요")
+		+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}[.][a-zA-Z]{2,3}$",
+		message = "이메일 주소 양식을 확인해주세요.")
 	String email,
 
 	@NotBlank
