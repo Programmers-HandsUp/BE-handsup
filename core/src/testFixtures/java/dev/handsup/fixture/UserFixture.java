@@ -1,8 +1,12 @@
 package dev.handsup.fixture;
 
+import static lombok.AccessLevel.*;
+
 import dev.handsup.user.domain.Address;
 import dev.handsup.user.domain.User;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor(access = PRIVATE)
 public final class UserFixture {
 
 	static final String email = "hello123@naver.com";
@@ -16,11 +20,7 @@ public final class UserFixture {
 		.dong("가리봉동")
 		.build();
 
-	// 인스턴스화 방지
-	private UserFixture() {
-	}
-
-	public static User getUser() {
+	public static User user() {
 		return User.builder()
 			.email(email)
 			.password(password)
@@ -30,7 +30,7 @@ public final class UserFixture {
 			.build();
 	}
 
-	public static User getTestUser(Long id) {
+	public static User user(Long id) {
 		return User.getTestUser(id, email, password, nickname, address, profileImageUrl);
 	}
 }

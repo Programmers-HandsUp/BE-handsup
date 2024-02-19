@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +35,7 @@ class UserServiceTest {
 	@InjectMocks
 	private UserService userService;
 
-	private User user = UserFixture.getUser();
+	private User user = UserFixture.user();
 	private JoinUserRequest request = new JoinUserRequest(
 		user.getEmail(), user.getPassword(), user.getNickname(),
 		user.getAddress().getSi(), user.getAddress().getGu(), user.getAddress().getDong(), user.getProfileImageUrl()
@@ -80,7 +79,7 @@ class UserServiceTest {
 		given(encryptHelper.encrypt(request.password()))
 			.willReturn("encryptedPassword");
 
-		User savedUser = UserFixture.getTestUser(1L);
+		User savedUser = UserFixture.user(1L);
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 

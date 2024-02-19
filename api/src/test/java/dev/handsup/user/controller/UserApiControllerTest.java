@@ -22,7 +22,7 @@ class UserApiControllerTest extends ApiTestSupport {
 	@Autowired
 	private UserRepository userRepository;
 
-	private User user = UserFixture.getUser();
+	private User user = UserFixture.user();
 	private JoinUserRequest request = new JoinUserRequest(
 		user.getEmail(), user.getPassword(), user.getNickname(),
 		user.getAddress().getSi(), user.getAddress().getGu(), user.getAddress().getDong(), user.getProfileImageUrl()
