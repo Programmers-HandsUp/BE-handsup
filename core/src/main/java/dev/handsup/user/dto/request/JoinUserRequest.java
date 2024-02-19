@@ -1,5 +1,8 @@
 package dev.handsup.user.dto.request;
 
+import lombok.Builder;
+
+@Builder
 public record JoinUserRequest(
 
 	String email,
