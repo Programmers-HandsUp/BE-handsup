@@ -62,7 +62,6 @@ public class User extends TimeBaseEntity {
 		Assert.hasText(password, getNotEmptyMessage("User", "password"));
 		Assert.hasText(nickname, getNotEmptyMessage("User", "nickname"));
 		Assert.notNull(address, getNotNullMessage("User", "address"));
-		Assert.hasText(profileImageUrl, getNotEmptyMessage("User", "profileImageUrl"));
 		// 이메일 패턴 검증
 		String emailRegex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}"
 			+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}[.][a-zA-Z]{2,3}$";
