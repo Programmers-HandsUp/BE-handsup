@@ -89,7 +89,8 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount;
 
-	@Builder
+
+	@Builder(access = PRIVATE)
 	public Auction(String title, Product product, int initPrice, LocalDate endDate,
 		TradingLocation tradingLocation, TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
@@ -120,12 +121,7 @@ public class Auction extends TimeBaseEntity {
 	) {
 		return Auction.builder()
 			.title(title)
-			.product(Product.builder()
-				.productCategory(productCategory)
-				.status(status)
-				.description(description)
-				.purchaseTime(purchaseTime)
-				.build())
+			.product(Product.of(status, description, purchaseTime, productCategory))
 			.initPrice(initPrice)
 			.endDate(endDate)
 			.tradingLocation(TradingLocation.builder()
