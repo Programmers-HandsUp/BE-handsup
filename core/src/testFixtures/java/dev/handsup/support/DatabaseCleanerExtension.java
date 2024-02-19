@@ -6,12 +6,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 public class DatabaseCleanerExtension implements AfterEachCallback {
 
-    @Override
-    public void afterEach(ExtensionContext context) {
-        DatabaseCleaner databaseCleaner = SpringExtension
-            .getApplicationContext(context)
-            .getBean(DatabaseCleaner.class);
+	@Override
+	public void afterEach(ExtensionContext context) {
+		DatabaseCleaner databaseCleaner = SpringExtension
+			.getApplicationContext(context)
+			.getBean(DatabaseCleaner.class);
 
-        databaseCleaner.clear();
-    }
+		databaseCleaner.clear();
+	}
 }

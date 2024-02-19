@@ -63,7 +63,7 @@ public class Product extends TimeBaseEntity {
 	}
 
 	public static Product of(ProductStatus status, String description, PurchaseTime purchaseTime,
-		ProductCategory productCategory){
+		ProductCategory productCategory) {
 		return new Product(status, description, purchaseTime, productCategory);
 	}
 }

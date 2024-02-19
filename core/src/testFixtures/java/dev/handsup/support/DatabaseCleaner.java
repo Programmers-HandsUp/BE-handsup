@@ -13,31 +13,31 @@ import jakarta.persistence.PersistenceContext;
 @TestComponent
 public class DatabaseCleaner {
 
-    private final List<String> tableNames = new ArrayList<>();
-    @PersistenceContext
-    private EntityManager entityManager;
+	private final List<String> tableNames = new ArrayList<>();
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    @PostConstruct
-    @SuppressWarnings("unchecked")
-    private void initTableNames() {
-        List<Object> tableInfoList = entityManager.createNativeQuery("SHOW TABLES").getResultList();
-        tableInfoList.forEach(tableInfo -> {
-            String tableName = String.valueOf(tableInfo);
-            tableNames.add(tableName);
-        });
-    }
+	@PostConstruct
+	@SuppressWarnings("unchecked")
+	private void initTableNames() {
+		List<Object> tableInfoList = entityManager.createNativeQuery("SHOW TABLES").getResultList();
+		tableInfoList.forEach(tableInfo -> {
+			String tableName = String.valueOf(tableInfo);
+			tableNames.add(tableName);
+		});
+	}
 
-    @Transactional
-    public void clear() {
-        entityManager.clear();
-        truncate();
-    }
+	@Transactional
+	public void clear() {
+		entityManager.clear();
+		truncate();
+	}
 
-    private void truncate() {
-        tableNames.forEach(tableName ->
-            entityManager
-                .createNativeQuery(String.format("TRUNCATE TABLE %s", tableName))
-                .executeUpdate()
-        );
-    }
+	private void truncate() {
+		tableNames.forEach(tableName ->
+			entityManager
+				.createNativeQuery(String.format("TRUNCATE TABLE %s", tableName))
+				.executeUpdate()
+		);
+	}
 }
