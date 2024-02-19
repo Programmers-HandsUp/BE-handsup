@@ -35,7 +35,7 @@ class AuctionControllerTest extends ApiTestSupport {
 		productCategoryRepository.save(productCategory);
 	}
 
-	@DisplayName("경매를 등록할 수 있다.")
+	@DisplayName("[경매를 등록할 수 있다.]")
 	@Test
 	void registerAuction() throws Exception {
 		RegisterAuctionApiRequest request = RegisterAuctionApiRequest.builder()

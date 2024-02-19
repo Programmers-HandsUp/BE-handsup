@@ -39,7 +39,7 @@ class AuctionServiceTest {
 	private AuctionService auctionService;
 
 	@Test
-	@DisplayName("경매글을 등록할 수 있다.")
+	@DisplayName("[경매를 등록할 수 있다.]")
 	void registerAuction() {
 		// given
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
