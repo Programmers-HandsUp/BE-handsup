@@ -14,7 +14,7 @@ import dev.handsup.auth.dto.request.AuthRequest;
 import dev.handsup.auth.dto.response.AuthResponse;
 import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.repository.AuthRepository;
-import dev.handsup.auth.repository.BlacklistRepository;
+import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.service.UserService;
@@ -28,7 +28,7 @@ public class AuthService {
 	private final JwtProvider jwtProvider;
 	private final AuthRepository authRepository;
 	private final EncryptHelper encryptHelper;
-	private final BlacklistRepository blacklistRepository;
+	private final BlacklistTokenRepository blacklistTokenRepository;
 
 	private Auth getAuthByRefreshToken(String refreshToken) {
 		return authRepository.findByRefreshToken(refreshToken)
@@ -76,7 +76,7 @@ public class AuthService {
 
 		authRepository.findByUserId(user.getId()).ifPresentOrElse(
 			auth ->
-				blacklistRepository.save(
+				blacklistTokenRepository.save(
 					BlacklistToken.builder()
 						.refreshToken(auth.getRefreshToken())
 						.build()),
@@ -87,7 +87,7 @@ public class AuthService {
 	}
 
 	public String createAccessTokenByRefreshToken(String refreshToken) {
-		boolean isBlacklisted = blacklistRepository.existsByRefreshToken(refreshToken);
+		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(refreshToken);
 		if (isBlacklisted) {
 			throw new AuthException(BLACKLISTED_TOKEN);
 		}

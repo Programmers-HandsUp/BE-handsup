@@ -20,7 +20,7 @@ import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.auth.dto.request.AuthRequest;
 import dev.handsup.auth.dto.response.AuthResponse;
 import dev.handsup.auth.repository.AuthRepository;
-import dev.handsup.auth.repository.BlacklistRepository;
+import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
@@ -41,7 +41,7 @@ class AuthServiceTest {
 	@Mock
 	private EncryptHelper encryptHelper;
 	@Mock
-	private BlacklistRepository blacklistRepository;
+	private BlacklistTokenRepository blacklistTokenRepository;
 
 	private User user = UserFixture.testUser(1L);
 	private AuthRequest authRequest = new AuthRequest(user.getEmail(), user.getPassword());
@@ -90,7 +90,7 @@ class AuthServiceTest {
 		authService.logout(user);
 
 		// then
-		verify(blacklistRepository).save(any(BlacklistToken.class));
+		verify(blacklistTokenRepository).save(any(BlacklistToken.class));
 	}
 
 	@Test
