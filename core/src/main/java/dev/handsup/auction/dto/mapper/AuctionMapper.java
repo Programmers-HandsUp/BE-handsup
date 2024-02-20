@@ -7,8 +7,8 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.AuctionResponse;
-import dev.handsup.auction.dto.RegisterAuctionRequest;
+import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)

@@ -2,10 +2,11 @@ package dev.handsup.auction.dto;
 
 import static lombok.AccessLevel.*;
 
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class ApiAuctionMapper {
+public class AuctionApiMapper {
 
 	public static RegisterAuctionRequest toRegisterAuctionRequest(RegisterAuctionApiRequest request) {
 		return new RegisterAuctionRequest(
