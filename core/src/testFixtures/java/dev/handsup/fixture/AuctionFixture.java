@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionFixture {
 
-	public static Auction auction() {
+	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
 			"거의 새상품 버즈 팔아요",
-			ProductCategory.of("디지털 기기"),
+			productCategory,
 			10000,
 			LocalDate.parse("2022-10-18"),
 			ProductStatus.NEW,
