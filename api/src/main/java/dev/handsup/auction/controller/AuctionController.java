@@ -12,6 +12,7 @@ import dev.handsup.auction.dto.RegisterAuctionApiRequest;
 import dev.handsup.auction.dto.RegisterAuctionRequest;
 import dev.handsup.auction.service.AuctionService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AuctionController {
 	private final AuctionService auctionService;
 
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
+	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping
 	public ResponseEntity<AuctionResponse> registerAuction(@Valid @RequestBody RegisterAuctionApiRequest request) {
 		RegisterAuctionRequest registerAuctionRequest = ApiAuctionMapper.toRegisterAuctionRequest(request);

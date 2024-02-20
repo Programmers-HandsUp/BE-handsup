@@ -62,8 +62,7 @@ public class Auction extends TimeBaseEntity {
 	private String title;
 
 	@OneToOne(fetch = LAZY, cascade = ALL)
-	@JoinColumn(name = "product_id",
-		foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
 
 	@Column(name = "init_price", nullable = false)
@@ -90,8 +89,8 @@ public class Auction extends TimeBaseEntity {
 	private int bookmarkCount;
 
 	@Builder(access = PRIVATE)
-	public Auction(String title, Product product, int initPrice, LocalDate endDate,
-		TradingLocation tradingLocation, TradeMethod tradeMethod) {
+	public Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+		TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
 		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
 		this.title = title;
@@ -105,29 +104,15 @@ public class Auction extends TimeBaseEntity {
 		status = PROGRESS;
 	}
 
-	public static Auction of(
-		String title,
-		ProductCategory productCategory,
-		int initPrice,
-		LocalDate endDate,
-		ProductStatus status,
-		PurchaseTime purchaseTime,
-		String description,
-		TradeMethod tradeMethod,
-		String si,
-		String gu,
-		String dong
-	) {
+	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
+		String gu, String dong) {
 		return Auction.builder()
 			.title(title)
 			.product(Product.of(status, description, purchaseTime, productCategory))
 			.initPrice(initPrice)
 			.endDate(endDate)
-			.tradingLocation(TradingLocation.builder()
-				.si(si)
-				.gu(gu)
-				.dong(dong)
-				.build())
+			.tradingLocation(TradingLocation.of(si, gu, dong))
 			.tradeMethod(tradeMethod)
 			.build();
 	}
