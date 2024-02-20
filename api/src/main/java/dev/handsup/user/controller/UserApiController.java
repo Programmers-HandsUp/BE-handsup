@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.user.dto.UserApiMapper;
 import dev.handsup.user.dto.JoinUserApiRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
@@ -23,7 +24,7 @@ public class UserApiController {
 
 	private final UserService userService;
 
-	// @NoAuth	//TODO 추후 구현
+	@NoAuth
 	@PostMapping("/api/users")
 	@Operation(summary = "회원가입 API", description = "회원가입을 한다")
 	@ApiResponse(useReturnTypeSchema = true)
