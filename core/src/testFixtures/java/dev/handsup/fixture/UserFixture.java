@@ -21,13 +21,13 @@ public final class UserFixture {
 		.build();
 
 	public static User user() {
-		return User.builder()
-			.email(email)
-			.password(password)
-			.nickname(nickname)
-			.address(address)
-			.profileImageUrl(profileImageUrl)
-			.build();
+		return User.of(
+			email,
+			password,
+			nickname,
+			address,
+			profileImageUrl
+			);
 	}
 
 	public static User user(Long id) {

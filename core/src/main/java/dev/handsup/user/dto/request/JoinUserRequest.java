@@ -1,8 +1,9 @@
 package dev.handsup.user.dto.request;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public record JoinUserRequest(
 
 	String email,

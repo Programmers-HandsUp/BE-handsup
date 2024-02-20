@@ -16,6 +16,7 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -85,18 +86,20 @@ public class User extends TimeBaseEntity {
 		this.profileImageUrl = profileImageUrl;
 	}
 
-	@Builder
-	public User(
+	@Builder(access = AccessLevel.PRIVATE)
+	private User(
 		String email,
 		String password,
 		String nickname,
 		Address address,
+		String profileImageUrl
 	) {
 		validateUser(email, password, nickname, address);
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.address = address;
+		this.profileImageUrl = profileImageUrl;
 	}
 
 	public static User of(
