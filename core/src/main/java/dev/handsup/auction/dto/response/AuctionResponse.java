@@ -1,4 +1,4 @@
-package dev.handsup.auction.dto;
+package dev.handsup.auction.dto.response;
 
 import java.time.LocalDate;
 

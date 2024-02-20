@@ -19,10 +19,10 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.AuctionResponse;
-import dev.handsup.auction.dto.RegisterAuctionRequest;
-import dev.handsup.auction.repository.AuctionRepository;
-import dev.handsup.auction.repository.ProductCategoryRepository;
+import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
+import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 
@@ -43,7 +43,7 @@ class AuctionServiceTest {
 	void registerAuction() {
 		// given
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-		Auction auction = AuctionFixture.auction();
+		Auction auction = AuctionFixture.auction(productCategory);
 		RegisterAuctionRequest registerAuctionRequest =
 			RegisterAuctionRequest.builder()
 				.title("거의 새상품 버즈 팔아요")

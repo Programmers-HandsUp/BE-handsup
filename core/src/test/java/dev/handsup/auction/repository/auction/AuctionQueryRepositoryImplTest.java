@@ -10,8 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -25,6 +28,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	private final String APPLIANCE = "가전제품";
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 10;
+	private final PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 	private ProductCategory category1;
 	private ProductCategory category2;
 	@Autowired
@@ -43,7 +47,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		productCategoryRepository.saveAll(List.of(category1, category2));
 	}
 
-	@DisplayName("경매 카테고리로 필터링할 수 있다.")
+	@DisplayName("[상품 카테고리로 경매를 필터링할 수 있다.(categoryEq)]")
 	@Test
 	void category_filter() {
 		//given
@@ -56,7 +60,76 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.productCategory(DIGITAL_DEVICE)
 			.build();
 
-		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
+		//when
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+
+		//then
+		assertAll(
+			() -> assertThat(auctions).hasSize(1),
+			() -> assertThat(auctions.get(0)).isEqualTo(auction1)
+		);
+	}
+
+	@DisplayName("[경매 시작 금액으로 경매를 필터링할 수 있다.(initPriceBetween)]")
+	@Test
+	void initPrice_filter() {
+	    //given
+		Auction auction1 = AuctionFixture.auction(category1, 2000);
+		Auction auction2 = AuctionFixture.auction(category2, 5000);
+		Auction auction3 = AuctionFixture.auction(category2, 10000);
+
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.minPrice(2000)
+			.maxPrice(5000)
+			.build();
+
+		//when
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+
+		//then
+		assertAll(
+			() -> assertThat(auctions).hasSize(2),
+			() -> assertThat(auctions).containsExactly(auction1, auction2)
+		);
+
+	}
+
+	@DisplayName("[경매 상품 미개봉 여부로 경매를 필터링할 수 있다. (isNewProductEq)]")
+	@Test
+	void isNewProductFilter() {
+	    //given
+		Auction auction1 = AuctionFixture.auction(category1, ProductStatus.NEW);
+		Auction auction2 = AuctionFixture.auction(category2, ProductStatus.DIRTY);
+		Auction auction3 = AuctionFixture.auction(category2, ProductStatus.CLEAN);
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.isNewProduct(false)
+			.build();
+
+		//when
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+
+		//then
+		assertAll(
+			() -> assertThat(auctions).hasSize(2),
+			() -> assertThat(auctions).containsExactly(auction2, auction3)
+		);
+	}
+
+	@DisplayName("[거래 방식으로 경매를 필터링할 수 있다. (tradeMethodEq)]")
+	@Test
+	void tradeMethodFilter() {
+		//given
+		Auction auction1 = AuctionFixture.auction(category1, TradeMethod.DELIVER);
+		Auction auction2 = AuctionFixture.auction(category2, TradeMethod.DIRECT);
+		auctionRepository.saveAll(List.of(auction1, auction2));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.tradeMethod("택배")
+			.build();
 
 		//when
 		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
@@ -64,9 +137,29 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		//then
 		assertAll(
 			() -> assertThat(auctions).hasSize(1),
-			() -> assertThat(auctions.get(0).getProduct().getProductCategory().getCategoryValue())
-				.isEqualTo(DIGITAL_DEVICE)
+			() -> assertThat(auctions.get(0)).isEqualTo(auction1)
 		);
+	}
+
+	@DisplayName("[다음 슬라이스에 요소가 있으면 hasNext()=true]")
+	@Test
+	void hasNext() {
+	    //given
+		Auction auction1 = AuctionFixture.auction(category1);
+		Auction auction2 = AuctionFixture.auction(category1);
+		auctionRepository.saveAll(List.of(auction1, auction2));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.si("서울시")
+			.productCategory(DIGITAL_DEVICE)
+			.build();
+		PageRequest pageRequest = PageRequest.of(0, 1);
+
+		//when
+		Slice<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest);
+
+		//then
+		assertThat(auctions.hasNext()).isTrue();
 	}
 
 }
