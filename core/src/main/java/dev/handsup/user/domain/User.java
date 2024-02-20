@@ -55,8 +55,7 @@ public class User extends TimeBaseEntity {
 		String email,
 		String password,
 		String nickname,
-		Address address,
-		String profileImageUrl
+		Address address
 	) {
 		Assert.hasText(email, getNotEmptyMessage("User", "email"));
 		Assert.hasText(password, getNotEmptyMessage("User", "password"));
@@ -100,6 +99,22 @@ public class User extends TimeBaseEntity {
 		this.nickname = nickname;
 		this.address = address;
 		this.profileImageUrl = profileImageUrl;
+	}
+
+	public static User of(
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		return User.builder()
+			.email(email)
+			.password(password)
+			.nickname(nickname)
+			.address(address)
+			.profileImageUrl(profileImageUrl)
+			.build();
 	}
 
 	/**

@@ -15,18 +15,19 @@ public class UserMapper {
 		String password = request.password();
 		String encryptedPassword = encryptHelper.encrypt(password);
 
+		// TODO 팩토리 메서드로 변경
 		Address address = Address.builder()
 			.si(request.si())
 			.gu(request.gu())
 			.dong(request.dong())
 			.build();
 
-		return User.builder()
-			.email(request.email())
-			.password(encryptedPassword)
-			.nickname(request.nickname())
-			.address(address)
-			.profileImageUrl(request.profileImageUrl())
-			.build();
+		return User.of(
+			request.email(),
+			encryptedPassword,
+			request.nickname(),
+			address,
+			request.profileImageUrl()
+		);
 	}
 }

@@ -36,9 +36,14 @@ class UserServiceTest {
 	private UserService userService;
 
 	private User user = UserFixture.user();
-	private JoinUserRequest request = new JoinUserRequest(
-		user.getEmail(), user.getPassword(), user.getNickname(),
-		user.getAddress().getSi(), user.getAddress().getGu(), user.getAddress().getDong(), user.getProfileImageUrl()
+	private JoinUserRequest request = JoinUserRequest.of(
+		user.getEmail(),
+		user.getPassword(),
+		user.getNickname(),
+		user.getAddress().getSi(),
+		user.getAddress().getGu(),
+		user.getAddress().getDong(),
+		user.getProfileImageUrl()
 	);
 
 	@Test

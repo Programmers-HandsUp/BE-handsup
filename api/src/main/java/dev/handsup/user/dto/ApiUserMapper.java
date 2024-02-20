@@ -8,14 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class ApiUserMapper {
 	public static JoinUserRequest toJoinUserRequest(JoinUserApiRequest request) {
-		return JoinUserRequest.builder()
-			.email(request.email())
-			.password(request.password())
-			.nickname(request.password())
-			.si(request.si())
-			.gu(request.gu())
-			.dong(request.dong())
-			.profileImageUrl(request.profileImageUrl())
-			.build();
+		return JoinUserRequest.of(
+			request.email(),
+			request.password(),
+			request.nickname(),
+			request.si(),
+			request.gu(),
+			request.dong(),
+			request.profileImageUrl()
+		);
 	}
 }
