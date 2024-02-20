@@ -4,12 +4,12 @@ import org.springframework.stereotype.Service;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.AuctionResponse;
-import dev.handsup.auction.dto.RegisterAuctionRequest;
+import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.exception.AuctionErrorCode;
-import dev.handsup.auction.repository.AuctionRepository;
-import dev.handsup.auction.repository.ProductCategoryRepository;
+import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 

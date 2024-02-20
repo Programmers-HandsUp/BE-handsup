@@ -28,6 +28,7 @@ public class ProductCategory {
 		this.categoryValue = categoryValue;
 	}
 
+	// 테스트 전용
 	public static ProductCategory of(String categoryValue) {
 		return ProductCategory.builder()
 			.categoryValue(categoryValue)

@@ -21,7 +21,7 @@ import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.ProductFixture;
 
-class AuctionControllerTest extends ApiTestSupport {
+class AuctionApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 
