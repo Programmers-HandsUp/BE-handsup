@@ -9,3 +9,7 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.orm.jdbc.bind: trace
+
+jwt:
+  secret: prgrmsdevcoursehandsupjsonwebtokensecretkey202402
+  token-validity-in-seconds: 864000
