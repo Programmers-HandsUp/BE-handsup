@@ -6,7 +6,7 @@ import dev.handsup.user.dto.request.JoinUserRequest;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class ApiUserMapper {
+public class UserApiMapper {
 	public static JoinUserRequest toJoinUserRequest(JoinUserApiRequest request) {
 		return JoinUserRequest.of(
 			request.email(),

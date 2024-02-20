@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.handsup.user.dto.ApiUserMapper;
+import dev.handsup.user.dto.UserApiMapper;
 import dev.handsup.user.dto.JoinUserApiRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.JoinUserResponse;
@@ -30,7 +30,7 @@ public class UserApiController {
 	public ResponseEntity<JoinUserResponse> join(
 		final @Valid @RequestBody JoinUserApiRequest request
 	) {
-		JoinUserRequest joinUserRequest = ApiUserMapper.toJoinUserRequest(request);
+		JoinUserRequest joinUserRequest = UserApiMapper.toJoinUserRequest(request);
 		Long userId = userService.join(joinUserRequest);
 		return ResponseEntity.ok(new JoinUserResponse(userId));
 	}
