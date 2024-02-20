@@ -91,14 +91,12 @@ public class User extends TimeBaseEntity {
 		String password,
 		String nickname,
 		Address address,
-		String profileImageUrl
 	) {
-		validateUser(email, password, nickname, address, profileImageUrl);
+		validateUser(email, password, nickname, address);
 		this.email = email;
 		this.password = password;
 		this.nickname = nickname;
 		this.address = address;
-		this.profileImageUrl = profileImageUrl;
 	}
 
 	public static User of(
