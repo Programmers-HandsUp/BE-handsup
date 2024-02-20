@@ -11,6 +11,7 @@ import dev.handsup.auction.dto.AuctionResponse;
 import dev.handsup.auction.dto.RegisterAuctionApiRequest;
 import dev.handsup.auction.dto.RegisterAuctionRequest;
 import dev.handsup.auction.service.AuctionService;
+import dev.handsup.auth.annotation.NoAuth;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ public class AuctionController {
 
 	private final AuctionService auctionService;
 
+	@NoAuth
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
 	@PostMapping
 	public ResponseEntity<AuctionResponse> registerAuction(@Valid @RequestBody RegisterAuctionApiRequest request) {
