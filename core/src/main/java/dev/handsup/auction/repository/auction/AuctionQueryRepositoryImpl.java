@@ -32,13 +32,13 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Slice<Auction> findAuctions(String title, AuctionSearchCondition condition, Pageable pageable) {
+	public Slice<Auction> findAuctions(AuctionSearchCondition condition, Pageable pageable) {
 		List<Auction> content = queryFactory.select(QAuction.auction)
 			.from(auction)
 			.join(auction.product, product).fetchJoin()
 			.leftJoin(product.productCategory, productCategory).fetchJoin()
 			.where(
-				titleContains(title),
+				keywordContains(condition.keyword()),
 				categoryEq(condition.productCategory()),
 				tradeMethodEq(condition.tradeMethod()),
 				siEq(condition.si()),
@@ -71,8 +71,8 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 			.orElse(auction.createdAt.desc());
 	}
 
-	private BooleanExpression titleContains(String title) {
-		return title != null ? auction.title.contains(title) : null;
+	private BooleanExpression keywordContains(String keyword) {
+		return keyword != null ? auction.title.contains(keyword) : null;
 	}
 
 	private BooleanExpression categoryEq(String productCategory) {

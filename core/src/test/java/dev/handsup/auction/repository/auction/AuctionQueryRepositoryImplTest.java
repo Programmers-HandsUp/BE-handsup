@@ -61,7 +61,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -86,7 +86,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -110,7 +110,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -134,7 +134,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -156,7 +156,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -165,7 +165,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		);
 	}
 
-	@DisplayName("[검색 키워드로 필터링할 수 있다. (titleContains)]")
+	@DisplayName("[검색 키워드로 필터링할 수 있다. (keywordContains)]")
 	@Test
 	void keyword_filter() {
 	    //given
@@ -175,10 +175,11 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword("버즈")
 			.productCategory(DIGITAL_DEVICE)
 			.build();
 	    //when
-		List<Auction> auctions = auctionQueryRepository.findAuctions("버즈", condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -202,7 +203,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		PageRequest pageRequest = PageRequest.of(0, 1);
 
 		//when
-		Slice<Auction> auctions = auctionQueryRepository.findAuctions(null, condition, pageRequest);
+		Slice<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest);
 
 		//then
 		assertThat(auctions.hasNext()).isTrue();
