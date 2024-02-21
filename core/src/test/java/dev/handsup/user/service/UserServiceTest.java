@@ -84,7 +84,7 @@ class UserServiceTest {
 		given(encryptHelper.encrypt(request.password()))
 			.willReturn("encryptedPassword");
 
-		User savedUser = UserFixture.user(1L);
+		User savedUser = UserFixture.testUser(1L);
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 

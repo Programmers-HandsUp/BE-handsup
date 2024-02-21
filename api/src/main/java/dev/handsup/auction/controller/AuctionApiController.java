@@ -11,6 +11,7 @@ import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auction.dto.RegisterAuctionApiRequest;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.service.AuctionService;
+import dev.handsup.auth.annotation.NoAuth;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +26,7 @@ public class AuctionApiController {
 
 	private final AuctionService auctionService;
 
+	@NoAuth
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping
