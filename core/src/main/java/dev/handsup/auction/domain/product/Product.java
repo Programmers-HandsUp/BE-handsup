@@ -52,8 +52,8 @@ public class Product extends TimeBaseEntity {
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ProductCategory productCategory;
 
-	@Builder(access = PRIVATE)
-	public Product(ProductStatus status, String description, PurchaseTime purchaseTime,
+	@Builder
+	private Product(ProductStatus status, String description, PurchaseTime purchaseTime,
 		ProductCategory productCategory) {
 		Assert.hasText(description, getNotEmptyMessage(PRODUCT, "description"));
 		this.status = status;

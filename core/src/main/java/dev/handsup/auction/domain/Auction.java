@@ -87,8 +87,8 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount;
 
-	@Builder(access = PRIVATE)
-	public Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+	@Builder
+	private Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
 		TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
 		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
