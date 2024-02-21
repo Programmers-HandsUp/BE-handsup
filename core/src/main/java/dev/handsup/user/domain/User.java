@@ -86,7 +86,7 @@ public class User extends TimeBaseEntity {
 		this.profileImageUrl = profileImageUrl;
 	}
 
-	@Builder(access = AccessLevel.PRIVATE)
+	@Builder
 	private User(
 		String email,
 		String password,

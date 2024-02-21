@@ -1,11 +1,13 @@
 package dev.handsup.auth.dto;
 
+import static lombok.AccessLevel.*;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = PRIVATE)
 public record AuthApiRequest(
 	@Email
 	@NotBlank(message = "email 값이 공백입니다.")
