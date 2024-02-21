@@ -38,7 +38,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("Access Token을 성공적으로 만든다")
+	@DisplayName("[Access Token을 성공적으로 만든다]")
 	void createAccessTokenTest() {
 		// given
 		Long userId = 123L;
@@ -62,7 +62,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("Refresh Token을 성공적으로 만든다")
+	@DisplayName("[Refresh Token을 성공적으로 만든다]")
 	void createRefreshTokenTest() {
 		// given
 		Long userId = 123L;
@@ -86,7 +86,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("Claim 에서 UserId를 뽑아온다")
+	@DisplayName("[Claim 에서 UserId를 뽑아온다]")
 	void getClaimTest() {
 		// given
 		Long userId = 123L;
@@ -100,7 +100,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("유효성 검사에서 정상적인 토큰은 성공한다")
+	@DisplayName("[유효성 검사에서 정상적인 토큰은 성공한다]")
 	void validateValidTokenTest() {
 		// given
 		Long userId = 123L;
@@ -111,7 +111,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("유효성 검사에서 구조가 안 맞는 토큰은 실패한다")
+	@DisplayName("[유효성 검사에서 구조가 안 맞는 토큰은 실패한다]")
 	void validateInValidTokenTest() {
 		// given
 		String invalidToken = "invalidToken";
@@ -125,7 +125,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("유효성 검사에서 유효 기간이 지난 토큰은 실패한다")
+	@DisplayName("[유효성 검사에서 유효 기간이 지난 토큰은 실패한다]")
 	void validateExpiredTokenTest() {
 		// given
 		Long userId = 123L;
@@ -141,7 +141,7 @@ class JwtProviderTest {
 	}
 
 	@Test
-	@DisplayName("유효성 검사에서 잘못된 서명의 토큰은 실패한다")
+	@DisplayName("[유효성 검사에서 잘못된 서명의 토큰은 실패한다]")
 	void validateTokenWithAlteredSignatureTest() {
 		// given
 		Long userId = 123L;

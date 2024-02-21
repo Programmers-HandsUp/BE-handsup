@@ -67,7 +67,7 @@ class AuthServiceTest {
 	}
 
 	@Test
-	@DisplayName("로그인 실패 시 예외를 던진다")
+	@DisplayName("[로그인 실패 시 예외를 던진다]")
 	void loginFailTest() {
 		// given
 		when(userService.getUserByEmail(authRequest.email())).thenReturn(user);
@@ -79,7 +79,7 @@ class AuthServiceTest {
 	}
 
 	@Test
-	@DisplayName("로그아웃 성공 시 블랙리스트에 토큰을 추가한다")
+	@DisplayName("[로그아웃 성공 시 블랙리스트에 토큰을 추가한다]")
 	void logoutSuccessTest() {
 		// given
 		Long userId = 1L;
@@ -94,7 +94,7 @@ class AuthServiceTest {
 	}
 
 	@Test
-	@DisplayName("로그아웃 실패 시 NotFoundException을 던진다")
+	@DisplayName("[로그아웃 실패 시 NotFoundException을 던진다]")
 	void logoutFailTest() {
 		// given
 		Long userId = 1L;
