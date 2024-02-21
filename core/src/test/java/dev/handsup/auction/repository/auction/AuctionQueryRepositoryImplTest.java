@@ -61,7 +61,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -86,7 +86,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -110,7 +110,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -134,7 +134,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -156,7 +156,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.build();
 
 		//when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -179,7 +179,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			.productCategory(DIGITAL_DEVICE)
 			.build();
 	    //when
-		List<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest).getContent();
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
 		assertAll(
@@ -203,7 +203,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		PageRequest pageRequest = PageRequest.of(0, 1);
 
 		//when
-		Slice<Auction> auctions = auctionQueryRepository.findAuctions(condition, pageRequest);
+		Slice<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest);
 
 		//then
 		assertThat(auctions.hasNext()).isTrue();

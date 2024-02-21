@@ -40,9 +40,9 @@ public class AuctionApiController {
 	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping("/search")
-	public ResponseEntity<PageResponse<AuctionResponse>> findAuctions(@Valid @RequestBody AuctionSearchCondition condition,
+	public ResponseEntity<PageResponse<AuctionResponse>> searchAuctions(@Valid @RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
-		PageResponse<AuctionResponse> response = auctionService.findAuctions(condition, pageable);
+		PageResponse<AuctionResponse> response = auctionService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
 	}
 }

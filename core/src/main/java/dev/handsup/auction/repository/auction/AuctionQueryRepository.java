@@ -7,5 +7,5 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 
 public interface AuctionQueryRepository {
-	Slice<Auction> findAuctions(AuctionSearchCondition auctionSearchCondition, Pageable pageable);
+	Slice<Auction> searchAuctions(AuctionSearchCondition auctionSearchCondition, Pageable pageable);
 }

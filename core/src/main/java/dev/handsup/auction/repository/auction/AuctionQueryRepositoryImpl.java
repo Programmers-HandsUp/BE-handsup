@@ -32,7 +32,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Slice<Auction> findAuctions(AuctionSearchCondition condition, Pageable pageable) {
+	public Slice<Auction> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
 		List<Auction> content = queryFactory.select(QAuction.auction)
 			.from(auction)
 			.join(auction.product, product).fetchJoin()

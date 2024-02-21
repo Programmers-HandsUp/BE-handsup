@@ -15,7 +15,7 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.RegisterAuctionApiRequest;
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
@@ -39,16 +39,19 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[경매를 등록할 수 있다.]")
 	@Test
 	void registerAuction() throws Exception {
-		RegisterAuctionApiRequest request = RegisterAuctionApiRequest.builder()
-			.title("아이패드 팔아요")
-			.description("아이패드 팔아요. 오래 되어서 싸게 팔아요")
-			.productStatus(ProductStatus.DIRTY.getLabel())
-			.tradeMethod(TradeMethod.DIRECT.getLabel())
-			.endDate(LocalDate.parse("2023-02-19"))
-			.initPrice(300000)
-			.purchaseTime(PurchaseTime.ABOVE_ONE_YEAR.getLabel())
-			.productCategory(DIGITAL_DEVICE)
-			.build();
+		RegisterAuctionRequest request = RegisterAuctionRequest.of(
+			"거의 새상품 버즈 팔아요",
+			DIGITAL_DEVICE,
+			10000,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW.getLabel(),
+			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
+			"거의 새상품이에요",
+			TradeMethod.DELIVER.getLabel(),
+			"서울시",
+			"성북구",
+			"동선동"
+		);
 
 		mockMvc.perform(post("/api/auctions")
 				.contentType(APPLICATION_JSON)
@@ -71,16 +74,19 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@Test
 	void registerAuctionFails() throws Exception {
 		final String NOT_EXIST_CATEGORY = "아";
-		RegisterAuctionApiRequest request = RegisterAuctionApiRequest.builder()
-			.title("아이패드 팔아요")
-			.description("아이패드 팔아요. 오래 되어서 싸게 팔아요")
-			.productStatus(ProductStatus.DIRTY.getLabel())
-			.tradeMethod(TradeMethod.DIRECT.getLabel())
-			.endDate(LocalDate.parse("2023-02-19"))
-			.initPrice(300000)
-			.purchaseTime(PurchaseTime.ABOVE_ONE_YEAR.getLabel())
-			.productCategory(NOT_EXIST_CATEGORY)
-			.build();
+		RegisterAuctionRequest request = RegisterAuctionRequest.of(
+			"거의 새상품 버즈 팔아요",
+			NOT_EXIST_CATEGORY,
+			10000,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW.getLabel(),
+			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
+			"거의 새상품이에요",
+			TradeMethod.DELIVER.getLabel(),
+			"서울시",
+			"성북구",
+			"동선동"
+		);
 
 		mockMvc.perform(post("/api/auctions")
 				.contentType(APPLICATION_JSON)
