@@ -41,7 +41,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Auction extends TimeBaseEntity {
 
-	private static final String AUCTION = "auction";
+	private static final String AUCTION_STRING = "auction";
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -62,7 +62,9 @@ public class Auction extends TimeBaseEntity {
 	private String title;
 
 	@OneToOne(fetch = LAZY, cascade = ALL)
-	@JoinColumn(name = "product_id",
+	@JoinColumn(
+		name = "product_id",
+		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
 
@@ -81,28 +83,41 @@ public class Auction extends TimeBaseEntity {
 
 	@Column(name = "auction_status", nullable = false)
 	@Enumerated(STRING)
-	private AuctionStatus status;
+	private AuctionStatus status = PROGRESS;
 
 	@Column(name = "bidding_count", nullable = false)
-	private int biddingCount;
+	private int biddingCount = 0;
 
 	@Column(name = "bookmark_count", nullable = false)
-	private int bookmarkCount;
+	private int bookmarkCount = 0;
 
-	@Builder(access = PRIVATE)
-	public Auction(String title, Product product, int initPrice, LocalDate endDate,
-		TradingLocation tradingLocation, TradeMethod tradeMethod) {
-		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
-		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
+	private Auction(
+		Long id, User seller, String title, Product product, int initPrice,
+		LocalDate endDate, TradingLocation tradingLocation, TradeMethod tradeMethod
+	) {
+		this.id = id;
+		this.seller = seller;
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
-		biddingCount = 0;
-		bookmarkCount = 0;
-		status = PROGRESS;
+	}
+
+	@Builder(access = PRIVATE)
+	public Auction(
+		String title, Product product, int initPrice, LocalDate endDate,
+		TradingLocation tradingLocation, TradeMethod tradeMethod
+	) {
+		Assert.hasText(title, getNotEmptyMessage(AUCTION_STRING, "title"));
+		Assert.notNull(title, getNotEmptyMessage(AUCTION_STRING, "initPrice"));
+		this.title = title;
+		this.product = product;
+		this.initPrice = initPrice;
+		this.endDate = endDate;
+		this.tradingLocation = tradingLocation;
+		this.tradeMethod = tradeMethod;
 	}
 
 	public static Auction of(
@@ -130,5 +145,36 @@ public class Auction extends TimeBaseEntity {
 				.build())
 			.tradeMethod(tradeMethod)
 			.build();
+	}
+
+	public static Auction getTestAuction(
+		Long autionId,
+		User seller,
+		String title,
+		ProductCategory productCategory,
+		int initPrice,
+		LocalDate endDate,
+		ProductStatus status,
+		PurchaseTime purchaseTime,
+		String description,
+		TradeMethod tradeMethod,
+		String si,
+		String gu,
+		String dong
+	) {
+		return new Auction(
+			autionId,
+			seller,
+			title,
+			Product.of(status, description, purchaseTime, productCategory),
+			initPrice,
+			endDate,
+			TradingLocation.builder()
+				.si(si)
+				.gu(gu)
+				.dong(dong)
+				.build(),
+			tradeMethod
+		);
 	}
 }

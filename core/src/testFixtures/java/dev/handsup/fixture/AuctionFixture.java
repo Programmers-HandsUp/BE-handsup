@@ -15,7 +15,9 @@ import lombok.NoArgsConstructor;
 public class AuctionFixture {
 
 	public static Auction auction() {
-		return Auction.of(
+		return Auction.getTestAuction(
+			1L,
+			UserFixture.user(1L),
 			"거의 새상품 버즈 팔아요",
 			ProductCategory.of("디지털 기기"),
 			10000,
@@ -29,4 +31,5 @@ public class AuctionFixture {
 			"동선동"
 		);
 	}
+
 }
