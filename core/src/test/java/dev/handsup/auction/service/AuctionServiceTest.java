@@ -19,8 +19,8 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
+import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.fixture.AuctionFixture;
@@ -45,19 +45,19 @@ class AuctionServiceTest {
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		Auction auction = AuctionFixture.auction(productCategory);
 		RegisterAuctionRequest registerAuctionRequest =
-			RegisterAuctionRequest.builder()
-				.title("거의 새상품 버즈 팔아요")
-				.tradeMethod(TradeMethod.DELIVER.getLabel())
-				.purchaseTime(PurchaseTime.UNDER_ONE_MONTH.getLabel())
-				.productCategory(DIGITAL_DEVICE)
-				.productStatus(ProductStatus.NEW.getLabel())
-				.endDate(LocalDate.parse("2022-10-18"))
-				.description("거의 새상품이에요")
-				.initPrice(10000)
-				.si("서울시")
-				.gu("성북구")
-				.dong("동선동")
-				.build();
+			RegisterAuctionRequest.of(
+				"거의 새상품 버즈 팔아요",
+				DIGITAL_DEVICE,
+				10000,
+				LocalDate.parse("2022-10-18"),
+				ProductStatus.NEW.getLabel(),
+				PurchaseTime.UNDER_ONE_MONTH.getLabel(),
+				"거의 새상품이에요",
+				TradeMethod.DELIVER.getLabel(),
+				"서울시",
+				"성북구",
+				"동선동"
+			);
 
 		given(productCategoryRepository.findByCategoryValue(DIGITAL_DEVICE))
 			.willReturn(Optional.of(productCategory));
