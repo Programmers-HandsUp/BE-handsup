@@ -29,7 +29,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@Autowired
 	private AuthService authService;
 	private AuthRequest authRequest;
-	private final User user = UserFixture.testUser(1L);
+	private final User user = UserFixture.user(1L);
 
 	@BeforeEach
 	void setUp() {

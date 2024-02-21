@@ -21,10 +21,10 @@ public final class UserFixture {
 		.build();
 
 	public static User user() {
-		return User.of(EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
+		return User.getTestUser(1L, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
 	}
 
-	public static User testUser(Long id) {
+	public static User user(Long id) {
 		return User.getTestUser(id, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
 	}
 }
