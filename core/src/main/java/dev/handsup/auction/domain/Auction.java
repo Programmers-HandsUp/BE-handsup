@@ -1,6 +1,5 @@
 package dev.handsup.auction.domain;
 
-import static dev.handsup.auction.domain.auction_field.AuctionStatus.*;
 import static dev.handsup.common.exception.CommonValidationError.*;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.ConstraintMode.*;
@@ -101,7 +100,7 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 		biddingCount = 0;
 		bookmarkCount = 0;
-		status = PROGRESS;
+		status = AuctionStatus.PROGRESS;
 	}
 
 	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
@@ -115,5 +114,13 @@ public class Auction extends TimeBaseEntity {
 			.tradingLocation(TradingLocation.of(si, gu, dong))
 			.tradeMethod(tradeMethod)
 			.build();
+	}
+
+	public void changeAuctionStatusTrading() {
+		status = AuctionStatus.TRADING;
+	}
+
+	public void increaseBookmarkCount(){
+		bookmarkCount++;
 	}
 }

@@ -12,10 +12,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.QAuction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
@@ -29,7 +33,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 
 	@Override
 	public Slice<Auction> findAuctions(String title, AuctionSearchCondition condition, Pageable pageable) {
-		List<Auction> content = queryFactory.select(auction)
+		List<Auction> content = queryFactory.select(QAuction.auction)
 			.from(auction)
 			.join(auction.product, product).fetchJoin()
 			.leftJoin(product.productCategory, productCategory).fetchJoin()
@@ -41,15 +45,30 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				guEq(condition.gu()),
 				dongEq(condition.dong()),
 				initPriceBetween(condition.minPrice(), condition.maxPrice()),
-				isNewProductEq(condition.isNewProduct())
+				isNewProductEq(condition.isNewProduct()),
+				isProgressEq(condition.isProgress())
 			)
-			.orderBy(auction.createdAt.desc())
+			.orderBy(auctionSort(pageable))
 			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
 			.fetch();
-
 		boolean hasNext = hasNext(pageable.getPageSize(), content);
 		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	private OrderSpecifier<?> auctionSort(Pageable pageable) {
+		return pageable.getSort().stream()
+			.findFirst()
+			.map(order -> {
+				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
+				return switch (order.getProperty()) {
+					case "bookmarkCount" -> new OrderSpecifier<>(direction, auction.bookmarkCount);
+					case "endDate" -> new OrderSpecifier<>(direction, auction.endDate);
+					case "initPrice" -> new OrderSpecifier<>(direction, auction.initPrice);
+					default -> auction.createdAt.desc();
+				};
+			})
+			.orElse(auction.createdAt.desc());
 	}
 
 	private BooleanExpression titleContains(String title) {
@@ -89,6 +108,13 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 		} else {
 			return auction.product.status.eq(ProductStatus.CLEAN).or(auction.product.status.eq(ProductStatus.DIRTY));
 		}
+	}
+
+	private BooleanExpression isProgressEq(Boolean isProgress) {
+		if (Boolean.TRUE.equals(isProgress)) {
+			return auction.status.eq(AuctionStatus.PROGRESS);
+		}
+		return null;
 	}
 
 	private boolean hasNext(int pageSize, List<Auction> auctions) {

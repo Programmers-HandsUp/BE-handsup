@@ -35,5 +35,4 @@ public class AuctionApiController {
 		AuctionResponse response = auctionService.registerAuction(registerAuctionRequest);
 		return ResponseEntity.ok(response);
 	}
-
 }
