@@ -27,6 +27,7 @@ class JwtProviderTest {
 	private Key key;
 	private int tokenValidSeconds;
 	private String secretKey;
+	private final Long userId = 123L;
 
 	@BeforeEach
 	void setUp() {
@@ -40,9 +41,6 @@ class JwtProviderTest {
 	@Test
 	@DisplayName("[Access Token을 성공적으로 만든다]")
 	void createAccessTokenTest() {
-		// given
-		Long userId = 123L;
-
 		// when
 		String token = jwtProvider.createAccessToken(userId);
 
@@ -64,9 +62,6 @@ class JwtProviderTest {
 	@Test
 	@DisplayName("[Refresh Token을 성공적으로 만든다]")
 	void createRefreshTokenTest() {
-		// given
-		Long userId = 123L;
-
 		// when
 		String token = jwtProvider.createRefreshToken(userId);
 
@@ -89,7 +84,6 @@ class JwtProviderTest {
 	@DisplayName("[Claim 에서 UserId를 뽑아온다]")
 	void getClaimTest() {
 		// given
-		Long userId = 123L;
 		String token = jwtProvider.createAccessToken(userId);
 
 		// when
@@ -103,7 +97,6 @@ class JwtProviderTest {
 	@DisplayName("[유효성 검사에서 정상적인 토큰은 성공한다]")
 	void validateValidTokenTest() {
 		// given
-		Long userId = 123L;
 		String validToken = jwtProvider.createAccessToken(userId);
 
 		// when, then
@@ -128,7 +121,6 @@ class JwtProviderTest {
 	@DisplayName("[유효성 검사에서 유효 기간이 지난 토큰은 실패한다]")
 	void validateExpiredTokenTest() {
 		// given
-		Long userId = 123L;
 		jwtProvider = new JwtProvider(secretKey, -1000000);
 		String expiredToken = jwtProvider.createAccessToken(userId);
 
@@ -144,7 +136,6 @@ class JwtProviderTest {
 	@DisplayName("[유효성 검사에서 잘못된 서명의 토큰은 실패한다]")
 	void validateTokenWithAlteredSignatureTest() {
 		// given
-		Long userId = 123L;
 		String validToken = jwtProvider.createAccessToken(userId);
 		String alteredToken = validToken.substring(0, validToken.length() - 4) + "abcd";
 
