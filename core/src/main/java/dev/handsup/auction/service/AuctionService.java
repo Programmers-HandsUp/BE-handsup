@@ -3,6 +3,7 @@ package dev.handsup.auction.service;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
@@ -32,9 +33,10 @@ public class AuctionService {
 		return AuctionMapper.toAuctionResponse(auctionRepository.save(auction));
 	}
 
-	public PageResponse<AuctionResponse> findAuctions(AuctionSearchCondition condition, Pageable pageable){
+	@Transactional(readOnly = true)
+	public PageResponse<AuctionResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable){
 		Slice<AuctionResponse> auctionResponsePage = auctionQueryRepository
-			.findAuctions(condition, pageable)
+			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionResponse);
 		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
 	}
