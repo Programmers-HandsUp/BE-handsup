@@ -90,15 +90,15 @@ class AuctionServiceTest {
 	@DisplayName("[경매를 정렬, 필터링하여 검색할 수 있다.]")
 	@Test
 	void searchAuctions() {
-	    //given
+		//given
 		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
 			.build();
 
-		given(auctionQueryRepository.searchAuctions(condition,pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction),pageRequest,true));
+		given(auctionQueryRepository.searchAuctions(condition, pageRequest))
+			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, true));
 
 		//when
 		PageResponse<AuctionResponse> response

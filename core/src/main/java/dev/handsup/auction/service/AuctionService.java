@@ -34,7 +34,7 @@ public class AuctionService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable){
+	public PageResponse<AuctionResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
 		Slice<AuctionResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionResponse);

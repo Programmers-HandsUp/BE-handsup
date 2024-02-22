@@ -18,9 +18,9 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtProvider {
 
+	private static final String USER_ID = "userId";
 	private final int tokenValidSeconds;
 	private final Key key;
-	private static final String USER_ID = "userId";
 
 	public JwtProvider(
 		@Value("${jwt.secret}") String secretKey,

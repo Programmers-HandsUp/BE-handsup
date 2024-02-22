@@ -15,4 +15,5 @@ public record AuctionSearchCondition(
 	String dong,
 	Integer minPrice,
 	Integer maxPrice
-) { }
+) {
+}

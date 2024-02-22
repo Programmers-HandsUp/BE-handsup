@@ -73,7 +73,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@DisplayName("[경매 시작 금액으로 경매를 필터링할 수 있다.(initPriceBetween)]")
 	@Test
 	void initPrice_filter() {
-	    //given
+		//given
 		Auction auction1 = AuctionFixture.auction(category1, 2000);
 		Auction auction2 = AuctionFixture.auction(category2, 5000);
 		Auction auction3 = AuctionFixture.auction(category2, 10000);
@@ -99,7 +99,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@DisplayName("[경매 상품 미개봉 여부로 경매를 필터링할 수 있다. (isNewProductEq)]")
 	@Test
 	void isNewProduct_filter() {
-	    //given
+		//given
 		Auction auction1 = AuctionFixture.auction(category1, ProductStatus.NEW);
 		Auction auction2 = AuctionFixture.auction(category2, ProductStatus.DIRTY);
 		Auction auction3 = AuctionFixture.auction(category2, ProductStatus.CLEAN);
@@ -168,17 +168,17 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@DisplayName("[검색 키워드로 필터링할 수 있다. (keywordContains)]")
 	@Test
 	void keyword_filter() {
-	    //given
-		Auction auction1 = AuctionFixture.auction(category1,"버즈팔아요");
-		Auction auction2 = AuctionFixture.auction(category1,"버증팔아요");
-		Auction auction3 = AuctionFixture.auction(category2,"버즈팔아요");
+		//given
+		Auction auction1 = AuctionFixture.auction(category1, "버즈팔아요");
+		Auction auction2 = AuctionFixture.auction(category1, "버증팔아요");
+		Auction auction3 = AuctionFixture.auction(category2, "버즈팔아요");
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
 			.productCategory(DIGITAL_DEVICE)
 			.build();
-	    //when
+		//when
 		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
@@ -191,7 +191,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@DisplayName("[다음 슬라이스에 요소가 있으면 hasNext()=true]")
 	@Test
 	void hasNext() {
-	    //given
+		//given
 		Auction auction1 = AuctionFixture.auction(category1);
 		Auction auction2 = AuctionFixture.auction(category1);
 		auctionRepository.saveAll(List.of(auction1, auction2));

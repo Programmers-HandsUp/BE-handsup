@@ -125,7 +125,8 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[0].endDate").value(auction1.getEndDate().toString()))
 			.andExpect(jsonPath("$.content[0].initPrice").value(auction1.getInitPrice()))
 			.andExpect(jsonPath("$.content[0].purchaseTime").value(auction1.getProduct().getPurchaseTime().getLabel()))
-			.andExpect(jsonPath("$.content[0].productCategory").value(auction1.getProduct().getProductCategory().getCategoryValue()))
+			.andExpect(jsonPath("$.content[0].productCategory").value(
+				auction1.getProduct().getProductCategory().getCategoryValue()))
 			.andExpect(jsonPath("$.content[0].si").value(auction1.getTradingLocation().getSi()))
 			.andExpect(jsonPath("$.content[0].gu").value(auction1.getTradingLocation().getGu()))
 			.andExpect(jsonPath("$.content[0].dong").value(auction1.getTradingLocation().getDong()))
@@ -156,12 +157,11 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
 	}
 
-
 	@DisplayName("[검색된 경매를 필터링할 수 있다.]")
 	@Test
 	void searchAuctionFilter() throws Exception {
-		Auction auction1 = AuctionFixture.auction(productCategory,"버즈", 15000);
-		Auction auction2 = AuctionFixture.auction(productCategory, "에어팟",15000 );
+		Auction auction1 = AuctionFixture.auction(productCategory, "버즈", 15000);
+		Auction auction2 = AuctionFixture.auction(productCategory, "에어팟", 15000);
 		Auction auction3 = AuctionFixture.auction(productCategory, "버즈 팔아요", 25000);
 		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
 		ReflectionTestUtils.setField(auction3, "bookmarkCount", 3);

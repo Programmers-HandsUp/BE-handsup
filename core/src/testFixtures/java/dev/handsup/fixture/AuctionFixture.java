@@ -94,7 +94,6 @@ public class AuctionFixture {
 		);
 	}
 
-
 	public static Auction auction(ProductCategory productCategory, String title, int initPrice) {
 		return Auction.of(
 			title,

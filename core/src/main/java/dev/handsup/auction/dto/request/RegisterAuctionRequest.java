@@ -52,7 +52,7 @@ public record RegisterAuctionRequest(
 		String si,
 		String gu,
 		String dong
-	){
+	) {
 		return new RegisterAuctionRequest(
 			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, si, gu,
 			dong);

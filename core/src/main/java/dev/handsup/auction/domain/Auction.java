@@ -120,7 +120,7 @@ public class Auction extends TimeBaseEntity {
 		status = AuctionStatus.TRADING;
 	}
 
-	public void increaseBookmarkCount(){
+	public void increaseBookmarkCount() {
 		bookmarkCount++;
 	}
 }
