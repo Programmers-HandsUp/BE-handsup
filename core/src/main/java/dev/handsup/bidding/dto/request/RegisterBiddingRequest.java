@@ -2,7 +2,6 @@ package dev.handsup.bidding.dto.request;
 
 import static lombok.AccessLevel.*;
 
-import dev.handsup.auction.domain.Auction;
 import dev.handsup.user.domain.User;
 import lombok.Builder;
 
@@ -10,13 +9,13 @@ import lombok.Builder;
 public record RegisterBiddingRequest(
 
 	int biddingPrice,
-	Auction auction,
+	Long auctionId,
 	User bidder
 ) {
-	public static RegisterBiddingRequest of(int biddingPrice, Auction auction, User bidder) {
+	public static RegisterBiddingRequest of(int biddingPrice, Long auctionId, User bidder) {
 		return RegisterBiddingRequest.builder()
 			.biddingPrice(biddingPrice)
-			.auction(auction)
+			.auctionId(auctionId)
 			.bidder(bidder)
 			.build();
 	}
