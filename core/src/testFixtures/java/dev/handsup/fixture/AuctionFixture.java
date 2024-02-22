@@ -93,4 +93,21 @@ public class AuctionFixture {
 			"동선동"
 		);
 	}
+
+
+	public static Auction auction(ProductCategory productCategory, String title, int initPrice) {
+		return Auction.of(
+			title,
+			productCategory,
+			initPrice,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			TradeMethod.DIRECT,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
 }

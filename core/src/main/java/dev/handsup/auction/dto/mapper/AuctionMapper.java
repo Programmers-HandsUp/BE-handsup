@@ -41,7 +41,7 @@ public class AuctionMapper {
 	public static <T> PageResponse<T> toAuctionPageResponse(Slice<T> page){
 		return new PageResponse<>(
 			page.getContent(),
-			page.getSize(),
+			page.getNumberOfElements(),
 			page.hasNext()
 		);
 	}
