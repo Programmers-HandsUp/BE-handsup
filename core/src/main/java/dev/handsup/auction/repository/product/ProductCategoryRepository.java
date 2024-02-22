@@ -1,4 +1,4 @@
-package dev.handsup.auction.repository;
+package dev.handsup.auction.repository.product;
 
 import java.util.Optional;
 

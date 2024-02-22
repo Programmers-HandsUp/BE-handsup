@@ -16,7 +16,6 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,24 +50,6 @@ public class User extends TimeBaseEntity {
 
 	@Column(name = "report_count", nullable = false)
 	private int reportCount = 0;
-
-	private void validateUser(
-		String email,
-		String password,
-		String nickname,
-		Address address
-	) {
-		Assert.hasText(email, getNotEmptyMessage("User", "email"));
-		Assert.hasText(password, getNotEmptyMessage("User", "password"));
-		Assert.hasText(nickname, getNotEmptyMessage("User", "nickname"));
-		Assert.notNull(address, getNotNullMessage("User", "address"));
-		// 이메일 패턴 검증
-		String emailRegex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}"
-			+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}[.][a-zA-Z]{2,3}$";
-		Pattern pattern = Pattern.compile(emailRegex);
-		Matcher matcher = pattern.matcher(email);
-		Assert.isTrue(matcher.matches(), NON_VALIDATED_EMAIL.getMessage());
-	}
 
 	private User(
 		Long id,
@@ -130,5 +111,23 @@ public class User extends TimeBaseEntity {
 		String profileImageUrl
 	) {
 		return new User(id, email, password, nickname, address, profileImageUrl);
+	}
+
+	private void validateUser(
+		String email,
+		String password,
+		String nickname,
+		Address address
+	) {
+		Assert.hasText(email, getNotEmptyMessage("User", "email"));
+		Assert.hasText(password, getNotEmptyMessage("User", "password"));
+		Assert.hasText(nickname, getNotEmptyMessage("User", "nickname"));
+		Assert.notNull(address, getNotNullMessage("User", "address"));
+		// 이메일 패턴 검증
+		String emailRegex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}"
+			+ "@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z]){0,19}[.][a-zA-Z]{2,3}$";
+		Pattern pattern = Pattern.compile(emailRegex);
+		Matcher matcher = pattern.matcher(email);
+		Assert.isTrue(matcher.matches(), NON_VALIDATED_EMAIL.getMessage());
 	}
 }

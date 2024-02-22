@@ -1,4 +1,4 @@
-package dev.handsup.auction.repository;
+package dev.handsup.auction.repository.auction;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

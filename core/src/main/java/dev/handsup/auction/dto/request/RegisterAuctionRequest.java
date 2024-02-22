@@ -1,4 +1,4 @@
-package dev.handsup.auction.dto;
+package dev.handsup.auction.dto.request;
 
 import java.time.LocalDate;
 
@@ -8,10 +8,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
 
-@Builder
-public record RegisterAuctionApiRequest(
+public record RegisterAuctionRequest(
 
 	@NotBlank(message = "title 값이 공백입니다.")
 	String title,
@@ -42,4 +40,36 @@ public record RegisterAuctionApiRequest(
 	String gu,
 	String dong
 ) {
+	public static RegisterAuctionRequest of(
+		String title,
+		String productCategory,
+		int initPrice,
+		LocalDate endDate,
+		String productStatus,
+		String purchaseTime,
+		String description,
+		String tradeMethod,
+		String si,
+		String gu,
+		String dong
+	) {
+		return new RegisterAuctionRequest(
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, si, gu,
+			dong);
+	}
+
+	public static RegisterAuctionRequest of(
+		String title,
+		String productCategory,
+		int initPrice,
+		LocalDate endDate,
+		String productStatus,
+		String purchaseTime,
+		String description,
+		String tradeMethod
+	) {
+		return new RegisterAuctionRequest(
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, null,
+			null, null);
+	}
 }

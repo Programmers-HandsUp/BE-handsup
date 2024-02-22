@@ -1,6 +1,5 @@
 package dev.handsup.auction.domain;
 
-import static dev.handsup.auction.domain.auction_field.AuctionStatus.*;
 import static dev.handsup.common.exception.CommonValidationError.*;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.ConstraintMode.*;
@@ -91,12 +90,11 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount = 0;
 
-	private Auction(
-		Long id, User seller, String title, Product product, int initPrice,
-		LocalDate endDate, TradingLocation tradingLocation, TradeMethod tradeMethod
-	) {
-		this.id = id;
-		this.seller = seller;
+	@Builder
+	private Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+		TradeMethod tradeMethod) {
+		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
+		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
@@ -105,76 +103,24 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 	}
 
-	@Builder(access = PRIVATE)
-	public Auction(
-		String title, Product product, int initPrice, LocalDate endDate,
-		TradingLocation tradingLocation, TradeMethod tradeMethod
-	) {
-		Assert.hasText(title, getNotEmptyMessage(AUCTION_STRING, "title"));
-		Assert.notNull(title, getNotEmptyMessage(AUCTION_STRING, "initPrice"));
-		this.title = title;
-		this.product = product;
-		this.initPrice = initPrice;
-		this.endDate = endDate;
-		this.tradingLocation = tradingLocation;
-		this.tradeMethod = tradeMethod;
-	}
-
-	public static Auction of(
-		String title,
-		ProductCategory productCategory,
-		int initPrice,
-		LocalDate endDate,
-		ProductStatus status,
-		PurchaseTime purchaseTime,
-		String description,
-		TradeMethod tradeMethod,
-		String si,
-		String gu,
-		String dong
-	) {
+	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
+		String gu, String dong) {
 		return Auction.builder()
 			.title(title)
 			.product(Product.of(status, description, purchaseTime, productCategory))
 			.initPrice(initPrice)
 			.endDate(endDate)
-			.tradingLocation(TradingLocation.builder()
-				.si(si)
-				.gu(gu)
-				.dong(dong)
-				.build())
+			.tradingLocation(TradingLocation.of(si, gu, dong))
 			.tradeMethod(tradeMethod)
 			.build();
 	}
 
-	public static Auction getTestAuction(
-		Long autionId,
-		User seller,
-		String title,
-		ProductCategory productCategory,
-		int initPrice,
-		LocalDate endDate,
-		ProductStatus status,
-		PurchaseTime purchaseTime,
-		String description,
-		TradeMethod tradeMethod,
-		String si,
-		String gu,
-		String dong
-	) {
-		return new Auction(
-			autionId,
-			seller,
-			title,
-			Product.of(status, description, purchaseTime, productCategory),
-			initPrice,
-			endDate,
-			TradingLocation.builder()
-				.si(si)
-				.gu(gu)
-				.dong(dong)
-				.build(),
-			tradeMethod
-		);
+	public void changeAuctionStatusTrading() {
+		status = AuctionStatus.TRADING;
+	}
+
+	public void increaseBookmarkCount() {
+		bookmarkCount++;
 	}
 }

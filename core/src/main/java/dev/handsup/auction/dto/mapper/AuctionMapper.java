@@ -2,13 +2,16 @@ package dev.handsup.auction.dto.mapper;
 
 import static lombok.AccessLevel.*;
 
+import org.springframework.data.domain.Slice;
+
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.AuctionResponse;
-import dev.handsup.auction.dto.RegisterAuctionRequest;
+import dev.handsup.auction.dto.request.RegisterAuctionRequest;
+import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.common.dto.PageResponse;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -32,6 +35,14 @@ public class AuctionMapper {
 			request.si(),
 			request.gu(),
 			request.dong()
+		);
+	}
+
+	public static <T> PageResponse<T> toAuctionPageResponse(Slice<T> page) {
+		return new PageResponse<>(
+			page.getContent(),
+			page.getNumberOfElements(),
+			page.hasNext()
 		);
 	}
 

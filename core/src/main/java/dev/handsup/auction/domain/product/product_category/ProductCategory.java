@@ -23,11 +23,12 @@ public class ProductCategory {
 	@Column(name = "product_category_value", nullable = false)
 	private String categoryValue;
 
-	@Builder(access = PRIVATE)
-	public ProductCategory(String categoryValue) {
+	@Builder
+	private ProductCategory(String categoryValue) {
 		this.categoryValue = categoryValue;
 	}
 
+	// 테스트 전용
 	public static ProductCategory of(String categoryValue) {
 		return ProductCategory.builder()
 			.categoryValue(categoryValue)

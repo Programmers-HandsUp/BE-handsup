@@ -23,13 +23,13 @@ import dev.handsup.user.service.UserService;
 
 @DisplayName("[AuthApiController 테스트]")
 class AuthApiControllerTest extends ApiTestSupport {
-	
+
+	private final User user = UserFixture.user(1L);
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private AuthService authService;
 	private AuthRequest authRequest;
-	private final User user = UserFixture.user(1L);
 
 	@BeforeEach
 	void setUp() {

@@ -2,7 +2,6 @@ package dev.handsup.auth.dto.request;
 
 import static lombok.AccessLevel.*;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 
 @Builder(access = PRIVATE)

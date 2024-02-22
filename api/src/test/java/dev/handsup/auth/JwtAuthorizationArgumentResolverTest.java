@@ -29,6 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @ExtendWith(MockitoExtension.class)
 class JwtAuthorizationArgumentResolverTest {
 
+	private final MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
 	@InjectMocks
 	private JwtAuthorizationArgumentResolver resolver;
 	@Mock
@@ -39,7 +40,6 @@ class JwtAuthorizationArgumentResolverTest {
 	private MethodParameter parameter;
 	@Mock
 	private ModelAndViewContainer mavContainer;
-	private final MockHttpServletRequest mockHttpServletRequest = new MockHttpServletRequest();
 	@Mock
 	private NativeWebRequest webRequest;
 	@Mock
