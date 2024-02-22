@@ -24,11 +24,11 @@ import jakarta.servlet.http.HttpServletResponse;
 @ExtendWith(MockitoExtension.class)
 class JwtInterceptorTest {
 
+	private final MockHttpServletRequest request = new MockHttpServletRequest();
 	@InjectMocks
 	private JwtInterceptor jwtInterceptor;
 	@Mock
 	private JwtProvider jwtProvider;
-	private final MockHttpServletRequest request = new MockHttpServletRequest();
 	@Mock
 	private HttpServletResponse response;
 	@Mock

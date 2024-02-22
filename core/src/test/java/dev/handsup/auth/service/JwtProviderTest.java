@@ -23,11 +23,11 @@ import io.jsonwebtoken.security.Keys;
 @ExtendWith(MockitoExtension.class)
 class JwtProviderTest {
 
+	private final Long userId = 123L;
 	private JwtProvider jwtProvider;
 	private Key key;
 	private int tokenValidSeconds;
 	private String secretKey;
-	private final Long userId = 123L;
 
 	@BeforeEach
 	void setUp() {

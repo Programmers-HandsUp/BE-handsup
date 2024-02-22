@@ -1,6 +1,5 @@
 package dev.handsup.auction.domain;
 
-import static dev.handsup.auction.domain.auction_field.AuctionStatus.*;
 import static dev.handsup.common.exception.CommonValidationError.*;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.ConstraintMode.*;
@@ -62,8 +61,7 @@ public class Auction extends TimeBaseEntity {
 	private String title;
 
 	@OneToOne(fetch = LAZY, cascade = ALL)
-	@JoinColumn(name = "product_id",
-		foreignKey = @ForeignKey(NO_CONSTRAINT))
+	@JoinColumn(name = "product_id", foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
 
 	@Column(name = "init_price", nullable = false)
@@ -89,9 +87,9 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "bookmark_count", nullable = false)
 	private int bookmarkCount;
 
-	@Builder(access = PRIVATE)
-	public Auction(String title, Product product, int initPrice, LocalDate endDate,
-		TradingLocation tradingLocation, TradeMethod tradeMethod) {
+	@Builder
+	private Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+		TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION, "title"));
 		Assert.notNull(title, getNotEmptyMessage(AUCTION, "initPrice"));
 		this.title = title;
@@ -102,33 +100,27 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 		biddingCount = 0;
 		bookmarkCount = 0;
-		status = PROGRESS;
+		status = AuctionStatus.PROGRESS;
 	}
 
-	public static Auction of(
-		String title,
-		ProductCategory productCategory,
-		int initPrice,
-		LocalDate endDate,
-		ProductStatus status,
-		PurchaseTime purchaseTime,
-		String description,
-		TradeMethod tradeMethod,
-		String si,
-		String gu,
-		String dong
-	) {
+	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
+		String gu, String dong) {
 		return Auction.builder()
 			.title(title)
 			.product(Product.of(status, description, purchaseTime, productCategory))
 			.initPrice(initPrice)
 			.endDate(endDate)
-			.tradingLocation(TradingLocation.builder()
-				.si(si)
-				.gu(gu)
-				.dong(dong)
-				.build())
+			.tradingLocation(TradingLocation.of(si, gu, dong))
 			.tradeMethod(tradeMethod)
 			.build();
+	}
+
+	public void changeAuctionStatusTrading() {
+		status = AuctionStatus.TRADING;
+	}
+
+	public void increaseBookmarkCount() {
+		bookmarkCount++;
 	}
 }

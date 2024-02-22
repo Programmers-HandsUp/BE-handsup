@@ -14,16 +14,96 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionFixture {
 
-	public static Auction auction() {
+	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
 			"거의 새상품 버즈 팔아요",
-			ProductCategory.of("디지털 기기"),
+			productCategory,
 			10000,
 			LocalDate.parse("2022-10-18"),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			"거의 새상품이에요",
 			TradeMethod.DELIVER,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, Integer initPrice) {
+		return Auction.of(
+			"거의 새상품 버즈 팔아요",
+			productCategory,
+			initPrice,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			TradeMethod.DELIVER,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, ProductStatus productStatus) {
+		return Auction.of(
+			"거의 새상품 버즈 팔아요",
+			productCategory,
+			10000,
+			LocalDate.parse("2022-10-18"),
+			productStatus,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			TradeMethod.DELIVER,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, TradeMethod tradeMethod) {
+		return Auction.of(
+			"거의 새상품 버즈 팔아요",
+			productCategory,
+			10000,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			tradeMethod,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, String title) {
+		return Auction.of(
+			title,
+			productCategory,
+			10000,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			TradeMethod.DIRECT,
+			"서울시",
+			"성북구",
+			"동선동"
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, String title, int initPrice) {
+		return Auction.of(
+			title,
+			productCategory,
+			initPrice,
+			LocalDate.parse("2022-10-18"),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			"거의 새상품이에요",
+			TradeMethod.DIRECT,
 			"서울시",
 			"성북구",
 			"동선동"
