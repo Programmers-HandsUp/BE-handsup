@@ -4,7 +4,6 @@ import static dev.handsup.bidding.exception.BiddingErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,8 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
-import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.RegisterBiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
@@ -30,10 +29,13 @@ class BiddingServiceTest {
 
 	@Mock
 	private BiddingRepository biddingRepository;
+	@Mock
+	private AuctionService auctionService;
 
 	@InjectMocks
 	private BiddingService biddingService;
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final Auction auction = AuctionFixture.auction();	// 최소 입찰가 10000원
 	private final User user = UserFixture.user();
 
@@ -42,7 +44,8 @@ class BiddingServiceTest {
 	void validateBiddingPrice_LessThanInitPrice_ThrowsException() {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(9000, auction, user);
+		RegisterBiddingRequest request = RegisterBiddingRequest.of(9000, auction.getId(), user);
+		given(auctionService.getAuction(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -56,7 +59,8 @@ class BiddingServiceTest {
 		// given
 		Integer maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(15500, auction, user);
+		RegisterBiddingRequest request = RegisterBiddingRequest.of(15500, auction.getId(), user);
+		given(auctionService.getAuction(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -68,9 +72,13 @@ class BiddingServiceTest {
 	@DisplayName("[입찰 등록이 성공적으로 이루어진다]")
 	void registerBidding_Success() {
 		// given
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(20000, auction, user);
-		Bidding bidding = BiddingMapper.toBidding(request);
-
+		RegisterBiddingRequest request = RegisterBiddingRequest.of(20000, auction.getId(), user);
+		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		Bidding bidding = Bidding.of(
+			request.biddingPrice(),
+			auction,
+			user
+		);
 		given(biddingRepository.save(any(Bidding.class))).willReturn(bidding);
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(19000);
 

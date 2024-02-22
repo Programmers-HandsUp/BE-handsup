@@ -5,6 +5,7 @@ import static dev.handsup.bidding.exception.BiddingErrorCode.*;
 import org.springframework.stereotype.Service;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
@@ -18,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 public class BiddingService {
 
 	private final BiddingRepository biddingRepository;
+	private final AuctionService auctionService;
 
 	private void validateBiddingPrice(int biddingPrice, Auction auction) {
 		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
@@ -36,8 +38,15 @@ public class BiddingService {
 	}
 
 	public RegisterBiddingResponse registerBidding(RegisterBiddingRequest request) {
-		validateBiddingPrice(request.biddingPrice(), request.auction());
-		Bidding savedBidding = biddingRepository.save(BiddingMapper.toBidding(request));
+		Auction auction = auctionService.getAuction(request.auctionId());
+		validateBiddingPrice(request.biddingPrice(), auction);
+
+		Bidding savedBidding = biddingRepository.save(Bidding.of(
+			request.biddingPrice(),
+			auction,
+			request.bidder()
+			)
+		);
 		return BiddingMapper.toRegisterBiddingResponse(savedBidding);
 	}
 }
