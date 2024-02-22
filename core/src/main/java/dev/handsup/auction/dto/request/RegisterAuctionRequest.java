@@ -57,4 +57,19 @@ public record RegisterAuctionRequest(
 			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, si, gu,
 			dong);
 	}
+
+	public static RegisterAuctionRequest of(
+		String title,
+		String productCategory,
+		int initPrice,
+		LocalDate endDate,
+		String productStatus,
+		String purchaseTime,
+		String description,
+		String tradeMethod
+	) {
+		return new RegisterAuctionRequest(
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, null,
+			null, null);
+	}
 }

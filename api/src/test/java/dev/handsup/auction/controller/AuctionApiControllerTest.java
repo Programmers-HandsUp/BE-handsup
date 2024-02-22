@@ -54,10 +54,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			ProductStatus.NEW.getLabel(),
 			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
 			"거의 새상품이에요",
-			TradeMethod.DELIVER.getLabel(),
-			"서울시",
-			"성북구",
-			"동선동"
+			TradeMethod.DELIVER.getLabel()
 		);
 
 		mockMvc.perform(post("/api/auctions")
