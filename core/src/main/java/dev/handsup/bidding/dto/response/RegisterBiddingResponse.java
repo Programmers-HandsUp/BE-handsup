@@ -6,11 +6,19 @@ import lombok.Builder;
 
 @Builder(access = PRIVATE)
 public record RegisterBiddingResponse(
-	Long auctionId
+	int biddingPrice,
+	Long auctionId,
+	Long bidderId
 ) {
-	public static RegisterBiddingResponse from(Long auctionId) {
+	public static RegisterBiddingResponse of(
+		int biddingPrice,
+		Long auctionId,
+		Long bidderId
+	) {
 		return RegisterBiddingResponse.builder()
+			.biddingPrice(biddingPrice)
 			.auctionId(auctionId)
+			.bidderId(bidderId)
 			.build();
 	}
 }

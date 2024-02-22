@@ -18,6 +18,10 @@ public class BiddingMapper {
 		);
 	}
 	public static RegisterBiddingResponse toRegisterBiddingResponse(Bidding bidding) {
-		return RegisterBiddingResponse.from(bidding.getId());
+		return RegisterBiddingResponse.of(
+			bidding.getBiddingPrice(),
+			bidding.getAuction().getId(),
+			bidding.getBidder().getId()
+		);
 	}
 }

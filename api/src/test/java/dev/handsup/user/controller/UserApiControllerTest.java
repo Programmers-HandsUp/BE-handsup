@@ -16,16 +16,22 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 
-@DisplayName("[UserController API 테스트]")
+@DisplayName("[UserApiController 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
 	@Autowired
 	private UserRepository userRepository;
 
 	private User user = UserFixture.user();
-	private JoinUserRequest request = new JoinUserRequest(
-		user.getEmail(), user.getPassword(), user.getNickname(),
-		user.getAddress().getSi(), user.getAddress().getGu(), user.getAddress().getDong(), user.getProfileImageUrl()
+
+	private JoinUserRequest request = JoinUserRequest.of(
+		user.getEmail(),
+		user.getPassword(),
+		user.getNickname(),
+		user.getAddress().getSi(),
+		user.getAddress().getGu(),
+		user.getAddress().getDong(),
+		user.getProfileImageUrl()
 	);
 
 	@Test
