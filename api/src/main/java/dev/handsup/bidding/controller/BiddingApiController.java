@@ -38,7 +38,7 @@ public class BiddingApiController {
 	@PostMapping("/{auctionId}/bids")
 	@Operation(summary = "입찰 등록 API", description = "입찰한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<RegisterBiddingResponse> join(
+	public ResponseEntity<RegisterBiddingResponse> registerBidding(
 		@PathVariable Long auctionId,
 		@Valid @RequestBody RegisterBiddingApiRequest request,
 		@Parameter(hidden = true) @JwtAuthorization User user

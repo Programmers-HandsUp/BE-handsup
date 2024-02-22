@@ -21,7 +21,7 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.service.UserService;
 
-@DisplayName("[AuthApiController API 테스트]")
+@DisplayName("[AuthApiController 테스트]")
 class AuthApiControllerTest extends ApiTestSupport {
 	
 	@Autowired
