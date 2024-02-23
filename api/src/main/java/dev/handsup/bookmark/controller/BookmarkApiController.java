@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.jwt.JwtAuthorization;
-import dev.handsup.bookmark.dto.CheckBookmarkStatusResponse;
+import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
 import dev.handsup.bookmark.service.BookmarkService;
@@ -55,11 +55,11 @@ public class BookmarkApiController {
 	@Operation(summary = "북마크 여부 조회 API", description = "북마크 여부를 조회한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/{auctionId}")
-	public ResponseEntity<CheckBookmarkStatusResponse> checkBookmarkStatus(
+	public ResponseEntity<GetBookmarkStatusResponse> getBookmarkStatus(
 		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
-		CheckBookmarkStatusResponse response = bookmarkService.checkBookmarkStatus(user, auctionId);
+		GetBookmarkStatusResponse response = bookmarkService.getBookmarkStatus(user, auctionId);
 		return ResponseEntity.ok(response);
 	}
 

@@ -10,7 +10,7 @@ import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.bookmark.dto.BookmarkMapper;
-import dev.handsup.bookmark.dto.CheckBookmarkStatusResponse;
+import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
 import dev.handsup.bookmark.exception.BookmarkErrorCode;
@@ -31,8 +31,9 @@ public class BookmarkService {
 	public EditBookmarkResponse addBookmark(User user, Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
 		validateIfBookmarkExists(user, auction);
-		Bookmark bookmark = BookmarkMapper.toBookmark(user, auction);
 		auction.increaseBookmarkCount();
+		Bookmark bookmark = BookmarkMapper.toBookmark(user, auction);
+
 		bookmarkRepository.save(bookmark);
 
 		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
@@ -48,11 +49,11 @@ public class BookmarkService {
 	}
 
 	@Transactional(readOnly = true)
-	public CheckBookmarkStatusResponse checkBookmarkStatus(User user, Long auctionId) {
+	public GetBookmarkStatusResponse getBookmarkStatus(User user, Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
 		boolean isBookmarked = bookmarkRepository.existsByUserAndAuction(user, auction);
 
-		return BookmarkMapper.toCheckBookmarkResponse(isBookmarked);
+		return BookmarkMapper.toGetBookmarkStatusResponse(isBookmarked);
 	}
 
 	@Transactional(readOnly = true)
