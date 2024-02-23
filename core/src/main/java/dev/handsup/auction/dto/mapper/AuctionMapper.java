@@ -11,6 +11,7 @@ import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.common.dto.PageResponse;
 import lombok.NoArgsConstructor;
 
@@ -46,21 +47,34 @@ public class AuctionMapper {
 		);
 	}
 
-	public static AuctionDetailResponse toAuctionResponse(Auction auction) {
-		return AuctionDetailResponse.builder()
-			.auctionId(auction.getId())
-			.title(auction.getTitle())
-			.productCategory(auction.getProduct().getProductCategory().getCategoryValue())
-			.initPrice(auction.getInitPrice())
-			.endDate(auction.getEndDate())
-			.productStatus(auction.getProduct().getStatus().getLabel())
-			.purchaseTime(auction.getProduct().getPurchaseTime().getLabel())
-			.description(auction.getProduct().getDescription())
-			.tradeMethod(auction.getTradeMethod().getLabel())
-			.si(auction.getTradingLocation().getSi())
-			.gu(auction.getTradingLocation().getGu())
-			.dong(auction.getTradingLocation().getDong())
-			.build();
+	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
+		return AuctionDetailResponse.of(
+			auction.getId(),
+			auction.getTitle(),
+			auction.getProduct().getProductCategory().getCategoryValue(),
+			auction.getInitPrice(),
+			auction.getEndDate().toString(),
+			auction.getProduct().getStatus().getLabel(),
+			auction.getProduct().getPurchaseTime().getLabel(),
+			auction.getProduct().getDescription(),
+			auction.getTradeMethod().getLabel(),
+			auction.getTradingLocation().getSi(),
+			auction.getTradingLocation().getGu(),
+			auction.getTradingLocation().getDong(),
+			auction.getBookmarkCount()
+		);
+	}
+
+	public static AuctionSimpleResponse toAuctionSimpleResponse(Auction auction){
+		return AuctionSimpleResponse.of(
+			auction.getId(),
+			auction.getTitle(),
+			auction.getInitPrice(),
+			auction.getBookmarkCount(),
+			auction.getTradingLocation().getDong(),
+			auction.getCreatedAt().toLocalDate().toString(),
+			null
+		);
 	}
 
 }

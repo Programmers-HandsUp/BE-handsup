@@ -13,6 +13,7 @@ import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -36,13 +37,13 @@ public class AuctionService {
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request) {
 		ProductCategory productCategory = findProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory);
-		return AuctionMapper.toAuctionResponse(auctionRepository.save(auction));
+		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
 	}
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionDetailResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
-		Slice<AuctionDetailResponse> auctionResponsePage = auctionQueryRepository
+	public PageResponse<AuctionSimpleResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
+		Slice<AuctionSimpleResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
-			.map(AuctionMapper::toAuctionResponse);
+			.map(AuctionMapper::toAuctionSimpleResponse);
 		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
 	}
 

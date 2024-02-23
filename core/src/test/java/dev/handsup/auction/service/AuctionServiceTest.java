@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
@@ -27,6 +29,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -112,7 +115,7 @@ class AuctionServiceTest {
 		assertAll(
 			() -> assertThat(auctionDetailResponse.title()).isEqualTo(registerAuctionRequest.title()),
 			() -> assertThat(auctionDetailResponse.tradeMethod()).isEqualTo(registerAuctionRequest.tradeMethod()),
-			() -> assertThat(auctionDetailResponse.endDate()).isEqualTo(registerAuctionRequest.endDate()),
+			() -> assertThat(auctionDetailResponse.endDate()).isEqualTo(registerAuctionRequest.endDate().toString()),
 			() -> assertThat(auctionDetailResponse.purchaseTime()).isEqualTo(registerAuctionRequest.purchaseTime()),
 			() -> assertThat(auctionDetailResponse.productCategory()).isEqualTo(registerAuctionRequest.productCategory())
 		);
@@ -123,6 +126,7 @@ class AuctionServiceTest {
 	void searchAuctions() {
 		//given
 		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
@@ -132,11 +136,11 @@ class AuctionServiceTest {
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, true));
 
 		//when
-		PageResponse<AuctionDetailResponse> response
+		PageResponse<AuctionSimpleResponse> response
 			= auctionService.searchAuctions(condition, pageRequest);
 
 		//then
-		AuctionDetailResponse auctionDetailResponse = response.content().get(0);
-		Assertions.assertThat(auctionDetailResponse).isNotNull();
+		AuctionSimpleResponse auctionSimpleResponse = response.content().get(0);
+		Assertions.assertThat(auctionSimpleResponse).isNotNull();
 	}
 }
