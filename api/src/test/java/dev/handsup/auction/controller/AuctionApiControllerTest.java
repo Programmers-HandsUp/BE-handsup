@@ -103,6 +103,32 @@ class AuctionApiControllerTest extends ApiTestSupport {
 				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getCode()));
 	}
 
+	@DisplayName("[경매를 상세정보를 조회할 수 있다.]")
+	@Test
+	void getAuctionDetail() throws Exception {
+	    //given
+		Auction auction = AuctionFixture.auction(productCategory);
+		auctionRepository.save(auction);
+
+		//when, then
+		mockMvc.perform(get("/api/auctions/{auctionId}",auction.getId())
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.title").value(auction.getTitle()))
+			.andExpect(jsonPath("$.productCategory").value(auction.getProduct().getProductCategory().getCategoryValue()))
+			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
+			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
+			.andExpect(jsonPath("$.productStatus").value(auction.getProduct().getStatus().getLabel()))
+			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
+			.andExpect(jsonPath("$.description").value(auction.getProduct().getDescription()))
+			.andExpect(jsonPath("$.tradeMethod").value(auction.getTradeMethod().getLabel()))
+			.andExpect(jsonPath("$.si").value(auction.getTradingLocation().getSi()))
+			.andExpect(jsonPath("$.gu").value(auction.getTradingLocation().getGu()))
+			.andExpect(jsonPath("$.dong").value(auction.getTradingLocation().getDong()))
+			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()));
+	}
+
 	@DisplayName("[경매를 검색해서 조회할 수 있다. 정렬 조건이 없을 경우 최신순으로 정렬한다.]")
 	@Test
 	void searchAuction() throws Exception {
