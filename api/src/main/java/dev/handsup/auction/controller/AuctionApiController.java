@@ -2,6 +2,8 @@ package dev.handsup.auction.controller;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +36,15 @@ public class AuctionApiController {
 	@PostMapping
 	public ResponseEntity<AuctionDetailResponse> registerAuction(@Valid @RequestBody RegisterAuctionRequest request) {
 		AuctionDetailResponse response = auctionService.registerAuction(request);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@Operation(summary = "경매 상세 조회 API", description = "경매 상세 조회를 가져온다")
+	@ApiResponse(useReturnTypeSchema = true)
+	@GetMapping("/{auctionId}")
+	public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable("auctionId") Long auctionId){
+		AuctionDetailResponse response = auctionService.getAuctionDetail(auctionId);
 		return ResponseEntity.ok(response);
 	}
 
