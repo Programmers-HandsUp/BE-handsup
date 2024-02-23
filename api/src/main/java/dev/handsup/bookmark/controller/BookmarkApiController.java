@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.jwt.JwtAuthorization;
-import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
+import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.service.BookmarkService;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;

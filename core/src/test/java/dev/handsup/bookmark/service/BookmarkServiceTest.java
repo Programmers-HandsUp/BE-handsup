@@ -35,14 +35,13 @@ import dev.handsup.user.domain.User;
 class BookmarkServiceTest {
 	private final User user = UserFixture.user();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
+	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
 	private BookmarkRepository bookmarkRepository;
 	@InjectMocks
 	private BookmarkService bookmarkService;
-
-	private final Auction auction = AuctionFixture.auction();
 
 	@DisplayName("[북마크를 추가할 수 있다.]")
 	@Test
