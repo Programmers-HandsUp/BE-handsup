@@ -42,7 +42,7 @@ public class AuctionService {
 	}
 
 	@Transactional(readOnly = true)
-	public AuctionDetailResponse getAuctionDetail(Long auctionId){
+	public AuctionDetailResponse getAuctionDetail(Long auctionId) {
 		Auction auction = getAuction(auctionId);
 		return AuctionMapper.toAuctionDetailResponse(auction);
 	}

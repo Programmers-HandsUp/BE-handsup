@@ -126,7 +126,7 @@ class AuctionServiceTest {
 	@DisplayName("[경매 상세정보를 조회할 수 있다.]")
 	@Test
 	void getAuctionDetail() {
-	    //given
+		//given
 		given(auctionRepository.findById(anyLong())).willReturn(Optional.of(auction));
 		//when
 		AuctionDetailResponse response = auctionService.getAuctionDetail(auction.getId());

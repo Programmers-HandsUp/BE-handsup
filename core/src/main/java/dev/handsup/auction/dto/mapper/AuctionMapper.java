@@ -68,7 +68,7 @@ public class AuctionMapper {
 		);
 	}
 
-	public static AuctionSimpleResponse toAuctionSimpleResponse(Auction auction){
+	public static AuctionSimpleResponse toAuctionSimpleResponse(Auction auction) {
 		return AuctionSimpleResponse.of(
 			auction.getId(),
 			auction.getTitle(),

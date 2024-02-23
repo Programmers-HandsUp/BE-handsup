@@ -92,7 +92,8 @@ public class Auction extends TimeBaseEntity {
 	private int bookmarkCount = 0;
 
 	@Builder
-	private Auction(User seller, String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+	private Auction(User seller, String title, Product product, int initPrice, LocalDate endDate,
+		TradingLocation tradingLocation,
 		TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION_STRING, "title"));
 		this.seller = seller;
@@ -102,20 +103,6 @@ public class Auction extends TimeBaseEntity {
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
-	}
-
-	public static Auction of(User seller, String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
-		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
-		String gu, String dong) {
-		return Auction.builder()
-			.seller(seller)
-			.title(title)
-			.product(Product.of(status, description, purchaseTime, productCategory))
-			.initPrice(initPrice)
-			.endDate(endDate)
-			.tradingLocation(TradingLocation.of(si, gu, dong))
-			.tradeMethod(tradeMethod)
-			.build();
 	}
 
 	// 테스트용 생성자
@@ -130,6 +117,21 @@ public class Auction extends TimeBaseEntity {
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
+	}
+
+	public static Auction of(User seller, String title, ProductCategory productCategory, int initPrice,
+		LocalDate endDate,
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
+		String gu, String dong) {
+		return Auction.builder()
+			.seller(seller)
+			.title(title)
+			.product(Product.of(status, description, purchaseTime, productCategory))
+			.initPrice(initPrice)
+			.endDate(endDate)
+			.tradingLocation(TradingLocation.of(si, gu, dong))
+			.tradeMethod(tradeMethod)
+			.build();
 	}
 
 	public static Auction of(Long id, User seller, String title, ProductCategory productCategory, int initPrice,

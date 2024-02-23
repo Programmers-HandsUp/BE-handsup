@@ -17,7 +17,7 @@ public record AuctionSimpleResponse(
 		String dong,
 		String createDate,
 		String profileImgUrl
-	){
+	) {
 		return new AuctionSimpleResponse(
 			auctionId,
 			title,

@@ -34,8 +34,8 @@ import dev.handsup.user.domain.User;
 class AuctionApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
-	private ProductCategory productCategory;
 	private final User user = UserFixture.user();
+	private ProductCategory productCategory;
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired

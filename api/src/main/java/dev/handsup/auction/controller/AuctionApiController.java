@@ -48,7 +48,7 @@ public class AuctionApiController {
 	@Operation(summary = "경매 상세 조회 API", description = "경매 상세 조회를 가져온다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/{auctionId}")
-	public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable("auctionId") Long auctionId){
+	public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable("auctionId") Long auctionId) {
 		AuctionDetailResponse response = auctionService.getAuctionDetail(auctionId);
 		return ResponseEntity.ok(response);
 	}
@@ -57,7 +57,8 @@ public class AuctionApiController {
 	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping("/search")
-	public ResponseEntity<PageResponse<AuctionSimpleResponse>> searchAuctions(@RequestBody AuctionSearchCondition condition,
+	public ResponseEntity<PageResponse<AuctionSimpleResponse>> searchAuctions(
+		@RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
 		PageResponse<AuctionSimpleResponse> response = auctionService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
