@@ -14,67 +14,95 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionFixture {
 
-	public static Auction auction(ProductCategory productCategory) {
+	static final String TITLE = "거의 새상품 버즈 팔아요";
+	static final String DATE = "2022-10-18";
+	static final String DESCRIPTION = "거의 새상품이에요";
+	static final String SI = "서울시";
+	static final String GU = "성북구";
+	static final String DONG = "동선동";
+
+	// 아이디 지정한 기본 auction
+	public static Auction auction() {
+
+
 		return Auction.of(
-			"거의 새상품 버즈 팔아요",
-			productCategory,
+			1L,
+			UserFixture.user(),
+			TITLE,
+			ProductCategory.of("DIGITAL_DEVICE"),
 			10000,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			TradeMethod.DELIVER,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory) {
+		return Auction.of(
+			TITLE,
+			productCategory,
+			10000,
+			LocalDate.parse(DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			SI,
+			GU,
+			DONG
 		);
 	}
 
 	public static Auction auction(ProductCategory productCategory, Integer initPrice) {
 		return Auction.of(
-			"거의 새상품 버즈 팔아요",
+			TITLE,
 			productCategory,
 			initPrice,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			TradeMethod.DELIVER,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
 		);
 	}
 
 	public static Auction auction(ProductCategory productCategory, ProductStatus productStatus) {
 		return Auction.of(
-			"거의 새상품 버즈 팔아요",
+			TITLE,
 			productCategory,
 			10000,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			productStatus,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			TradeMethod.DELIVER,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
 		);
 	}
 
 	public static Auction auction(ProductCategory productCategory, TradeMethod tradeMethod) {
 		return Auction.of(
-			"거의 새상품 버즈 팔아요",
+			TITLE,
 			productCategory,
 			10000,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			tradeMethod,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
 		);
 	}
 
@@ -83,14 +111,14 @@ public class AuctionFixture {
 			title,
 			productCategory,
 			10000,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			TradeMethod.DIRECT,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
 		);
 	}
 
@@ -99,14 +127,14 @@ public class AuctionFixture {
 			title,
 			productCategory,
 			initPrice,
-			LocalDate.parse("2022-10-18"),
+			LocalDate.parse(DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
-			"거의 새상품이에요",
+			DESCRIPTION,
 			TradeMethod.DIRECT,
-			"서울시",
-			"성북구",
-			"동선동"
+			SI,
+			GU,
+			DONG
 		);
 	}
 }

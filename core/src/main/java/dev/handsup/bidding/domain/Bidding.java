@@ -1,10 +1,11 @@
-package dev.handsup.auction.domain;
+package dev.handsup.bidding.domain;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import dev.handsup.auction.domain.Auction;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -21,11 +22,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class BiddingHistory extends TimeBaseEntity {
+public class Bidding extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "bidding_history_id")
+	@Column(name = "bidding_id")
 	private Long id;
 
 	@Column(name = "bidding_price", nullable = false)
@@ -44,9 +45,17 @@ public class BiddingHistory extends TimeBaseEntity {
 	private User bidder;
 
 	@Builder
-	public BiddingHistory(int biddingPrice, Auction auction, User bidder) {
+	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
+	}
+
+	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
+		return Bidding.builder()
+			.biddingPrice(biddingPrice)
+			.auction(auction)
+			.bidder(bidder)
+			.build();
 	}
 }

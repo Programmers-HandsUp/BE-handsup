@@ -11,5 +11,5 @@ logging.level:
   org.hibernate.orm.jdbc.bind: trace
 
 jwt:
-  secret: prgrmsdevcoursehandsupjsonwebtokensecretkey202402
+  secret: prgrmsdevcoursehandsupjsonwebtokensecretkeytest123
   token-validity-in-seconds: 864000

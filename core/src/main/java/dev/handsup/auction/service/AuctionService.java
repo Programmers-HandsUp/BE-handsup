@@ -1,5 +1,7 @@
 package dev.handsup.auction.service;
 
+import static dev.handsup.auction.exception.AuctionErrorCode.*;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,12 @@ import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
+
 import dev.handsup.auction.dto.response.CheckBookmarkStatusResponse;
 import dev.handsup.auction.dto.response.EditBookmarkResponse;
 import dev.handsup.auction.dto.response.FindUserBookmarkResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
+
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.auction.BookmarkRepository;
@@ -51,7 +55,7 @@ public class AuctionService {
 
 	@Transactional
 	public EditBookmarkResponse addBookmark(User user, Long auctionId){
-		Auction auction = findAuctionEntity(auctionId);
+		Auction auction = getAuctionEntity(auctionId);
 		validateIfBookmarkExists(user, auction);
 		Bookmark bookmark = AuctionMapper.toBookmark(user, auction);
 		auction.increaseBookmarkCount();
@@ -61,7 +65,7 @@ public class AuctionService {
 	}
 	@Transactional
 	public EditBookmarkResponse cancelBookmark(User user, Long auctionId){
-		Auction auction = findAuctionEntity(auctionId);
+		Auction auction = getAuctionEntity(auctionId);
 		deleteBookmark(getBookmarkEntity(user, auction));
 		auction.decreaseBookmarkCount();
 
@@ -70,7 +74,7 @@ public class AuctionService {
 
 	@Transactional(readOnly = true)
 	public CheckBookmarkStatusResponse checkBookmarkStatus(User user, Long auctionId) {
-		Auction auction = findAuctionEntity(auctionId);
+		Auction auction = getAuctionEntity(auctionId);
 		boolean isBookmarked= bookmarkRepository.existsByUserAndAuction(user, auction);
 
 		return AuctionMapper.toCheckBookmarkResponse(isBookmarked);
@@ -98,14 +102,14 @@ public class AuctionService {
 
 	private ProductCategory findProductCategoryEntity(RegisterAuctionRequest request) {
 		return productCategoryRepository.findByCategoryValue(request.productCategory()).
-			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
+			orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CATEGORY));
 	}
 
 	private void deleteBookmark(Bookmark bookmark){
 		bookmarkRepository.deleteById(bookmark.getId());
 	}
 
-	private Auction findAuctionEntity(Long auctionId) {
+	public Auction getAuctionEntity(Long auctionId) {
 		return auctionRepository.findById(auctionId).
 			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}

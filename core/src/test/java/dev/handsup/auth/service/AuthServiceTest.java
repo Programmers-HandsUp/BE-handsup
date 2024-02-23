@@ -43,7 +43,7 @@ class AuthServiceTest {
 	@Mock
 	private BlacklistTokenRepository blacklistTokenRepository;
 
-	private User user = UserFixture.testUser(1L);
+	private User user = UserFixture.user(1L);
 	private AuthRequest authRequest = new AuthRequest(user.getEmail(), user.getPassword());
 
 	@Test

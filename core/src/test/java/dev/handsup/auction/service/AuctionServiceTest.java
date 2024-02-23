@@ -1,5 +1,6 @@
 package dev.handsup.auction.service;
 
+import static dev.handsup.auction.exception.AuctionErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -29,14 +30,17 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
+
 import dev.handsup.auction.dto.response.CheckBookmarkStatusResponse;
 import dev.handsup.auction.dto.response.EditBookmarkResponse;
 import dev.handsup.auction.dto.response.FindUserBookmarkResponse;
+
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.auction.BookmarkRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.ProductFixture;
@@ -49,6 +53,7 @@ class AuctionServiceTest {
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 5;
+	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
