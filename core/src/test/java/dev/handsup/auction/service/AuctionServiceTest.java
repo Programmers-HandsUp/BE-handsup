@@ -30,6 +30,7 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -89,7 +90,7 @@ class AuctionServiceTest {
 		// given
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		Auction auction = AuctionFixture.auction(productCategory);
-		RegisterAuctionRequest registerAuctionRequest =
+		RegisterAuctionRequest request =
 			RegisterAuctionRequest.of(
 				"거의 새상품 버즈 팔아요",
 				DIGITAL_DEVICE,
@@ -109,16 +110,39 @@ class AuctionServiceTest {
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 
 		// when
-		AuctionDetailResponse auctionDetailResponse = auctionService.registerAuction(registerAuctionRequest);
+		AuctionDetailResponse response = auctionService.registerAuction(request);
 
 		// then
 		assertAll(
-			() -> assertThat(auctionDetailResponse.title()).isEqualTo(registerAuctionRequest.title()),
-			() -> assertThat(auctionDetailResponse.tradeMethod()).isEqualTo(registerAuctionRequest.tradeMethod()),
-			() -> assertThat(auctionDetailResponse.endDate()).isEqualTo(registerAuctionRequest.endDate().toString()),
-			() -> assertThat(auctionDetailResponse.purchaseTime()).isEqualTo(registerAuctionRequest.purchaseTime()),
-			() -> assertThat(auctionDetailResponse.productCategory()).isEqualTo(registerAuctionRequest.productCategory())
+			() -> assertThat(response.title()).isEqualTo(request.title()),
+			() -> assertThat(response.tradeMethod()).isEqualTo(request.tradeMethod()),
+			() -> assertThat(response.endDate()).isEqualTo(request.endDate().toString()),
+			() -> assertThat(response.purchaseTime()).isEqualTo(request.purchaseTime()),
+			() -> assertThat(response.productCategory()).isEqualTo(request.productCategory())
 		);
+	}
+
+	@DisplayName("[경매 상세정보를 조회할 수 있다.]")
+	@Test
+	void getAuctionDetail() {
+	    //given
+		given(auctionRepository.findById(anyLong())).willReturn(Optional.of(auction));
+		//when
+		AuctionDetailResponse response = auctionService.getAuctionDetail(auction.getId());
+		//then
+		assertThat(response.auctionId()).isEqualTo(auction.getId());
+	}
+
+	@DisplayName("[존재하지 않는 경매 아이디로 조회 시 예외를 반환한다.]")
+	@Test
+	void getAuctionDetail_fails() {
+		//given
+		given(auctionRepository.findById(auction.getId())).willReturn(Optional.empty());
+
+		//when, then
+		assertThatThrownBy(() -> auctionService.getAuction(auction.getId()))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
 	}
 
 	@DisplayName("[경매를 정렬, 필터링하여 검색할 수 있다.]")
