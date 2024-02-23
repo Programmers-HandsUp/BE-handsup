@@ -21,9 +21,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bookmark.domain.Bookmark;
-import dev.handsup.bookmark.dto.CheckBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
+import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
@@ -35,7 +35,6 @@ import dev.handsup.user.domain.User;
 class BookmarkServiceTest {
 	private final User user = UserFixture.user();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
-	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
@@ -43,11 +42,13 @@ class BookmarkServiceTest {
 	@InjectMocks
 	private BookmarkService bookmarkService;
 
+	private final Auction auction = AuctionFixture.auction();
+
 	@DisplayName("[북마크를 추가할 수 있다.]")
 	@Test
 	void addBookmark() {
 		//given
-		ReflectionTestUtils.setField(auction, "id", 1L);
+		int initialBookmarkCount = auction.getBookmarkCount();
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
@@ -58,15 +59,16 @@ class BookmarkServiceTest {
 		EditBookmarkResponse response = bookmarkService.addBookmark(user, auction.getId());
 
 		//then
-		assertThat(response.bookmarkCount()).isEqualTo(1);
+		assertThat(response.bookmarkCount()).isEqualTo(initialBookmarkCount + 1);
 	}
 
 	@DisplayName("[북마크를 삭제할 수 있다.]")
 	@Test
 	void cancelBookmark() {
 		//given
-		ReflectionTestUtils.setField(auction, "id", 1L);
+		int initialBookmarkCount = auction.getBookmarkCount();
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
+
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
 		given(bookmarkRepository.findByUserAndAuction(user, auction)).willReturn(Optional.of(bookmark));
 
@@ -74,7 +76,7 @@ class BookmarkServiceTest {
 		EditBookmarkResponse response = bookmarkService.cancelBookmark(user, auction.getId());
 
 		//then
-		assertThat(response.bookmarkCount()).isEqualTo(-1);
+		assertThat(response.bookmarkCount()).isEqualTo(initialBookmarkCount - 1);
 	}
 
 	@DisplayName("[유저 북마크 여부를 확인할 수 있다.")
@@ -85,8 +87,7 @@ class BookmarkServiceTest {
 		given(bookmarkRepository.existsByUserAndAuction(user, auction)).willReturn(true);
 
 		//when
-		CheckBookmarkStatusResponse response = bookmarkService.checkBookmarkStatus(user,
-			auction.getId());
+		GetBookmarkStatusResponse response = bookmarkService.getBookmarkStatus(user, auction.getId());
 
 		//then
 		assertThat(response.isBookmarked()).isTrue();
