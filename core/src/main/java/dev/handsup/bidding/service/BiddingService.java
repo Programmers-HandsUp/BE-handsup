@@ -42,9 +42,9 @@ public class BiddingService {
 		validateBiddingPrice(request.biddingPrice(), auction);
 
 		Bidding savedBidding = biddingRepository.save(Bidding.of(
-			request.biddingPrice(),
-			auction,
-			request.bidder()
+				request.biddingPrice(),
+				auction,
+				request.bidder()
 			)
 		);
 		return BiddingMapper.toRegisterBiddingResponse(savedBidding);

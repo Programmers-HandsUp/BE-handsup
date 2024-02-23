@@ -13,9 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
@@ -44,9 +44,8 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	private ProductCategory category;
 	private Auction auction1, auction2;
 
-
 	@BeforeEach
-	void setUp(){
+	void setUp() {
 		category = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(category);
 
@@ -62,9 +61,9 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	@DisplayName("[유저가 북마크한 경매를 모두 조회할 수 있다.]")
 	@Test
 	void findBookmarkAuction() {
-	    //given
-		Bookmark bookmark1 = BookmarkFixture.bookmark(user,auction1);
-		Bookmark bookmark2 = BookmarkFixture.bookmark(user,auction2);
+		//given
+		Bookmark bookmark1 = BookmarkFixture.bookmark(user, auction1);
+		Bookmark bookmark2 = BookmarkFixture.bookmark(user, auction2);
 		bookmarkRepository.saveAll(List.of(bookmark1, bookmark2));
 
 		//when

@@ -10,5 +10,6 @@ import dev.handsup.user.domain.User;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 	Optional<Bookmark> findByUserAndAuction(User user, Auction auction);
+
 	Boolean existsByUserAndAuction(User user, Auction auction);
 }

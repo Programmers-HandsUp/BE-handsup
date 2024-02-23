@@ -29,7 +29,6 @@ public class AuctionService {
 	private final ProductCategoryRepository productCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
 
-
 	public AuctionResponse registerAuction(RegisterAuctionRequest request) {
 		ProductCategory productCategory = findProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory);
@@ -48,7 +47,6 @@ public class AuctionService {
 		return productCategoryRepository.findByCategoryValue(request.productCategory()).
 			orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CATEGORY));
 	}
-
 
 	public Auction getAuctionEntity(Long auctionId) {
 		return auctionRepository.findById(auctionId).

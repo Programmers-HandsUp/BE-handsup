@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class BookmarkMapper {
 
-	public static Bookmark toBookmark(User user, Auction auction){
+	public static Bookmark toBookmark(User user, Auction auction) {
 		return Bookmark.of(user, auction);
 	}
 
-	public static FindUserBookmarkResponse toFindUserBookmarkResponse(Auction auction){
+	public static FindUserBookmarkResponse toFindUserBookmarkResponse(Auction auction) {
 		return FindUserBookmarkResponse.from(
 			auction.getId(),
 			auction.getTitle(),
@@ -27,15 +27,15 @@ public class BookmarkMapper {
 		);
 	}
 
-	public static EditBookmarkResponse toEditBookmarkResponse(int bookmarkCount){
+	public static EditBookmarkResponse toEditBookmarkResponse(int bookmarkCount) {
 		return new EditBookmarkResponse(bookmarkCount);
 	}
 
-	public static CheckBookmarkStatusResponse toCheckBookmarkResponse(boolean isBookmarked){
+	public static CheckBookmarkStatusResponse toCheckBookmarkResponse(boolean isBookmarked) {
 		return new CheckBookmarkStatusResponse(isBookmarked);
 	}
 
-	public static <T> PageResponse<T> toPageResponse(Slice<T> page){
+	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
 		return PageResponse.of(page);
 	}
 

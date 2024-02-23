@@ -28,17 +28,16 @@ import dev.handsup.user.domain.User;
 
 class BookmarkApiControllerTest extends ApiTestSupport {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+	private final Auction auction = AuctionFixture.auction(productCategory);
+	private final User user = UserFixture.user();
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-	private final Auction auction = AuctionFixture.auction(productCategory);
-	private final User user = UserFixture.user();
 
 	@BeforeEach
 	void setUp() {
@@ -50,7 +49,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	@DisplayName("[북마크를 추가할 수 있다.]")
 	@Test
 	void addBookmark() throws Exception {
-		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}",auction.getId())
+		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
@@ -63,7 +62,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
 
-		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}",auction.getId())
+		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isBadRequest())
@@ -79,17 +78,17 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
 
-		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}",auction.getId())
+		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()-1));
+			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount() - 1));
 	}
 
 	@DisplayName("[북마크 삭제 시 북마크가 존재하지 않으면 예외가 발생한다.]")
 	@Test
 	void deleteBookmark_fails() throws Exception {
-		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}",auction.getId())
+		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isBadRequest())
@@ -97,11 +96,10 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.code").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getCode()));
 	}
 
-
 	@DisplayName("[북마크 여부를 조회할 수 있다.]")
 	@Test
 	void checkBookmarkStatus() throws Exception {
-		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}",auction.getId())
+		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())

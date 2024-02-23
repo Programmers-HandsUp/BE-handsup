@@ -16,7 +16,7 @@ public record FindUserBookmarkResponse(
 		String auctionStatus,
 		String createdDate,
 		String imgUrl
-	){
+	) {
 		return new FindUserBookmarkResponse(auctionId, title, auctionStatus, createdDate, imgUrl);
 	}
 }

@@ -18,11 +18,11 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.bookmark.dto.CheckBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
-import dev.handsup.auction.repository.auction.AuctionRepository;
-import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
@@ -32,23 +32,21 @@ import dev.handsup.user.domain.User;
 
 @ExtendWith(MockitoExtension.class)
 class BookmarkServiceTest {
+	private final User user = UserFixture.user();
+	private final PageRequest pageRequest = PageRequest.of(0, 5);
+	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
 	private BookmarkRepository bookmarkRepository;
-
 	@InjectMocks
 	private BookmarkService bookmarkService;
-
-	private final User user = UserFixture.user();
-	private final PageRequest pageRequest = PageRequest.of(0, 5);
-	private final Auction auction = AuctionFixture.auction();
 
 	@DisplayName("[북마크를 추가할 수 있다.]")
 	@Test
 	void addBookmark() {
 		//given
-		ReflectionTestUtils.setField(auction,"id",1L);
+		ReflectionTestUtils.setField(auction, "id", 1L);
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
@@ -66,7 +64,7 @@ class BookmarkServiceTest {
 	@Test
 	void cancelBookmark() {
 		//given
-		ReflectionTestUtils.setField(auction,"id",1L);
+		ReflectionTestUtils.setField(auction, "id", 1L);
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
 		given(bookmarkRepository.findByUserAndAuction(user, auction)).willReturn(Optional.of(bookmark));

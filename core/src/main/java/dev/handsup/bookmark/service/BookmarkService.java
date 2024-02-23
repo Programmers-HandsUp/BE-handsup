@@ -28,7 +28,7 @@ public class BookmarkService {
 	private final AuctionRepository auctionRepository;
 
 	@Transactional
-	public EditBookmarkResponse addBookmark(User user, Long auctionId){
+	public EditBookmarkResponse addBookmark(User user, Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
 		validateIfBookmarkExists(user, auction);
 		Bookmark bookmark = BookmarkMapper.toBookmark(user, auction);
@@ -37,8 +37,9 @@ public class BookmarkService {
 
 		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
 	}
+
 	@Transactional
-	public EditBookmarkResponse cancelBookmark(User user, Long auctionId){
+	public EditBookmarkResponse cancelBookmark(User user, Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
 		deleteBookmark(getBookmarkEntity(user, auction));
 		auction.decreaseBookmarkCount();
@@ -49,13 +50,13 @@ public class BookmarkService {
 	@Transactional(readOnly = true)
 	public CheckBookmarkStatusResponse checkBookmarkStatus(User user, Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
-		boolean isBookmarked= bookmarkRepository.existsByUserAndAuction(user, auction);
+		boolean isBookmarked = bookmarkRepository.existsByUserAndAuction(user, auction);
 
 		return BookmarkMapper.toCheckBookmarkResponse(isBookmarked);
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<FindUserBookmarkResponse> findUserBookmarks(User user, Pageable pageable){
+	public PageResponse<FindUserBookmarkResponse> findUserBookmarks(User user, Pageable pageable) {
 		Slice<FindUserBookmarkResponse> auctionResponsePage
 			= auctionRepository.findBookmarkAuction(user, pageable)
 			.map(BookmarkMapper::toFindUserBookmarkResponse);
@@ -79,7 +80,7 @@ public class BookmarkService {
 			.orElseThrow(() -> new ValidationException(BookmarkErrorCode.NOT_FOUND_BOOKMARK));
 	}
 
-	private void deleteBookmark(Bookmark bookmark){
+	private void deleteBookmark(Bookmark bookmark) {
 		bookmarkRepository.deleteById(bookmark.getId());
 	}
 

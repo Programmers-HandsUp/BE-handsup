@@ -39,19 +39,17 @@ import dev.handsup.user.domain.User;
 class AuctionServiceTest {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+	private final User user = UserFixture.user();
+	private final PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
-
 	@InjectMocks
 	private AuctionService auctionService;
-
-	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-	private final User user = UserFixture.user();
-	private final PageRequest pageRequest = PageRequest.of(0, 5);
 
 	@Test
 	@DisplayName("[경매를 등록할 수 있다.]")

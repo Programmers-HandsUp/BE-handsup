@@ -55,7 +55,7 @@ public class AuctionMapper {
 			.build();
 	}
 
-	public static <T> PageResponse<T> toPageResponse(Slice<T> page){
+	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
 		return PageResponse.of(page);
 	}
 

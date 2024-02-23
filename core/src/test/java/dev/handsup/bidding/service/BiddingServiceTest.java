@@ -27,17 +27,15 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingService 테스트]")
 class BiddingServiceTest {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
+	private final User user = UserFixture.user();
 	@Mock
 	private BiddingRepository biddingRepository;
 	@Mock
 	private AuctionService auctionService;
-
 	@InjectMocks
 	private BiddingService biddingService;
-
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final Auction auction = AuctionFixture.auction();	// 최소 입찰가 10000원
-	private final User user = UserFixture.user();
 
 	@Test
 	@DisplayName("[입찰가가 최소 입찰가보다 낮으면 예외를 발생시킨다]")
