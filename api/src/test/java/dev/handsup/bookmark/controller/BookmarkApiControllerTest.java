@@ -96,14 +96,26 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.code").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getCode()));
 	}
 
-	@DisplayName("[북마크 여부를 조회할 수 있다.]")
+	@DisplayName("[북마크가 없으면 북마크 여부 조회 시 false를 반환한다.]")
 	@Test
-	void checkBookmarkStatus() throws Exception {
+	void checkBookmarkStatusFalse() throws Exception {
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isBookmarked").value(false));
+	}
+
+	@DisplayName("[북마크가 존재하면 북마크 여부 조회 시 true를 반환한다.]")
+	@Test
+	void checkBookmarkStatusIfTrue() throws Exception {
+		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
+		bookmarkRepository.save(bookmark);
+		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, accessToken))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isBookmarked").value(true));
 	}
 
 	@DisplayName("[북마크한 경매를 모두 조회할 수 있다.]")
