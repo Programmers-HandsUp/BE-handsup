@@ -18,7 +18,7 @@ public class BookmarkMapper {
 	}
 
 	public static FindUserBookmarkResponse toFindUserBookmarkResponse(Auction auction) {
-		return FindUserBookmarkResponse.from(
+		return FindUserBookmarkResponse.of(
 			auction.getId(),
 			auction.getTitle(),
 			auction.getStatus().getLabel(),
@@ -31,8 +31,8 @@ public class BookmarkMapper {
 		return new EditBookmarkResponse(bookmarkCount);
 	}
 
-	public static CheckBookmarkStatusResponse toCheckBookmarkResponse(boolean isBookmarked) {
-		return new CheckBookmarkStatusResponse(isBookmarked);
+	public static GetBookmarkStatusResponse toGetBookmarkStatusResponse(boolean isBookmarked) {
+		return new GetBookmarkStatusResponse(isBookmarked);
 	}
 
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {

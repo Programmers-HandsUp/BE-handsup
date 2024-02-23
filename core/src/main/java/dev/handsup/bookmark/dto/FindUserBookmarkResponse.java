@@ -10,7 +10,7 @@ public record FindUserBookmarkResponse(
 	String createdDate,
 	String imgUrl
 ) {
-	public static FindUserBookmarkResponse from(
+	public static FindUserBookmarkResponse of(
 		Long auctionId,
 		String title,
 		String auctionStatus,
