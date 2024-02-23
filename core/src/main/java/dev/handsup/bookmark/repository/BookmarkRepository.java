@@ -1,11 +1,11 @@
-package dev.handsup.auction.repository.auction;
+package dev.handsup.bookmark.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.Bookmark;
+import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.user.domain.User;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {

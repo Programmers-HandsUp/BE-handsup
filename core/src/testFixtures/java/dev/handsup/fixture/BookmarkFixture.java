@@ -3,7 +3,7 @@ package dev.handsup.fixture;
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.Bookmark;
+import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 

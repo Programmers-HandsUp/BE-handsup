@@ -45,7 +45,7 @@ class BiddingServiceTest {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(9000, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -60,7 +60,7 @@ class BiddingServiceTest {
 		Integer maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(15500, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -73,7 +73,7 @@ class BiddingServiceTest {
 	void registerBidding_Success() {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(20000, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
 			auction,

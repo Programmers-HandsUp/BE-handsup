@@ -5,18 +5,13 @@ import static lombok.AccessLevel.*;
 import org.springframework.data.domain.Slice;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.Bookmark;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
-import dev.handsup.auction.dto.response.CheckBookmarkStatusResponse;
-import dev.handsup.auction.dto.response.EditBookmarkResponse;
-import dev.handsup.auction.dto.response.FindUserBookmarkResponse;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -43,10 +38,6 @@ public class AuctionMapper {
 		);
 	}
 
-	public static Bookmark toBookmark(User user, Auction auction){
-		return Bookmark.of(user, auction);
-	}
-
 	public static AuctionResponse toAuctionResponse(Auction auction) {
 		return AuctionResponse.builder()
 			.auctionId(auction.getId())
@@ -67,25 +58,5 @@ public class AuctionMapper {
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page){
 		return PageResponse.of(page);
 	}
-
-	public static FindUserBookmarkResponse toFindUserBookmarkResponse(Auction auction){
-		return FindUserBookmarkResponse.from(
-			auction.getId(),
-			auction.getTitle(),
-			auction.getStatus().getLabel(),
-			auction.getCreatedAt(),
-			null
-		);
-	}
-
-	public static EditBookmarkResponse toEditBookmarkResponse(int bookmarkCount){
-		return new EditBookmarkResponse(bookmarkCount);
-	}
-
-	public static CheckBookmarkStatusResponse toCheckBookmarkResponse(boolean isBookmarked){
-		return new CheckBookmarkStatusResponse(isBookmarked);
-	}
-
-
 
 }
