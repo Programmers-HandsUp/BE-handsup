@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +98,7 @@ class BookmarkServiceTest {
 		//given
 		given(auctionRepository.findBookmarkAuction(user, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 
 		//when
 		PageResponse<FindUserBookmarkResponse> response
@@ -104,6 +106,7 @@ class BookmarkServiceTest {
 
 		//then
 		assertThat(response.size()).isEqualTo(1);
-		assertThat(response.content().get(0).createdAt()).isEqualTo(auction.getCreatedAt());
+		assertThat(response.content().get(0).createdDate())
+			.isEqualTo(auction.getCreatedAt().toLocalDate().toString());
 	}
 }
