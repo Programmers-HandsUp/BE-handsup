@@ -22,7 +22,7 @@ public class BookmarkMapper {
 			auction.getId(),
 			auction.getTitle(),
 			auction.getStatus().getLabel(),
-			auction.getCreatedAt(),
+			auction.getCreatedAt().toLocalDate().toString(),
 			null
 		);
 	}

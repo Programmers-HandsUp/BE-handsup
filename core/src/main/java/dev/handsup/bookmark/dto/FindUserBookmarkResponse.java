@@ -1,7 +1,5 @@
 package dev.handsup.bookmark.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 
 @Builder
@@ -9,16 +7,16 @@ public record FindUserBookmarkResponse(
 	Long auctionId,
 	String title,
 	String auctionStatus,
-	LocalDateTime createdAt,
+	String createdDate,
 	String imgUrl
 ) {
 	public static FindUserBookmarkResponse from(
 		Long auctionId,
 		String title,
 		String auctionStatus,
-		LocalDateTime createdAt,
+		String createdDate,
 		String imgUrl
 	){
-		return new FindUserBookmarkResponse(auctionId, title, auctionStatus, createdAt, imgUrl);
+		return new FindUserBookmarkResponse(auctionId, title, auctionStatus, createdDate, imgUrl);
 	}
 }

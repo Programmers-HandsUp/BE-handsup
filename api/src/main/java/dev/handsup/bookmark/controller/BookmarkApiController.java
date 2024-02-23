@@ -25,14 +25,14 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "북마크 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auctions")
+@RequestMapping("/api/auctions/bookmarks")
 public class BookmarkApiController {
 
 	private final BookmarkService bookmarkService;
 
 	@Operation(summary = "북마크 추가 API", description = "북마크를 추가한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	@PostMapping("/bookmarks/{auctionId}")
+	@PostMapping("/{auctionId}")
 	public ResponseEntity<EditBookmarkResponse> addBookmark(
 		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User user
@@ -43,7 +43,7 @@ public class BookmarkApiController {
 
 	@Operation(summary = "북마크 삭제 API", description = "북마크를 삭제한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	@DeleteMapping("/bookmarks/{auctionId}")
+	@DeleteMapping("/{auctionId}")
 	public ResponseEntity<EditBookmarkResponse> deleteBookmark(
 		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User user
@@ -54,7 +54,7 @@ public class BookmarkApiController {
 
 	@Operation(summary = "북마크 여부 조회 API", description = "북마크 여부를 조회한다.")
 	@ApiResponse(useReturnTypeSchema = true)
-	@GetMapping("/bookmarks/{auctionId}")
+	@GetMapping("/{auctionId}")
 	public ResponseEntity<CheckBookmarkStatusResponse> checkBookmarkStatus(
 		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User user
@@ -65,7 +65,7 @@ public class BookmarkApiController {
 
 	@Operation(summary = "북마크 모두 조회 API", description = "북마크 한 경매글을 모두 조회한다.")
 	@ApiResponse(useReturnTypeSchema = true)
-	@GetMapping("/bookmarks")
+	@GetMapping
 	public ResponseEntity<PageResponse<FindUserBookmarkResponse>> findUserBookmarks(
 		@Parameter(hidden = true) @JwtAuthorization User user,
 		Pageable pageable
