@@ -13,6 +13,7 @@ import dev.handsup.bookmark.dto.BookmarkMapper;
 import dev.handsup.bookmark.dto.CheckBookmarkStatusResponse;
 import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
+import dev.handsup.bookmark.exception.BookmarkErrorCode;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
@@ -69,13 +70,13 @@ public class BookmarkService {
 
 	private void validateIfBookmarkExists(User user, Auction auction) {
 		bookmarkRepository.findByUserAndAuction(user, auction).ifPresent(bookmark -> {
-			throw new ValidationException(AuctionErrorCode.ALREADY_EXISTS_BOOKMARK);
+			throw new ValidationException(BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK);
 		});
 	}
 
 	private Bookmark getBookmarkEntity(User user, Auction auction) {
 		return bookmarkRepository.findByUserAndAuction(user, auction)
-			.orElseThrow(() -> new ValidationException(AuctionErrorCode.NOT_FOUND_BOOKMARK));
+			.orElseThrow(() -> new ValidationException(BookmarkErrorCode.NOT_FOUND_BOOKMARK));
 	}
 
 	private void deleteBookmark(Bookmark bookmark){

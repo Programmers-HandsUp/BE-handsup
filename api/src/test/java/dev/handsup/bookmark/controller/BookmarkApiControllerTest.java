@@ -17,6 +17,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bookmark.domain.Bookmark;
+import dev.handsup.bookmark.exception.BookmarkErrorCode;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
@@ -56,6 +57,22 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.bookmarkCount").value(1));
 	}
 
+	@DisplayName("[북마크 추가 시 북마크가 존재하면 예외가 발생한다.]")
+	@Test
+	void addBookmark_fails() throws Exception {
+		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
+		bookmarkRepository.save(bookmark);
+
+		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}",auction.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, accessToken))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message")
+				.value(BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK.getMessage()))
+			.andExpect(jsonPath("$.code")
+				.value(BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK.getCode()));
+	}
+
 	@DisplayName("[북마크를 삭제할 수 있다.]")
 	@Test
 	void deleteBookmark() throws Exception {
@@ -68,6 +85,18 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()-1));
 	}
+
+	@DisplayName("[북마크 삭제 시 북마크가 존재하지 않으면 예외가 발생한다.]")
+	@Test
+	void deleteBookmark_fails() throws Exception {
+		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}",auction.getId())
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, accessToken))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getMessage()))
+			.andExpect(jsonPath("$.code").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getCode()));
+	}
+
 
 	@DisplayName("[북마크 여부를 조회할 수 있다.]")
 	@Test
