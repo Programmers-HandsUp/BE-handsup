@@ -98,7 +98,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 	@DisplayName("[북마크가 없으면 북마크 여부 조회 시 false를 반환한다.]")
 	@Test
-	void checkBookmarkStatusFalse() throws Exception {
+	void getBookmarkStatusFalse() throws Exception {
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, accessToken))
@@ -108,7 +108,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 	@DisplayName("[북마크가 존재하면 북마크 여부 조회 시 true를 반환한다.]")
 	@Test
-	void checkBookmarkStatusIfTrue() throws Exception {
+	void getBookmarkStatusTrue() throws Exception {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
