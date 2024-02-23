@@ -123,4 +123,8 @@ public class Auction extends TimeBaseEntity {
 	public void increaseBookmarkCount() {
 		bookmarkCount++;
 	}
+
+	public void decreaseBookmarkCount() {
+		bookmarkCount--;
+	}
 }
