@@ -26,9 +26,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final String APPLIANCE = "가전제품";
-	private final int PAGE_NUMBER = 0;
-	private final int PAGE_SIZE = 10;
-	private final PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
+	private final PageRequest pageRequest = PageRequest.of(0, 10);
 	private ProductCategory category1;
 	private ProductCategory category2;
 	@Autowired
