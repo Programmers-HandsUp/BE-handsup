@@ -9,7 +9,7 @@ public record AuctionSimpleResponse(
 	String createdDate,
 	String profileImgUrl
 ) {
-	public static AuctionSimpleResponse from(
+	public static AuctionSimpleResponse of(
 		Long auctionId,
 		String title,
 		int initPrice,
