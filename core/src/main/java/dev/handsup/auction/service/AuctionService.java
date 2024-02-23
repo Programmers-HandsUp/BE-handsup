@@ -35,10 +35,17 @@ public class AuctionService {
 	}
 
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request) {
-		ProductCategory productCategory = findProductCategoryEntity(request);
+		ProductCategory productCategory = getProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory);
 		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
 	}
+
+	@Transactional(readOnly = true)
+	public AuctionDetailResponse getAuctionDetail(Long auctionId){
+		Auction auction = getAuction(auctionId);
+		return AuctionMapper.toAuctionDetailResponse(auction);
+	}
+
 	@Transactional(readOnly = true)
 	public PageResponse<AuctionSimpleResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
 		Slice<AuctionSimpleResponse> auctionResponsePage = auctionQueryRepository
@@ -47,7 +54,7 @@ public class AuctionService {
 		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
 	}
 
-	private ProductCategory findProductCategoryEntity(RegisterAuctionRequest request) {
+	private ProductCategory getProductCategoryEntity(RegisterAuctionRequest request) {
 		return productCategoryRepository.findByCategoryValue(request.productCategory()).
 			orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CATEGORY));
 	}
