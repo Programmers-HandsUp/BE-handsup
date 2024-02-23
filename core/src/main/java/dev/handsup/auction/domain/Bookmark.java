@@ -41,8 +41,17 @@ public class Bookmark extends TimeBaseEntity {
 	private Auction auction;
 
 	@Builder
-	public Bookmark(User user, Auction auction) {
+	private Bookmark(User user, Auction auction) {
 		this.user = user;
 		this.auction = auction;
+	}
+
+	public static Bookmark of(
+		User user,
+		Auction auction
+	) {
+		return Bookmark.builder()
+			.user(user)
+			.auction(auction).build();
 	}
 }
