@@ -33,6 +33,7 @@ public class UserApiController {
 	) {
 		JoinUserRequest joinUserRequest = UserApiMapper.toJoinUserRequest(request);
 		Long userId = userService.join(joinUserRequest);
-		return ResponseEntity.ok(new JoinUserResponse(userId));
+		JoinUserResponse response = JoinUserResponse.from(userId);
+		return ResponseEntity.ok(response);
 	}
 }

@@ -12,8 +12,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.common.exception.NotFoundException;
@@ -24,7 +22,6 @@ import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("[UserService 테스트]")
 class UserServiceTest {
 
@@ -84,7 +81,7 @@ class UserServiceTest {
 		given(encryptHelper.encrypt(request.password()))
 			.willReturn("encryptedPassword");
 
-		User savedUser = UserFixture.testUser(1L);
+		User savedUser = UserFixture.user(1L);
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 

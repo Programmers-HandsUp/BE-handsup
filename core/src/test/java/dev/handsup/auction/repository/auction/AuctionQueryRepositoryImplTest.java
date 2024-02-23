@@ -22,6 +22,7 @@ import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.support.DataJpaTestSupport;
 
+@DisplayName("[AuctionQueryRepositoryImpl 테스트]")
 class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";

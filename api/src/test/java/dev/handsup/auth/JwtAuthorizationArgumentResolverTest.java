@@ -49,7 +49,7 @@ class JwtAuthorizationArgumentResolverTest {
 	@DisplayName("[토큰이 유효하면 User 엔티티를 반환한다]")
 	void shouldResolveArgumentWithValidToken() {
 		// given
-		User user = UserFixture.testUser(1L);
+		User user = UserFixture.user(1L);
 		mockHttpServletRequest.addHeader(HttpHeaders.AUTHORIZATION, "validToken");
 		when(userService.getUserById(user.getId())).thenReturn(user);
 		when(webRequest.getNativeRequest(HttpServletRequest.class)).thenReturn(mockHttpServletRequest);
