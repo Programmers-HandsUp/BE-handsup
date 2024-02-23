@@ -12,7 +12,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -33,15 +33,14 @@ public class AuctionService {
 			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
 	}
 
-	public AuctionResponse registerAuction(RegisterAuctionRequest request) {
+	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request) {
 		ProductCategory productCategory = findProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory);
 		return AuctionMapper.toAuctionResponse(auctionRepository.save(auction));
 	}
-
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
-		Slice<AuctionResponse> auctionResponsePage = auctionQueryRepository
+	public PageResponse<AuctionDetailResponse> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
+		Slice<AuctionDetailResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionResponse);
 		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);

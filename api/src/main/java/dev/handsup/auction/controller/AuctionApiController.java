@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.common.dto.PageResponse;
@@ -31,8 +31,8 @@ public class AuctionApiController {
 	@Operation(summary = "경매 등록 API", description = "경매를 등록한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping
-	public ResponseEntity<AuctionResponse> registerAuction(@Valid @RequestBody RegisterAuctionRequest request) {
-		AuctionResponse response = auctionService.registerAuction(request);
+	public ResponseEntity<AuctionDetailResponse> registerAuction(@Valid @RequestBody RegisterAuctionRequest request) {
+		AuctionDetailResponse response = auctionService.registerAuction(request);
 		return ResponseEntity.ok(response);
 	}
 
@@ -40,9 +40,9 @@ public class AuctionApiController {
 	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping("/search")
-	public ResponseEntity<PageResponse<AuctionResponse>> searchAuctions(@RequestBody AuctionSearchCondition condition,
+	public ResponseEntity<PageResponse<AuctionDetailResponse>> searchAuctions(@RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
-		PageResponse<AuctionResponse> response = auctionService.searchAuctions(condition, pageable);
+		PageResponse<AuctionDetailResponse> response = auctionService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
 	}
 }

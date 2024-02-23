@@ -10,7 +10,7 @@ import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.common.dto.PageResponse;
 import lombok.NoArgsConstructor;
 
@@ -46,8 +46,8 @@ public class AuctionMapper {
 		);
 	}
 
-	public static AuctionResponse toAuctionResponse(Auction auction) {
-		return AuctionResponse.builder()
+	public static AuctionDetailResponse toAuctionResponse(Auction auction) {
+		return AuctionDetailResponse.builder()
 			.auctionId(auction.getId())
 			.title(auction.getTitle())
 			.productCategory(auction.getProduct().getProductCategory().getCategoryValue())

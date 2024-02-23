@@ -26,8 +26,7 @@ import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-import dev.handsup.auction.dto.response.AuctionResponse;
-import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -107,15 +106,15 @@ class AuctionServiceTest {
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 
 		// when
-		AuctionResponse auctionResponse = auctionService.registerAuction(registerAuctionRequest);
+		AuctionDetailResponse auctionDetailResponse = auctionService.registerAuction(registerAuctionRequest);
 
 		// then
 		assertAll(
-			() -> assertThat(auctionResponse.title()).isEqualTo(registerAuctionRequest.title()),
-			() -> assertThat(auctionResponse.tradeMethod()).isEqualTo(registerAuctionRequest.tradeMethod()),
-			() -> assertThat(auctionResponse.endDate()).isEqualTo(registerAuctionRequest.endDate()),
-			() -> assertThat(auctionResponse.purchaseTime()).isEqualTo(registerAuctionRequest.purchaseTime()),
-			() -> assertThat(auctionResponse.productCategory()).isEqualTo(registerAuctionRequest.productCategory())
+			() -> assertThat(auctionDetailResponse.title()).isEqualTo(registerAuctionRequest.title()),
+			() -> assertThat(auctionDetailResponse.tradeMethod()).isEqualTo(registerAuctionRequest.tradeMethod()),
+			() -> assertThat(auctionDetailResponse.endDate()).isEqualTo(registerAuctionRequest.endDate()),
+			() -> assertThat(auctionDetailResponse.purchaseTime()).isEqualTo(registerAuctionRequest.purchaseTime()),
+			() -> assertThat(auctionDetailResponse.productCategory()).isEqualTo(registerAuctionRequest.productCategory())
 		);
 	}
 
@@ -133,11 +132,11 @@ class AuctionServiceTest {
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, true));
 
 		//when
-		PageResponse<AuctionResponse> response
+		PageResponse<AuctionDetailResponse> response
 			= auctionService.searchAuctions(condition, pageRequest);
 
 		//then
-		AuctionResponse auctionResponse = response.content().get(0);
-		Assertions.assertThat(auctionResponse).isNotNull();
+		AuctionDetailResponse auctionDetailResponse = response.content().get(0);
+		Assertions.assertThat(auctionDetailResponse).isNotNull();
 	}
 }

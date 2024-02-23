@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.Builder;
 
 @Builder
-public record AuctionResponse(
+public record AuctionDetailResponse(
 
 	Long auctionId,
 	String title,
