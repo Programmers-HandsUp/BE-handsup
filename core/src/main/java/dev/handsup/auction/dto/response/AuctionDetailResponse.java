@@ -3,6 +3,7 @@ package dev.handsup.auction.dto.response;
 public record AuctionDetailResponse(
 
 	Long auctionId,
+	Long sellerId,
 	String title,
 	String productCategory,
 	int initPrice,
@@ -19,6 +20,7 @@ public record AuctionDetailResponse(
 ) {
 	public static AuctionDetailResponse of(
 		Long auctionId,
+		Long sellerId,
 		String title,
 		String productCategory,
 		int initPrice,
@@ -33,7 +35,7 @@ public record AuctionDetailResponse(
 		int bookmarkCount
 	) {
 		return new AuctionDetailResponse(
-			auctionId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
+			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
 			tradeMethod, si, gu, dong, bookmarkCount);
 	}
 }

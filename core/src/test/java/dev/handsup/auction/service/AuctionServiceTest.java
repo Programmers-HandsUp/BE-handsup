@@ -38,6 +38,7 @@ import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.fixture.UserFixture;
 
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
@@ -110,7 +111,7 @@ class AuctionServiceTest {
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 
 		// when
-		AuctionDetailResponse response = auctionService.registerAuction(request);
+		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user());
 
 		// then
 		assertAll(

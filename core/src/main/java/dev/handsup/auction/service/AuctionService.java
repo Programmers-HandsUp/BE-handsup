@@ -19,6 +19,7 @@ import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
+import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,9 +35,9 @@ public class AuctionService {
 			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
 	}
 
-	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request) {
+	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request, User user) {
 		ProductCategory productCategory = getProductCategoryEntity(request);
-		Auction auction = AuctionMapper.toAuction(request, productCategory);
+		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
 		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
 	}
 

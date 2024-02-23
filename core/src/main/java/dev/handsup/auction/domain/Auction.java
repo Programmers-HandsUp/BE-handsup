@@ -50,7 +50,7 @@ public class Auction extends TimeBaseEntity {
 
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "seller_id",
-		// nullable = false,
+		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User seller;
 
@@ -92,9 +92,10 @@ public class Auction extends TimeBaseEntity {
 	private int bookmarkCount = 0;
 
 	@Builder
-	private Auction(String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
+	private Auction(User seller, String title, Product product, int initPrice, LocalDate endDate, TradingLocation tradingLocation,
 		TradeMethod tradeMethod) {
 		Assert.hasText(title, getNotEmptyMessage(AUCTION_STRING, "title"));
+		this.seller = seller;
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
@@ -103,10 +104,11 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 	}
 
-	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
+	public static Auction of(User seller, String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
 		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
 		String gu, String dong) {
 		return Auction.builder()
+			.seller(seller)
 			.title(title)
 			.product(Product.of(status, description, purchaseTime, productCategory))
 			.initPrice(initPrice)

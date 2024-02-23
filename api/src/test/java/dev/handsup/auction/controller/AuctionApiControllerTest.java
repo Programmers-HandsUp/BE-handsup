@@ -1,5 +1,6 @@
 package dev.handsup.auction.controller;
 
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -27,12 +28,14 @@ import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.fixture.UserFixture;
+import dev.handsup.user.domain.User;
 
 class AuctionApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private ProductCategory productCategory;
-
+	private final User user = UserFixture.user();
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
@@ -42,6 +45,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	void setUp() {
 		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
+		userRepository.save(user);
 	}
 
 	@DisplayName("[경매를 등록할 수 있다.]")
@@ -59,9 +63,11 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request)))
+				.header(AUTHORIZATION, accessToken)
+				.content(toJson(request))
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.sellerId").value(user.getId()))
 			.andExpect(jsonPath("$.title").value(request.title()))
 			.andExpect(jsonPath("$.description").value(request.description()))
 			.andExpect(jsonPath("$.productStatus").value(request.productStatus()))
@@ -94,8 +100,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request)))
+				.header(AUTHORIZATION, accessToken)
+				.content(toJson(request))
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message")
 				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getMessage()))
@@ -106,17 +113,19 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[경매를 상세정보를 조회할 수 있다.]")
 	@Test
 	void getAuctionDetail() throws Exception {
-	    //given
+		//given
 		Auction auction = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction);
 
 		//when, then
-		mockMvc.perform(get("/api/auctions/{auctionId}",auction.getId())
+		mockMvc.perform(get("/api/auctions/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.sellerId").value(user.getId()))
 			.andExpect(jsonPath("$.title").value(auction.getTitle()))
-			.andExpect(jsonPath("$.productCategory").value(auction.getProduct().getProductCategory().getCategoryValue()))
+			.andExpect(jsonPath("$.productCategory")
+				.value(auction.getProduct().getProductCategory().getCategoryValue()))
 			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
 			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
 			.andExpect(jsonPath("$.productStatus").value(auction.getProduct().getStatus().getLabel()))

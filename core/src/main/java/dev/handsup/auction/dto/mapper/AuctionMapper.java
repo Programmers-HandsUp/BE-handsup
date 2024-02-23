@@ -13,18 +13,20 @@ import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionMapper {
 
-	public static Auction toAuction(RegisterAuctionRequest request, ProductCategory productCategory) {
+	public static Auction toAuction(RegisterAuctionRequest request, ProductCategory productCategory, User user) {
 
 		ProductStatus productStatus = ProductStatus.of(request.productStatus());
 		PurchaseTime purchaseTime = PurchaseTime.of(request.purchaseTime());
 		TradeMethod tradeMethod = TradeMethod.of(request.tradeMethod());
 
 		return Auction.of(
+			user,
 			request.title(),
 			productCategory,
 			request.initPrice(),
@@ -50,6 +52,7 @@ public class AuctionMapper {
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
 		return AuctionDetailResponse.of(
 			auction.getId(),
+			auction.getSeller().getId(),
 			auction.getTitle(),
 			auction.getProduct().getProductCategory().getCategoryValue(),
 			auction.getInitPrice(),
