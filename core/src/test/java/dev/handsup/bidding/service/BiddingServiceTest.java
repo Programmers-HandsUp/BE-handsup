@@ -16,7 +16,7 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
-import dev.handsup.bidding.dto.response.RegisterBiddingResponse;
+import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
@@ -27,7 +27,6 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingService 테스트]")
 class BiddingServiceTest {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
 	private final User user = UserFixture.user();
 	@Mock
@@ -42,11 +41,12 @@ class BiddingServiceTest {
 	void validateBiddingPrice_LessThanInitPrice_ThrowsException() {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(9000, auction.getId(), user);
-		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
+		RegisterBiddingRequest request = RegisterBiddingRequest.from(9000);
+		Long auctionId = auction.getId();
+		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
 
 		// when & then
-		assertThatThrownBy(() -> biddingService.registerBidding(request))
+		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
 			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(BIDDING_PRICE_LESS_THAN_INIT_PRICE.getMessage());
 	}
@@ -57,11 +57,12 @@ class BiddingServiceTest {
 		// given
 		Integer maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(15500, auction.getId(), user);
-		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
+		RegisterBiddingRequest request = RegisterBiddingRequest.from(15500);
+		Long auctionId = auction.getId();
+		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
 
 		// when & then
-		assertThatThrownBy(() -> biddingService.registerBidding(request))
+		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
 			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(BIDDING_PRICE_NOT_HIGH_ENOUGH.getMessage());
 	}
@@ -70,7 +71,7 @@ class BiddingServiceTest {
 	@DisplayName("[입찰 등록이 성공적으로 이루어진다]")
 	void registerBidding_Success() {
 		// given
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(20000, auction.getId(), user);
+		RegisterBiddingRequest request = RegisterBiddingRequest.from(20000);
 		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
@@ -81,7 +82,7 @@ class BiddingServiceTest {
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(19000);
 
 		// when
-		RegisterBiddingResponse response = biddingService.registerBidding(request);
+		BiddingResponse response = biddingService.registerBidding(request, auction.getId(), user);
 
 		// then
 		assertThat(response).isNotNull();

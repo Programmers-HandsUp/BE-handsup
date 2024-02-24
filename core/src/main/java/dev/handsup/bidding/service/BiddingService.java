@@ -9,9 +9,10 @@ import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
-import dev.handsup.bidding.dto.response.RegisterBiddingResponse;
+import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -37,16 +38,17 @@ public class BiddingService {
 		}
 	}
 
-	public RegisterBiddingResponse registerBidding(RegisterBiddingRequest request) {
-		Auction auction = auctionService.getAuctionEntity(request.auctionId());
+	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
+		Auction auction = auctionService.getAuctionEntity(auctionId);
 		validateBiddingPrice(request.biddingPrice(), auction);
 
 		Bidding savedBidding = biddingRepository.save(Bidding.of(
 				request.biddingPrice(),
 				auction,
-				request.bidder()
+				bidder
 			)
 		);
 		return BiddingMapper.toRegisterBiddingResponse(savedBidding);
 	}
+
 }
