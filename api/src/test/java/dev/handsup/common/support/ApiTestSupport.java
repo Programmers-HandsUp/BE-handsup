@@ -42,11 +42,6 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	@Autowired
 	protected UserRepository userRepository;
 
-	@Autowired
-	protected UserRepository userRepository;
-
-	protected static String accessToken;
-	protected static String refreshToken;
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
 	}
