@@ -25,21 +25,21 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final User user = UserFixture.user();
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
 	private UserRepository userRepository;
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final User user = UserFixture.user();
 	private Auction auction;
 
 	@BeforeEach
 	void setUp() {
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
-		auction =  auctionRepository.save(AuctionFixture.auction(productCategory));
+		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
 		// 전체 테스트시 user 가 db 에서 삭제되는 오류
 		userRepository.save(user);
 	}

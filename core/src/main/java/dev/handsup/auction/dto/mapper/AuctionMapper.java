@@ -38,14 +38,6 @@ public class AuctionMapper {
 		);
 	}
 
-	public static <T> PageResponse<T> toAuctionPageResponse(Slice<T> page) {
-		return new PageResponse<>(
-			page.getContent(),
-			page.getNumberOfElements(),
-			page.hasNext()
-		);
-	}
-
 	public static AuctionResponse toAuctionResponse(Auction auction) {
 		return AuctionResponse.builder()
 			.auctionId(auction.getId())
@@ -61,6 +53,10 @@ public class AuctionMapper {
 			.gu(auction.getTradingLocation().getGu())
 			.dong(auction.getTradingLocation().getDong())
 			.build();
+	}
+
+	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
+		return PageResponse.of(page);
 	}
 
 }

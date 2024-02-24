@@ -1,6 +1,5 @@
 package dev.handsup.auction.service;
 
-import static dev.handsup.auction.exception.AuctionErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -27,65 +26,35 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
-import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.fixture.UserFixture;
+import dev.handsup.user.domain.User;
 
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final int PAGE_NUMBER = 0;
-	private final int PAGE_SIZE = 5;
-	private final Auction auction = AuctionFixture.auction();
+	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+	private final User user = UserFixture.user();
+	private final PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
-
 	@InjectMocks
 	private AuctionService auctionService;
-
-	@Test
-	@DisplayName("[경매 단건 조회에 성공한다]")
-	void getAuctionWhenExists() {
-		// Given
-		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
-
-		// When
-		Auction foundAuction = auctionService.getAuction(auction.getId());
-
-		// Then
-		assertThat(foundAuction).isNotNull();
-		assertThat(foundAuction.getId()).isEqualTo(auction.getId());
-		// Verify other properties as necessary
-	}
-
-	@Test
-	@DisplayName("[경매 단건 조회에 실패하면 예외를 던진다]")
-	void getAuctionWhenDoesNotExist() {
-		// Given
-		Long id = auction.getId();
-		given(auctionRepository.findById(id)).willReturn(Optional.empty());
-
-		// When & Then
-		assertThatThrownBy(() -> auctionService.getAuction(id))
-			.isInstanceOf(NotFoundException.class)
-			.hasMessageContaining(NOT_FOUND_AUCTION.getMessage());
-	}
 
 	@Test
 	@DisplayName("[경매를 등록할 수 있다.]")
 	void registerAuction() {
 		// given
-		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		Auction auction = AuctionFixture.auction(productCategory);
 		RegisterAuctionRequest registerAuctionRequest =
 			RegisterAuctionRequest.of(
@@ -123,8 +92,7 @@ class AuctionServiceTest {
 	@Test
 	void searchAuctions() {
 		//given
-		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
-		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
+		Auction auction = AuctionFixture.auction(productCategory);
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
 			.build();

@@ -13,6 +13,7 @@ import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -28,11 +29,6 @@ public class AuctionService {
 	private final ProductCategoryRepository productCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
 
-	public Auction getAuction(Long auctionId) {
-		return auctionRepository.findById(auctionId)
-			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
-	}
-
 	public AuctionResponse registerAuction(RegisterAuctionRequest request) {
 		ProductCategory productCategory = findProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory);
@@ -44,11 +40,16 @@ public class AuctionService {
 		Slice<AuctionResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionResponse);
-		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
+		return AuctionMapper.toPageResponse(auctionResponsePage);
 	}
 
 	private ProductCategory findProductCategoryEntity(RegisterAuctionRequest request) {
 		return productCategoryRepository.findByCategoryValue(request.productCategory()).
 			orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CATEGORY));
+	}
+
+	public Auction getAuctionEntity(Long auctionId) {
+		return auctionRepository.findById(auctionId).
+			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
 }
