@@ -103,19 +103,6 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 	}
 
-	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
-		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
-		String gu, String dong) {
-		return Auction.builder()
-			.title(title)
-			.product(Product.of(status, description, purchaseTime, productCategory))
-			.initPrice(initPrice)
-			.endDate(endDate)
-			.tradingLocation(TradingLocation.of(si, gu, dong))
-			.tradeMethod(tradeMethod)
-			.build();
-	}
-
 	// 테스트용 생성자
 	private Auction(Long id, User seller, String title, Product product, int initPrice, LocalDate endDate,
 		TradingLocation tradingLocation, TradeMethod tradeMethod) {
@@ -128,6 +115,19 @@ public class Auction extends TimeBaseEntity {
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
+	}
+
+	public static Auction of(String title, ProductCategory productCategory, int initPrice, LocalDate endDate,
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
+		String gu, String dong) {
+		return Auction.builder()
+			.title(title)
+			.product(Product.of(status, description, purchaseTime, productCategory))
+			.initPrice(initPrice)
+			.endDate(endDate)
+			.tradingLocation(TradingLocation.of(si, gu, dong))
+			.tradeMethod(tradeMethod)
+			.build();
 	}
 
 	public static Auction of(Long id, User seller, String title, ProductCategory productCategory, int initPrice,
@@ -151,5 +151,9 @@ public class Auction extends TimeBaseEntity {
 
 	public void increaseBookmarkCount() {
 		bookmarkCount++;
+	}
+
+	public void decreaseBookmarkCount() {
+		bookmarkCount--;
 	}
 }

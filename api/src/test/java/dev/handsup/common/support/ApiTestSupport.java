@@ -33,11 +33,14 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(DatabaseCleanerExtension.class)
 public abstract class ApiTestSupport extends TestContainerSupport {
 
+	protected static String accessToken;
+	protected static String refreshToken;
 	@Autowired
 	protected MockMvc mockMvc;
-
 	@Autowired
 	protected ObjectMapper objectMapper;
+	@Autowired
+	protected UserRepository userRepository;
 
 	@Autowired
 	protected UserRepository userRepository;

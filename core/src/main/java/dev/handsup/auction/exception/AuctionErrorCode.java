@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AuctionErrorCode implements ErrorCode {
 
+	NOT_FOUND_AUCTION("해당 아이디의 경매가 존재하지 않습니다.", "AU_000"),
 	NOT_FOUND_PRODUCT_STATUS("올바른 상품 상태를 입력해주세요", "AU_001"),
 	NOT_FOUND_PURCHASE_TIME("올바른 구매 시기를 입력해주세요", "AU_002"),
 	NOT_FOUND_TADE_METHOD("올바른 거래 방법을 입력해주세요", "AU_003"),

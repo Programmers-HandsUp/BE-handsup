@@ -38,13 +38,13 @@ public class BiddingService {
 	}
 
 	public RegisterBiddingResponse registerBidding(RegisterBiddingRequest request) {
-		Auction auction = auctionService.getAuction(request.auctionId());
+		Auction auction = auctionService.getAuctionEntity(request.auctionId());
 		validateBiddingPrice(request.biddingPrice(), auction);
 
 		Bidding savedBidding = biddingRepository.save(Bidding.of(
-			request.biddingPrice(),
-			auction,
-			request.bidder()
+				request.biddingPrice(),
+				auction,
+				request.bidder()
 			)
 		);
 		return BiddingMapper.toRegisterBiddingResponse(savedBidding);

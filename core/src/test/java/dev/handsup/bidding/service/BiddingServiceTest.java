@@ -27,17 +27,15 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingService 테스트]")
 class BiddingServiceTest {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
+	private final User user = UserFixture.user();
 	@Mock
 	private BiddingRepository biddingRepository;
 	@Mock
 	private AuctionService auctionService;
-
 	@InjectMocks
 	private BiddingService biddingService;
-
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final Auction auction = AuctionFixture.auction();	// 최소 입찰가 10000원
-	private final User user = UserFixture.user();
 
 	@Test
 	@DisplayName("[입찰가가 최소 입찰가보다 낮으면 예외를 발생시킨다]")
@@ -45,7 +43,7 @@ class BiddingServiceTest {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(9000, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -60,7 +58,7 @@ class BiddingServiceTest {
 		Integer maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(15500, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request))
@@ -73,7 +71,7 @@ class BiddingServiceTest {
 	void registerBidding_Success() {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.of(20000, auction.getId(), user);
-		given(auctionService.getAuction(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
 			auction,
