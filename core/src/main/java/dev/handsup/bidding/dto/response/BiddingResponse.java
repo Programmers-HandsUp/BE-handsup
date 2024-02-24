@@ -5,20 +5,20 @@ import static lombok.AccessLevel.*;
 import lombok.Builder;
 
 @Builder(access = PRIVATE)
-public record RegisterBiddingResponse(
+public record BiddingResponse(
 	int biddingPrice,
 	Long auctionId,
-	Long bidderId
+	String bidderNickname
 ) {
-	public static RegisterBiddingResponse of(
+	public static BiddingResponse of(
 		int biddingPrice,
 		Long auctionId,
-		Long bidderId
+		String bidderNickname
 	) {
-		return RegisterBiddingResponse.builder()
+		return BiddingResponse.builder()
 			.biddingPrice(biddingPrice)
 			.auctionId(auctionId)
-			.bidderId(bidderId)
+			.bidderNickname(bidderNickname)
 			.build();
 	}
 }
