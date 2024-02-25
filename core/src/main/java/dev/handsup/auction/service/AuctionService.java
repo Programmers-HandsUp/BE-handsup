@@ -12,12 +12,9 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-
 import dev.handsup.auction.exception.AuctionErrorCode;
-
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -33,7 +30,6 @@ public class AuctionService {
 	private final AuctionRepository auctionRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
-
 
 	public Auction getAuction(Long auctionId) {
 		return auctionRepository.findById(auctionId)

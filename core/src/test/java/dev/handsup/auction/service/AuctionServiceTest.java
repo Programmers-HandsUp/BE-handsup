@@ -38,7 +38,6 @@ import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
 
 @DisplayName("[Auction 서비스 단위 테스트]")
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +45,6 @@ class AuctionServiceTest {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-	private final User user = UserFixture.user();
 	private final Auction auction = AuctionFixture.auction();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock

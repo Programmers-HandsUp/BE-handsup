@@ -21,6 +21,7 @@ public record AuctionDetailResponse(
 	public static AuctionDetailResponse of(
 		Long auctionId,
 		Long sellerId,
+		// TODO: 2/25/24 낙찰 로직 구현 후 buyerId 포함 
 		String title,
 		String productCategory,
 		int initPrice,
