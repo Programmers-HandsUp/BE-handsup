@@ -39,15 +39,16 @@ import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
 
+@DisplayName("[Auction 서비스 단위 테스트]")
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
 
-	private final User user = UserFixture.user();
-	private final PageRequest pageRequest = PageRequest.of(0, 5);
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
-
+	private final PageRequest pageRequest = PageRequest.of(0, 5);
+  
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
@@ -61,9 +62,7 @@ class AuctionServiceTest {
 	@DisplayName("[경매를 등록할 수 있다.]")
 	void registerAuction() {
 		// given
-		String DIGITAL_DEVICE = "디지털 기기";
-		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-
+		Auction auction = AuctionFixture.auction(productCategory);
 		RegisterAuctionRequest request =
 			RegisterAuctionRequest.of(
 				"거의 새상품 버즈 팔아요",
@@ -84,7 +83,7 @@ class AuctionServiceTest {
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 
 		// when
-		AuctionDetailResponse response = auctionService.registerAuction(request, user);
+		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user());
 
 		// then
 		assertAll(
@@ -120,10 +119,12 @@ class AuctionServiceTest {
 			.hasMessageContaining(NOT_FOUND_AUCTION.getMessage());
 	}
 
+
 	@DisplayName("[경매를 정렬, 필터링하여 검색할 수 있다.]")
 	@Test
 	void searchAuctions() {
 		//given
+		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
 		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()

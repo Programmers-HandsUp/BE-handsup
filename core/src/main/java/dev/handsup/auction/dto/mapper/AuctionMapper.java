@@ -18,8 +18,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionMapper {
-
-	public static Auction toAuction(RegisterAuctionRequest request, ProductCategory productCategory, User user) {
+public static Auction toAuction(RegisterAuctionRequest request, ProductCategory productCategory, User user) {
 
 		ProductStatus productStatus = ProductStatus.of(request.productStatus());
 		PurchaseTime purchaseTime = PurchaseTime.of(request.purchaseTime());
@@ -38,14 +37,6 @@ public class AuctionMapper {
 			request.si(),
 			request.gu(),
 			request.dong()
-		);
-	}
-
-	public static <T> PageResponse<T> toAuctionPageResponse(Slice<T> page) {
-		return new PageResponse<>(
-			page.getContent(),
-			page.getNumberOfElements(),
-			page.hasNext()
 		);
 	}
 
@@ -78,6 +69,7 @@ public class AuctionMapper {
 			auction.getCreatedAt().toLocalDate().toString(),
 			null
 		);
+
 	}
 
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {

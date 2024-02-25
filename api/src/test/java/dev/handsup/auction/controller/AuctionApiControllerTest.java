@@ -31,6 +31,7 @@ import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
+@DisplayName("[Auction 통합 테스트]")
 class AuctionApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
