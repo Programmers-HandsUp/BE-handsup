@@ -34,7 +34,6 @@ class SearchServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();
 
-
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
 

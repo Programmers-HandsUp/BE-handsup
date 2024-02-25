@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class SearchMapper {
-	public static PopularKeywordsResponse toPopularKeywordsResponse(List<PopularKeywordResponse> responses){
+	public static PopularKeywordsResponse toPopularKeywordsResponse(List<PopularKeywordResponse> responses) {
 		return PopularKeywordsResponse.from(responses);
 	}
 

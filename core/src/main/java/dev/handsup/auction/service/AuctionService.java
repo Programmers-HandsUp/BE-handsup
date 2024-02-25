@@ -21,7 +21,6 @@ public class AuctionService {
 	private final AuctionRepository auctionRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 
-
 	public Auction getAuction(Long auctionId) {
 		return auctionRepository.findById(auctionId)
 			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
