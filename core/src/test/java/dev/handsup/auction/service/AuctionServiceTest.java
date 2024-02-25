@@ -40,7 +40,7 @@ import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
-
+@DisplayName("[Auction 서비스 단위 테스트]")
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
 
