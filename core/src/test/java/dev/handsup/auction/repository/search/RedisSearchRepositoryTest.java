@@ -1,6 +1,7 @@
 package dev.handsup.auction.repository.search;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import dev.handsup.search.dto.PopularKeywordResponse;
 import dev.handsup.support.TestContainerSupport;
 
 @SpringBootTest
@@ -42,12 +44,17 @@ class RedisSearchRepositoryTest extends TestContainerSupport {
 		repository.increaseSearchCount(KEYWORD3, 5);
 
 		//when
-		List<String> popularKeywords = repository.getPopularKeywords();
+		List<PopularKeywordResponse> popularKeywords = repository.getPopularKeywords();
 
 		//then
-		assertThat(repository.getKeywordCount(KEYWORD1)).isEqualTo(1);
-		assertThat(repository.getKeywordCount(KEYWORD2)).isEqualTo(3);
-		assertThat(repository.getKeywordCount(KEYWORD3)).isEqualTo(5);
-		assertThat(popularKeywords).containsExactly(KEYWORD3, KEYWORD2, KEYWORD1);
+		assertAll(
+			() -> assertThat(popularKeywords.get(0).count()).isEqualTo(5),
+			() ->assertThat(popularKeywords.get(1).count()).isEqualTo(3),
+			() ->assertThat(popularKeywords.get(2).count()).isEqualTo(1),
+			() ->assertThat(popularKeywords.get(0).keyword()).isEqualTo(KEYWORD3),
+			() ->assertThat(popularKeywords.get(1).keyword()).isEqualTo(KEYWORD2),
+			() ->assertThat(popularKeywords.get(2).keyword()).isEqualTo(KEYWORD1)
+		);
+
 	}
 }
