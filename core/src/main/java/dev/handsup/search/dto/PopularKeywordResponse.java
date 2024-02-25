@@ -1,11 +1,10 @@
 package dev.handsup.search.dto;
 
-import java.util.List;
-
 public record PopularKeywordResponse(
-	List<String> keywords
+	String keyword,
+	int count
 ) {
-	public static PopularKeywordResponse from(List<String> keywords){
-		return new PopularKeywordResponse(keywords);
+	public static PopularKeywordResponse of(String keyword, int count){
+		return new PopularKeywordResponse(keyword, count);
 	}
 }
