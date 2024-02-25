@@ -15,7 +15,9 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
@@ -26,6 +28,7 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
+	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final User user = UserFixture.user();
 	@Autowired
 	private AuctionRepository auctionRepository;
@@ -33,12 +36,14 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private BiddingRepository biddingRepository;
 	private Auction auction;
+	private ProductCategory productCategory;
 
 	@BeforeEach
 	void setUp() {
-		String DIGITAL_DEVICE = "디지털 기기";
-		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
 		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
 		// 전체 테스트시 user 가 db 에서 삭제되는 오류
@@ -46,7 +51,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
-	@DisplayName("[입찰 등록 API를 호출하면 입찰이 등록되고 입찰을 응답한다]")
+	@DisplayName("[입찰 등록 API] 사용자가 경매에 입찰을 등록한다]")
 	void registerBiddingTest() throws Exception {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(10000);
@@ -66,6 +71,40 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.biddingPrice").value(10000),
 			jsonPath("$.auctionId").value(auction.getId()),
 			jsonPath("$.bidderNickname").value(user.getNickname())
+		);
+	}
+
+	@DisplayName("[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다")
+	@Test
+	void getBidsOfAuctionTest() throws Exception {
+		// given
+		Auction auction2 = AuctionFixture.auction(productCategory);
+		auctionRepository.save(auction2);
+		biddingRepository.save(Bidding.of(40000, auction, user));
+		biddingRepository.save(Bidding.of(20000, auction, user));
+		biddingRepository.save(Bidding.of(30000, auction, user));
+		biddingRepository.save(Bidding.of(50000, auction, user));
+		biddingRepository.save(Bidding.of(60000, auction2, user));
+		biddingRepository.save(Bidding.of(10000, auction2, user));
+		Long auctionId = auction.getId();
+		int page = 0;
+		int size = 10;
+
+		// when
+		ResultActions resultActions = mockMvc.perform(
+			MockMvcRequestBuilders.get(
+					"/api/auctions/{auctionId}/bids?page={page}&size={size}", auctionId, page, size)
+				.contentType(APPLICATION_JSON)
+		);
+
+		// then
+		resultActions.andExpectAll(
+			status().isOk(),
+			jsonPath("$.content.size()").value(4),
+			jsonPath("$.content[0].biddingPrice").value(50000),
+			jsonPath("$.content[1].biddingPrice").value(40000),
+			jsonPath("$.content[2].biddingPrice").value(30000),
+			jsonPath("$.content[3].biddingPrice").value(20000)
 		);
 	}
 

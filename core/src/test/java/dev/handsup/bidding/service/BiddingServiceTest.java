@@ -5,12 +5,18 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
@@ -18,6 +24,7 @@ import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.UserFixture;
@@ -87,5 +94,36 @@ class BiddingServiceTest {
 		// then
 		assertThat(response).isNotNull();
 		verify(biddingRepository).save(any(Bidding.class));
+	}
+
+	@Test
+	@DisplayName("[경매 ID에 대한 입찰 목록을 페이지 형태로 조회한다]")
+	void getBidsOfAuction_Success() {
+		// given
+		Long auctionId = 1L;
+		Pageable pageRequest = PageRequest.of(0, 10);
+
+		List<Bidding> mockBiddingList = List.of(
+			Bidding.of(40000, auction, user),
+			Bidding.of(30000, auction, user),
+			Bidding.of(20000, auction, user)
+		);
+		Slice<Bidding> mockSlice = new SliceImpl<>(mockBiddingList, pageRequest, true);
+
+		given(biddingRepository.findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageRequest))
+			.willReturn(mockSlice);
+
+		// when
+		PageResponse<BiddingResponse> response =
+			biddingService.getBidsOfAuction(auctionId, pageRequest);
+
+		// then
+		assertThat(response).isNotNull();
+		assertThat(response.content()).hasSize(3);
+		assertThat(response.content().get(0).biddingPrice()).isEqualTo(40000);
+		assertThat(response.content().get(1).biddingPrice()).isEqualTo(30000);
+		assertThat(response.content().get(2).biddingPrice()).isEqualTo(20000);
+
+		verify(biddingRepository).findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageRequest);
 	}
 }
