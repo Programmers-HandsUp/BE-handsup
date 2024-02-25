@@ -1,10 +1,11 @@
-package dev.handsup.auction.domain;
+package dev.handsup.bookmark.domain;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import dev.handsup.auction.domain.Auction;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -41,8 +42,17 @@ public class Bookmark extends TimeBaseEntity {
 	private Auction auction;
 
 	@Builder
-	public Bookmark(User user, Auction auction) {
+	private Bookmark(User user, Auction auction) {
 		this.user = user;
 		this.auction = auction;
+	}
+
+	public static Bookmark of(
+		User user,
+		Auction auction
+	) {
+		return Bookmark.builder()
+			.user(user)
+			.auction(auction).build();
 	}
 }

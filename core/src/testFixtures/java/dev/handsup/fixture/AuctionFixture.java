@@ -23,7 +23,6 @@ public class AuctionFixture {
 
 	// 아이디 지정한 기본 auction
 	public static Auction auction() {
-
 		return Auction.of(
 			1L,
 			UserFixture.user(),
@@ -43,6 +42,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
+			UserFixture.user(),
 			TITLE,
 			productCategory,
 			10000,
@@ -59,6 +59,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, Integer initPrice) {
 		return Auction.of(
+			UserFixture.user(),
 			TITLE,
 			productCategory,
 			initPrice,
@@ -75,6 +76,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, ProductStatus productStatus) {
 		return Auction.of(
+			UserFixture.user(),
 			TITLE,
 			productCategory,
 			10000,
@@ -91,6 +93,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, TradeMethod tradeMethod) {
 		return Auction.of(
+			UserFixture.user(),
 			TITLE,
 			productCategory,
 			10000,
@@ -107,6 +110,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String title) {
 		return Auction.of(
+			UserFixture.user(),
 			title,
 			productCategory,
 			10000,
@@ -123,6 +127,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String title, int initPrice) {
 		return Auction.of(
+			UserFixture.user(),
 			title,
 			productCategory,
 			initPrice,

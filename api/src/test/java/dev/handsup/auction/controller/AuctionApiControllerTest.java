@@ -1,5 +1,6 @@
 package dev.handsup.auction.controller;
 
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -16,16 +17,20 @@ import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.fixture.UserFixture;
+import dev.handsup.user.domain.User;
 
+@DisplayName("[Auction 통합 테스트]")
 class AuctionApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final User user = UserFixture.user();
 	private ProductCategory productCategory;
-
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
@@ -35,6 +40,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	void setUp() {
 		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
+		userRepository.save(user);
 	}
 
 	@DisplayName("[경매를 등록할 수 있다.]")
@@ -52,9 +58,11 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request)))
+				.header(AUTHORIZATION, accessToken)
+				.content(toJson(request))
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.sellerId").value(user.getId()))
 			.andExpect(jsonPath("$.title").value(request.title()))
 			.andExpect(jsonPath("$.description").value(request.description()))
 			.andExpect(jsonPath("$.productStatus").value(request.productStatus()))
@@ -87,10 +95,41 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request)))
+				.header(AUTHORIZATION, accessToken)
+				.content(toJson(request))
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("존재하지 않는 상품 카테고리입니다."))
-			.andExpect(jsonPath("$.code").value("AU_004"));
+			.andExpect(jsonPath("$.message")
+				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getMessage()))
+			.andExpect(jsonPath("$.code")
+				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getCode()));
+	}
+
+	@DisplayName("[경매를 상세정보를 조회할 수 있다.]")
+	@Test
+	void getAuctionDetail() throws Exception {
+		//given
+		Auction auction = AuctionFixture.auction(productCategory);
+		auctionRepository.save(auction);
+
+		//when, then
+		mockMvc.perform(get("/api/auctions/{auctionId}", auction.getId())
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.sellerId").value(user.getId()))
+			.andExpect(jsonPath("$.title").value(auction.getTitle()))
+			.andExpect(jsonPath("$.productCategory")
+				.value(auction.getProduct().getProductCategory().getCategoryValue()))
+			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
+			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
+			.andExpect(jsonPath("$.productStatus").value(auction.getProduct().getStatus().getLabel()))
+			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
+			.andExpect(jsonPath("$.description").value(auction.getProduct().getDescription()))
+			.andExpect(jsonPath("$.tradeMethod").value(auction.getTradeMethod().getLabel()))
+			.andExpect(jsonPath("$.si").value(auction.getTradingLocation().getSi()))
+			.andExpect(jsonPath("$.gu").value(auction.getTradingLocation().getGu()))
+			.andExpect(jsonPath("$.dong").value(auction.getTradingLocation().getDong()))
+			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()));
 	}
 }
