@@ -30,7 +30,6 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -48,7 +47,7 @@ class AuctionServiceTest {
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
-  
+
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
@@ -118,7 +117,6 @@ class AuctionServiceTest {
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(NOT_FOUND_AUCTION.getMessage());
 	}
-
 
 	@DisplayName("[경매를 정렬, 필터링하여 검색할 수 있다.]")
 	@Test
