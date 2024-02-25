@@ -1,6 +1,5 @@
 package dev.handsup.auction.service;
 
-import static dev.handsup.auction.exception.AuctionErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -117,7 +116,7 @@ class AuctionServiceTest {
 		//when, then
 		assertThatThrownBy(() -> auctionService.getAuctionEntity(auctionId))
 			.isInstanceOf(NotFoundException.class)
-			.hasMessageContaining(NOT_FOUND_AUCTION.getMessage());
+			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
 	}
 
 	@DisplayName("[경매를 정렬, 필터링하여 검색할 수 있다.]")
