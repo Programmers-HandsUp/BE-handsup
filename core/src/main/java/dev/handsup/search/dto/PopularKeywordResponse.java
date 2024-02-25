@@ -1,4 +1,4 @@
-package dev.handsup.auction.dto.response;
+package dev.handsup.search.dto;
 
 import java.util.List;
 

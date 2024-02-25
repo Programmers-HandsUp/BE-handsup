@@ -2,8 +2,6 @@ package dev.handsup.auction.dto.mapper;
 
 import static lombok.AccessLevel.*;
 
-import java.util.List;
-
 import org.springframework.data.domain.Slice;
 
 import dev.handsup.auction.domain.Auction;
@@ -13,7 +11,6 @@ import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
-import dev.handsup.auction.dto.response.PopularKeywordResponse;
 import dev.handsup.common.dto.PageResponse;
 import lombok.NoArgsConstructor;
 
@@ -66,8 +63,5 @@ public class AuctionMapper {
 			.build();
 	}
 
-	public static PopularKeywordResponse toPopularKeywordResponse(List<String> popularKeywords){
-		return PopularKeywordResponse.from(popularKeywords);
-	}
 
 }
