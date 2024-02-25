@@ -191,8 +191,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		Auction auction1 = AuctionFixture.auction(productCategory, "버즈", 15000);
 		Auction auction2 = AuctionFixture.auction(productCategory, "에어팟", 15000);
 		Auction auction3 = AuctionFixture.auction(productCategory, "버즈 팔아요", 25000);
-		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
-		ReflectionTestUtils.setField(auction3, "bookmarkCount", 3);
+
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")

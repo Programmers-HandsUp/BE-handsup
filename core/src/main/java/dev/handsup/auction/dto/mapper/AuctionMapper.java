@@ -41,13 +41,6 @@ public class AuctionMapper {
 		);
 	}
 
-	public static <T> PageResponse<T> toAuctionPageResponse(Slice<T> page) {
-		return new PageResponse<>(
-			page.getContent(),
-			page.getNumberOfElements(),
-			page.hasNext()
-		);
-	}
 
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
 		return AuctionDetailResponse.of(
@@ -78,6 +71,10 @@ public class AuctionMapper {
 			auction.getCreatedAt().toLocalDate().toString(),
 			null
 		);
+    
+
+	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
+		return PageResponse.of(page);
 	}
 
 }

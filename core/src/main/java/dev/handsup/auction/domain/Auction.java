@@ -119,6 +119,7 @@ public class Auction extends TimeBaseEntity {
 		this.tradeMethod = tradeMethod;
 	}
 
+
 	public static Auction of(User seller, String title, ProductCategory productCategory, int initPrice,
 		LocalDate endDate,
 		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
@@ -155,5 +156,9 @@ public class Auction extends TimeBaseEntity {
 
 	public void increaseBookmarkCount() {
 		bookmarkCount++;
+	}
+
+	public void decreaseBookmarkCount() {
+		bookmarkCount--;
 	}
 }
