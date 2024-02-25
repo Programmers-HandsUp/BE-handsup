@@ -57,7 +57,7 @@ public class AuctionService {
 		Slice<AuctionSimpleResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionSimpleResponse);
-		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
+		return AuctionMapper.toPageResponse(auctionResponsePage);
 
 	}
 

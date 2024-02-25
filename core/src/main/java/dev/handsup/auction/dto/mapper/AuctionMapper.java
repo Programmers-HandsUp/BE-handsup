@@ -41,7 +41,6 @@ public class AuctionMapper {
 		);
 	}
 
-
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
 		return AuctionDetailResponse.of(
 			auction.getId(),
@@ -71,7 +70,8 @@ public class AuctionMapper {
 			auction.getCreatedAt().toLocalDate().toString(),
 			null
 		);
-    
+
+	}
 
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
 		return PageResponse.of(page);

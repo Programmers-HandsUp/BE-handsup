@@ -27,19 +27,17 @@ import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
-
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-
 import dev.handsup.user.domain.User;
 
 
@@ -49,6 +47,7 @@ class AuctionServiceTest {
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final User user = UserFixture.user();
+	private final Auction auction = AuctionFixture.auction();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
@@ -125,7 +124,6 @@ class AuctionServiceTest {
 		//given
 		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
 		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
-		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
