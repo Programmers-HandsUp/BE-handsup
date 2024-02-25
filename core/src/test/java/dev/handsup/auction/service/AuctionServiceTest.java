@@ -1,6 +1,5 @@
 package dev.handsup.auction.service;
 
-import static dev.handsup.auction.exception.AuctionErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -35,7 +34,6 @@ import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
@@ -47,13 +45,13 @@ class AuctionServiceTest {
 	private final User user = UserFixture.user();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
 	private final Auction auction = AuctionFixture.auction();
+
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
-
 	@InjectMocks
 	private AuctionService auctionService;
 
@@ -125,6 +123,7 @@ class AuctionServiceTest {
 	void searchAuctions() {
 		//given
 		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
+
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
 			.build();

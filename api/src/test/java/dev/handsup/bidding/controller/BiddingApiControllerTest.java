@@ -37,6 +37,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private UserRepository userRepository;
 	@Autowired
 	private BiddingRepository biddingRepository;
+
 	private Auction auction;
 	private ProductCategory productCategory;
 
@@ -122,13 +123,11 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		biddingRepository.save(Bidding.of(50000, auction2, user));
 		Long auctionId = auction.getId();
 
-		// Perform the GET request to the endpoint
 		ResultActions resultActions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/api/auctions/{auctionId}/bids/top-3-bids", auctionId)
 				.contentType(APPLICATION_JSON)
 		);
 
-		// Verify the response status and content, specifically that only the top 3 bids are returned
 		resultActions.andExpectAll(
 			status().isOk(),
 			jsonPath("$.content.size()").value(3),

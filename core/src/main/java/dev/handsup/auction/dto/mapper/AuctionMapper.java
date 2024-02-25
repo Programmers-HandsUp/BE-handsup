@@ -80,4 +80,8 @@ public class AuctionMapper {
 		);
 	}
 
+	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
+		return PageResponse.of(page);
+	}
+
 }

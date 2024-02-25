@@ -48,6 +48,7 @@ class BiddingServiceTest {
 	void validateBiddingPrice_LessThanInitPrice_ThrowsException() {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
+    
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(9000);
 		Long auctionId = auction.getId();
 		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
@@ -64,6 +65,7 @@ class BiddingServiceTest {
 		// given
 		Integer maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
+    
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(15500);
 		Long auctionId = auction.getId();
 		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
@@ -79,6 +81,7 @@ class BiddingServiceTest {
 	void registerBidding_Success() {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(20000);
+    
 		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
