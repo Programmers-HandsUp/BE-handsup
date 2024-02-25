@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class RedisSearchRepository{
+public class RedisSearchRepository {
 	private final StringRedisTemplate redisTemplate;
 
 	public List<PopularKeywordResponse> getPopularKeywords() {
@@ -39,28 +39,29 @@ public class RedisSearchRepository{
 		return popularKeywords;
 	}
 
-	public Set<ZSetOperations.TypedTuple<String>> getKeywordsWithScore(String key){
+	public Set<ZSetOperations.TypedTuple<String>> getKeywordsWithScore(String key) {
 		return redisTemplate.opsForZSet()
 			.reverseRangeWithScores(key, 0, 9);
 	}
 
-	public void increaseSearchCount(String keyword){
+	public void increaseSearchCount(String keyword) {
 		int increaseAmount = 1;
 		redisTemplate.opsForZSet()
 			.incrementScore(KeywordType.POPULAR.getKey(), keyword, increaseAmount);
 	}
 
 	//==테스트용 함수==//
-	public void increaseSearchCount(String keyword, int increaseAmount){
+	public void increaseSearchCount(String keyword, int increaseAmount) {
 		redisTemplate.opsForZSet()
 			.incrementScore(KeywordType.POPULAR.getKey(), keyword, increaseAmount);
 	}
 
-	public int getKeywordCount(String keyword){
+	public int getKeywordCount(String keyword) {
 		Double score = redisTemplate.opsForZSet().score(KeywordType.POPULAR.getKey(), keyword);
-		if (score==null) return 0; // 검색한 적 없을 때
+		if (score == null)
+			return 0; // 검색한 적 없을 때
 		else
-			return (int) Math.round(score);
+			return (int)Math.round(score);
 	}
 
 }

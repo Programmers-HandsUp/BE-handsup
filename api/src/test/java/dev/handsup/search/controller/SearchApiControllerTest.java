@@ -5,11 +5,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
+import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
@@ -36,10 +39,20 @@ class SearchApiControllerTest extends ApiTestSupport {
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 
+	@Autowired
+	private StringRedisTemplate redisTemplate;
+
 	@BeforeEach
 	void setUp() {
 		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
+	}
+
+	@AfterEach
+	public void clear() {
+		Set<String> keys = redisTemplate.keys("search*");
+		assert keys != null;
+		redisTemplate.delete(keys);
 	}
 
 	@DisplayName("[경매를 검색해서 조회할 수 있다. 정렬 조건이 없을 경우 최신순으로 정렬한다.]")
@@ -82,7 +95,7 @@ class SearchApiControllerTest extends ApiTestSupport {
 		ReflectionTestUtils.setField(auction3, "bookmarkCount", 3);
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword(null).build();
+			.keyword("버즈").build();
 
 		mockMvc.perform(post("/api/auctions/search")
 				.content(toJson(condition))
