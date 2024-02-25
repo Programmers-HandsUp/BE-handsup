@@ -12,7 +12,7 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.search.dto.PopularKeywordResponse;
+import dev.handsup.search.dto.PopularKeywordsResponse;
 import dev.handsup.search.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,8 +39,8 @@ public class SearchApiController {
 	@Operation(summary = "인기 검색어 조회 API", description = "인기 검색어를 조회한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/popular")
-	public ResponseEntity<PopularKeywordResponse> getPopularKeywords() {
-		PopularKeywordResponse response = searchService.getPopularKeywords();
+	public ResponseEntity<PopularKeywordsResponse> getPopularKeywords() {
+		PopularKeywordsResponse response = searchService.getPopularKeywords();
 		return ResponseEntity.ok(response);
 	}
 }
