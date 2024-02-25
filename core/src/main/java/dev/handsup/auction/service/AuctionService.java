@@ -16,6 +16,7 @@ import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class AuctionService {
 	private final AuctionRepository auctionRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
+	private final RedisSearchRepository redisSearchRepository;
 
 	public Auction getAuction(Long auctionId) {
 		return auctionRepository.findById(auctionId)
@@ -44,6 +46,8 @@ public class AuctionService {
 		Slice<AuctionResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionResponse);
+		redisSearchRepository.increaseSearchCount(condition.keyword());
+
 		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
 	}
 

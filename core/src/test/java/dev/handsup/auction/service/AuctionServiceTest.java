@@ -27,10 +27,10 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionResponse;
-import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
@@ -49,6 +49,9 @@ class AuctionServiceTest {
 	private AuctionQueryRepository auctionQueryRepository;
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
+
+	@Mock
+	private RedisSearchRepository redisSearchRepository;
 
 	@InjectMocks
 	private AuctionService auctionService;
@@ -139,5 +142,6 @@ class AuctionServiceTest {
 		//then
 		AuctionResponse auctionResponse = response.content().get(0);
 		Assertions.assertThat(auctionResponse).isNotNull();
+		verify(redisSearchRepository).increaseSearchCount(condition.keyword());
 	}
 }
