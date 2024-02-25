@@ -8,16 +8,19 @@ import lombok.Builder;
 public record BiddingResponse(
 	int biddingPrice,
 	Long auctionId,
+	Long bidderId,
 	String bidderNickname
 ) {
 	public static BiddingResponse of(
 		int biddingPrice,
 		Long auctionId,
+		Long bidderId,
 		String bidderNickname
 	) {
 		return BiddingResponse.builder()
 			.biddingPrice(biddingPrice)
 			.auctionId(auctionId)
+			.bidderId(bidderId)
 			.bidderNickname(bidderNickname)
 			.build();
 	}

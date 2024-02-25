@@ -57,7 +57,7 @@ public class BiddingApiController {
 	}
 
 	@NoAuth
-	@GetMapping("/{auctionId}/bids/top-3-bids")
+	@GetMapping("/{auctionId}/bids/top3")
 	@Operation(summary = "입찰 목록 상위 3개 조회 API", description = "한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<PageResponse<BiddingResponse>> getTop3BidsForAuction(

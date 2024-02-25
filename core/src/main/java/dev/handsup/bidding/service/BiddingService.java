@@ -46,13 +46,10 @@ public class BiddingService {
 		Auction auction = auctionService.getAuctionEntity(auctionId);
 		validateBiddingPrice(request.biddingPrice(), auction);
 
-		Bidding savedBidding = biddingRepository.save(Bidding.of(
-				request.biddingPrice(),
-				auction,
-				bidder
-			)
+		Bidding savedBidding = biddingRepository.save(
+			BiddingMapper.toBidding(request, auction, bidder)
 		);
-		return BiddingMapper.toRegisterBiddingResponse(savedBidding);
+		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
 
 	@Transactional(readOnly = true)

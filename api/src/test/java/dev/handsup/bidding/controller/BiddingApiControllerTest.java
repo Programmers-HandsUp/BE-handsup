@@ -4,6 +4,8 @@ import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,31 +83,31 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		// given
 		Auction auction2 = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction2);
-		biddingRepository.save(Bidding.of(40000, auction, user));
-		biddingRepository.save(Bidding.of(20000, auction, user));
-		biddingRepository.save(Bidding.of(30000, auction, user));
-		biddingRepository.save(Bidding.of(50000, auction, user));
-		biddingRepository.save(Bidding.of(60000, auction2, user));
-		biddingRepository.save(Bidding.of(10000, auction2, user));
-		Long auctionId = auction.getId();
-		int page = 0;
-		int size = 10;
+		List<Bidding> biddingList = List.of(
+			Bidding.of(40000, auction, user),
+			Bidding.of(20000, auction, user),
+			Bidding.of(30000, auction, user),
+			Bidding.of(50000, auction2, user)
+		);
+
+		biddingRepository.saveAll(biddingList);
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
 			MockMvcRequestBuilders.get(
-					"/api/auctions/{auctionId}/bids?page={page}&size={size}", auctionId, page, size)
+					"/api/auctions/{auctionId}/bids", auction.getId())
 				.contentType(APPLICATION_JSON)
+				.param("page", "0")
+				.param("size", "10")
 		);
 
 		// then
 		resultActions.andExpectAll(
 			status().isOk(),
-			jsonPath("$.content.size()").value(4),
-			jsonPath("$.content[0].biddingPrice").value(50000),
-			jsonPath("$.content[1].biddingPrice").value(40000),
-			jsonPath("$.content[2].biddingPrice").value(30000),
-			jsonPath("$.content[3].biddingPrice").value(20000)
+			jsonPath("$.content.size()").value(3),
+			jsonPath("$.content[0].biddingPrice").value(40000),
+			jsonPath("$.content[1].biddingPrice").value(30000),
+			jsonPath("$.content[2].biddingPrice").value(20000)
 		);
 	}
 
@@ -114,17 +116,18 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	void getTop3BidsForAuctionTest() throws Exception {
 		Auction auction2 = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction2);
-		biddingRepository.save(Bidding.of(10000, auction, user));
-		biddingRepository.save(Bidding.of(30000, auction, user));
-		biddingRepository.save(Bidding.of(20000, auction, user));
-		biddingRepository.save(Bidding.of(60000, auction, user));
-		biddingRepository.save(Bidding.of(50000, auction, user));
-		biddingRepository.save(Bidding.of(70000, auction2, user));
-		biddingRepository.save(Bidding.of(50000, auction2, user));
-		Long auctionId = auction.getId();
+		List<Bidding> biddingList = List.of(
+			Bidding.of(10000, auction, user),
+			Bidding.of(30000, auction, user),
+			Bidding.of(20000, auction, user),
+			Bidding.of(60000, auction, user),
+			Bidding.of(50000, auction, user),
+			Bidding.of(70000, auction2, user)
+		);
+		biddingRepository.saveAll(biddingList);
 
 		ResultActions resultActions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/api/auctions/{auctionId}/bids/top-3-bids", auctionId)
+			MockMvcRequestBuilders.get("/api/auctions/{auctionId}/bids/top3", auction.getId())
 				.contentType(APPLICATION_JSON)
 		);
 
