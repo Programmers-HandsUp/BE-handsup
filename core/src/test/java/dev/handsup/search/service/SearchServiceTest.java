@@ -1,10 +1,11 @@
 package dev.handsup.search.service;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,10 +20,11 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
-import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.search.dto.PopularKeywordResponse;
+import dev.handsup.search.dto.PopularKeywordsResponse;
 
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
@@ -32,8 +34,7 @@ class SearchServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();
 
-	@Mock
-	private AuctionRepository auctionRepository;
+
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
 
@@ -62,7 +63,36 @@ class SearchServiceTest {
 
 		//then
 		AuctionResponse auctionResponse = response.content().get(0);
-		Assertions.assertThat(auctionResponse).isNotNull();
+		assertThat(auctionResponse).isNotNull();
 		verify(redisSearchRepository).increaseSearchCount(condition.keyword());
+	}
+
+	@DisplayName("[인기 검색어를 조회할 수 있다]")
+	@Test
+	void getPopularKeywords() {
+		//given
+		PopularKeywordResponse popularKeywordResponse1
+			= PopularKeywordResponse.of("keyword1", 3);
+		PopularKeywordResponse popularKeywordResponse2
+			= PopularKeywordResponse.of("keyword2", 1);
+
+		given(redisSearchRepository.getPopularKeywords()).willReturn(
+			List.of(popularKeywordResponse1, popularKeywordResponse2));
+
+		//when
+		PopularKeywordsResponse response = searchService.getPopularKeywords();
+
+		//then
+		assertAll(
+			() -> assertThat(response.keywords()).hasSize(2),
+			() -> assertThat(response.keywords().get(0).keyword())
+				.isEqualTo(popularKeywordResponse1.keyword()),
+			() -> assertThat(response.keywords().get(1).keyword())
+				.isEqualTo(popularKeywordResponse2.keyword()),
+			() -> assertThat(response.keywords().get(0).count())
+				.isEqualTo(popularKeywordResponse1.count()),
+			() -> assertThat(response.keywords().get(1).count())
+				.isEqualTo(popularKeywordResponse2.count())
+		);
 	}
 }
