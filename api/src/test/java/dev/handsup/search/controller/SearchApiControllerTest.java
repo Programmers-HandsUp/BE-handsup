@@ -18,16 +18,21 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 
 class SearchApiControllerTest extends ApiTestSupport {
+
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private ProductCategory productCategory;
 
 	@Autowired
 	private AuctionRepository auctionRepository;
+
+	@Autowired
+	private RedisSearchRepository redisSearchRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 
@@ -36,6 +41,7 @@ class SearchApiControllerTest extends ApiTestSupport {
 		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
 	}
+
 	@DisplayName("[경매를 검색해서 조회할 수 있다. 정렬 조건이 없을 경우 최신순으로 정렬한다.]")
 	@Test
 	void searchAuction() throws Exception {
@@ -112,6 +118,33 @@ class SearchApiControllerTest extends ApiTestSupport {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(1))
 			.andExpect(jsonPath("$.content[0].auctionId").value(auction1.getId()));
+	}
+
+	@DisplayName("[인기 검색어 순으로 조회할 수 있다.]")
+	@Test
+	void getPopularKeywords() throws Exception {
+		final String KEYWORD1 = "검색어1", KEYWORD2 = "검색어2", KEYWORD3 = "검색어3";
+		final int KEYWORD1_COUNT = 1, KEYWORD2_COUNT = 5, KEYWORD3_COUNT = 3;
+		redisSearchRepository.increaseSearchCount(KEYWORD1, KEYWORD1_COUNT);
+		redisSearchRepository.increaseSearchCount(KEYWORD2, KEYWORD2_COUNT);
+		redisSearchRepository.increaseSearchCount(KEYWORD3, KEYWORD3_COUNT);
+
+		mockMvc.perform(get("/api/auctions/search/popular"))
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(jsonPath("$.keywords[0].keyword").value(KEYWORD2))
+			.andExpect(jsonPath("$.keywords[0].count").value(KEYWORD2_COUNT))
+			.andExpect(jsonPath("$.keywords[1].keyword").value(KEYWORD3))
+			.andExpect(jsonPath("$.keywords[1].count").value(KEYWORD3_COUNT))
+			.andExpect(jsonPath("$.keywords[2].keyword").value(KEYWORD1))
+			.andExpect(jsonPath("$.keywords[2].count").value(KEYWORD1_COUNT));
+	}
+
+	@DisplayName("[인기 검색어 조회 결과가 없으면, 빈 리스트를 반환한다.]")
+	@Test
+	void getPopularKeywords_empty() throws Exception {
+		mockMvc.perform(get("/api/auctions/search/popular"))
+			.andDo(MockMvcResultHandlers.print())
+			.andExpect(jsonPath("$.keywords").isEmpty());
 	}
 
 }
