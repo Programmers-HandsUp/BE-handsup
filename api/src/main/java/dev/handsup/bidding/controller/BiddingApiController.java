@@ -1,5 +1,6 @@
 package dev.handsup.bidding.controller;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +52,18 @@ public class BiddingApiController {
 		@PathVariable Long auctionId,
 		Pageable pageable
 	) {
+		PageResponse<BiddingResponse> response = biddingService.getBidsOfAuction(auctionId, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@GetMapping("/{auctionId}/bids/top-3-bids")
+	@Operation(summary = "입찰 목록 상위 3개 조회 API", description = "한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<PageResponse<BiddingResponse>> getTop3BidsForAuction(
+		@PathVariable Long auctionId
+	) {
+		Pageable pageable = PageRequest.of(0, 3);
 		PageResponse<BiddingResponse> response = biddingService.getBidsOfAuction(auctionId, pageable);
 		return ResponseEntity.ok(response);
 	}

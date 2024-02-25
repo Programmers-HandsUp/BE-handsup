@@ -28,7 +28,6 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final User user = UserFixture.user();
 	@Autowired
 	private AuctionRepository auctionRepository;
@@ -43,6 +42,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
+		String DIGITAL_DEVICE = "디지털 기기";
 		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
 		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
@@ -51,7 +51,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
-	@DisplayName("[입찰 등록 API] 사용자가 경매에 입찰을 등록한다]")
+	@DisplayName("[[입찰 등록 API] 사용자가 경매에 입찰을 등록한다]")
 	void registerBiddingTest() throws Exception {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(10000);
@@ -74,7 +74,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		);
 	}
 
-	@DisplayName("[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다")
+	@DisplayName("[[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다]")
 	@Test
 	void getBidsOfAuctionTest() throws Exception {
 		// given
@@ -105,6 +105,36 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.content[1].biddingPrice").value(40000),
 			jsonPath("$.content[2].biddingPrice").value(30000),
 			jsonPath("$.content[3].biddingPrice").value(20000)
+		);
+	}
+
+	@DisplayName("[[입찰 목록 상위 3개 조회 API] 한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다]")
+	@Test
+	void getTop3BidsForAuctionTest() throws Exception {
+		Auction auction2 = AuctionFixture.auction(productCategory);
+		auctionRepository.save(auction2);
+		biddingRepository.save(Bidding.of(10000, auction, user));
+		biddingRepository.save(Bidding.of(30000, auction, user));
+		biddingRepository.save(Bidding.of(20000, auction, user));
+		biddingRepository.save(Bidding.of(60000, auction, user));
+		biddingRepository.save(Bidding.of(50000, auction, user));
+		biddingRepository.save(Bidding.of(70000, auction2, user));
+		biddingRepository.save(Bidding.of(50000, auction2, user));
+		Long auctionId = auction.getId();
+
+		// Perform the GET request to the endpoint
+		ResultActions resultActions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/api/auctions/{auctionId}/bids/top-3-bids", auctionId)
+				.contentType(APPLICATION_JSON)
+		);
+
+		// Verify the response status and content, specifically that only the top 3 bids are returned
+		resultActions.andExpectAll(
+			status().isOk(),
+			jsonPath("$.content.size()").value(3),
+			jsonPath("$.content[0].biddingPrice").value(60000),
+			jsonPath("$.content[1].biddingPrice").value(50000),
+			jsonPath("$.content[2].biddingPrice").value(30000)
 		);
 	}
 
