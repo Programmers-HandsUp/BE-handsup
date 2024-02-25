@@ -2,7 +2,10 @@ package dev.handsup.bidding.service;
 
 import static dev.handsup.bidding.exception.BiddingErrorCode.*;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
@@ -11,6 +14,7 @@ import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -51,4 +55,11 @@ public class BiddingService {
 		return BiddingMapper.toRegisterBiddingResponse(savedBidding);
 	}
 
+	@Transactional(readOnly = true)
+	public PageResponse<BiddingResponse> getBidsOfAuction(Long auctionId, Pageable pageable) {
+		Slice<BiddingResponse> biddingResponsePage = biddingRepository
+			.findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageable)
+			.map(BiddingMapper::toBiddingResponse);
+		return BiddingMapper.toBiddingPageResponse(biddingResponsePage);
+	}
 }
