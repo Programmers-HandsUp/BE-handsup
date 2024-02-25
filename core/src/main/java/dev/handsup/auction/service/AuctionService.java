@@ -30,6 +30,11 @@ public class AuctionService {
 	private final ProductCategoryRepository productCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
 
+	public Auction getAuction(Long auctionId) {
+		return auctionRepository.findById(auctionId)
+			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
+	}
+
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request, User user) {
 		ProductCategory productCategory = getProductCategoryEntity(request);
 		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
@@ -38,7 +43,7 @@ public class AuctionService {
 
 	@Transactional(readOnly = true)
 	public AuctionDetailResponse getAuctionDetail(Long auctionId) {
-		Auction auction = getAuctionEntity(auctionId);
+		Auction auction = getAuction(auctionId);
 		return AuctionMapper.toAuctionDetailResponse(auction);
 	}
 
@@ -47,7 +52,8 @@ public class AuctionService {
 		Slice<AuctionSimpleResponse> auctionResponsePage = auctionQueryRepository
 			.searchAuctions(condition, pageable)
 			.map(AuctionMapper::toAuctionSimpleResponse);
-		return AuctionMapper.toAuctionPageResponse(auctionResponsePage);
+		return AuctionMapper.toPageResponse(auctionResponsePage);
+
 	}
 
 	private ProductCategory getProductCategoryEntity(RegisterAuctionRequest request) {
