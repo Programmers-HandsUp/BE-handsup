@@ -27,7 +27,6 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingService 테스트]")
 class BiddingServiceTest {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
 	private final User user = UserFixture.user();
 	@Mock

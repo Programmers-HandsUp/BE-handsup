@@ -2,6 +2,8 @@ package dev.handsup.bidding.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,14 +27,12 @@ class BiddingRepositoryTest extends DataJpaTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		Bidding biddingA = Bidding.of(10000, auction, bidder);
-		em.persist(biddingA);
-		Bidding biddingB = Bidding.of(20000, auction, bidder);
-		em.persist(biddingB);
-		Bidding biddingC = Bidding.of(30000, auction, bidder);
-		em.persist(biddingC);
-
-		em.flush();
+		List<Bidding> biddingList = List.of(
+			Bidding.of(10000, auction, bidder),
+			Bidding.of(20000, auction, bidder),
+			Bidding.of(30000, auction, bidder)
+		);
+		biddingRepository.saveAll(biddingList);
 	}
 
 	@Test
