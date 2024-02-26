@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain;
+package dev.handsup.comment.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QComment extends EntityPathBase<Comment> {
 
-    private static final long serialVersionUID = 1566097000L;
+    private static final long serialVersionUID = 1911681740L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -24,19 +24,21 @@ public class QComment extends EntityPathBase<Comment> {
 
     public final dev.handsup.common.entity.QTimeBaseEntity _super = new dev.handsup.common.entity.QTimeBaseEntity(this);
 
-    public final QAuction auction;
+    public final dev.handsup.auction.domain.QAuction auction;
 
     public final StringPath content = createString("content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> evaluationScore = createNumber("evaluationScore", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final dev.handsup.user.domain.QUser user;
+    public final dev.handsup.user.domain.QUser writer;
 
     public QComment(String variable) {
         this(Comment.class, forVariable(variable), INITS);
@@ -56,8 +58,8 @@ public class QComment extends EntityPathBase<Comment> {
 
     public QComment(Class<? extends Comment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.auction = inits.isInitialized("auction") ? new QAuction(forProperty("auction"), inits.get("auction")) : null;
-        this.user = inits.isInitialized("user") ? new dev.handsup.user.domain.QUser(forProperty("user"), inits.get("user")) : null;
+        this.auction = inits.isInitialized("auction") ? new dev.handsup.auction.domain.QAuction(forProperty("auction"), inits.get("auction")) : null;
+        this.writer = inits.isInitialized("writer") ? new dev.handsup.user.domain.QUser(forProperty("writer"), inits.get("writer")) : null;
     }
 
 }
