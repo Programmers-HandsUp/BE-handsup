@@ -15,6 +15,7 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
@@ -22,10 +23,9 @@ import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
 
-@DisplayName("[BiddingApiController 테스트]")
+@DisplayName("[Bidding 통합 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final User user = UserFixture.user();
 	@Autowired
 	private AuctionRepository auctionRepository;
@@ -37,6 +37,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
+		String DIGITAL_DEVICE = "디지털 기기";
 		ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(productCategory);
 		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
@@ -48,12 +49,14 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	@DisplayName("[입찰 등록 API를 호출하면 입찰이 등록되고 입찰을 응답한다]")
 	void registerBiddingTest() throws Exception {
 		// when
+		RegisterBiddingRequest request = RegisterBiddingRequest.of(10000);
+
 		ResultActions resultActions = mockMvc.perform(
 			MockMvcRequestBuilders
 				.post("/api/auctions/{auctionId}/bids", auction.getId())
 				.header(AUTHORIZATION, accessToken)
 				.contentType(APPLICATION_JSON)
-				.content(toJson(10000))
+				.content(toJson(request))
 		);
 
 		// then

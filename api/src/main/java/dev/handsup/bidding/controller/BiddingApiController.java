@@ -16,8 +16,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "Bidding API")
@@ -33,18 +31,14 @@ public class BiddingApiController {
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<RegisterBiddingResponse> registerBidding(
 		@PathVariable Long auctionId,
-		@RequestBody
-		@NotNull(message = "biddingPrice 값이 공백입니다.")
-		@Max(value = 1_000_000_000, message = "최대 입찰가는 10억입니다.")
-		int biddingPrice,
-		@Parameter(hidden = true) @JwtAuthorization User user
+		@RequestBody RegisterBiddingRequest request,
+		@Parameter(hidden = true) @JwtAuthorization User bidder
 	) {
-		RegisterBiddingRequest request = RegisterBiddingRequest.of(
-			biddingPrice,
+		RegisterBiddingResponse response = biddingService.registerBidding(
+			request,
 			auctionId,
-			user
+			bidder
 		);
-		RegisterBiddingResponse response = biddingService.registerBidding(request);
 		return ResponseEntity.ok(response);
 	}
 }
