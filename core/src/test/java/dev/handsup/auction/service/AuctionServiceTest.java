@@ -29,7 +29,7 @@ import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 
-@DisplayName("[Auction 서비스 단위 테스트]")
+@DisplayName("[경매 서비스 테스트]")
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
 

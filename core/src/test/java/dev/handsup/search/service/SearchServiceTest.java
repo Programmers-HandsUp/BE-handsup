@@ -28,6 +28,7 @@ import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.search.dto.PopularKeywordResponse;
 import dev.handsup.search.dto.PopularKeywordsResponse;
 
+@DisplayName("[검색 service 테스트]")
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
 	private final String DIGITAL_DEVICE = "디지털 기기";

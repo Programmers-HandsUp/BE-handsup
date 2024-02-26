@@ -26,6 +26,7 @@ import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 
+@DisplayName("[검색 API 통합 테스트]")
 class SearchApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";

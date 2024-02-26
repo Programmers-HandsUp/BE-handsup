@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import dev.handsup.search.dto.PopularKeywordResponse;
 import dev.handsup.support.TestContainerSupport;
 
+@DisplayName("[RedisSearch Repository 테스트]")
 @SpringBootTest
 class RedisSearchRepositoryTest extends TestContainerSupport {
 	@Autowired
