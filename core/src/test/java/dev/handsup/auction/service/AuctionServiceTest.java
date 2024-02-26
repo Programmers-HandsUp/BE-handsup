@@ -47,6 +47,7 @@ class AuctionServiceTest {
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
+
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
@@ -108,10 +109,11 @@ class AuctionServiceTest {
 	@Test
 	void getAuctionDetail_fails() {
 		//given
-		given(auctionRepository.findById(auction.getId())).willReturn(Optional.empty());
+		Long auctionId = auction.getId();
+		given(auctionRepository.findById(auctionId)).willReturn(Optional.empty());
 
 		//when, then
-		assertThatThrownBy(() -> auctionService.getAuction(auction.getId()))
+		assertThatThrownBy(() -> auctionService.getAuctionEntity(auctionId))
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
 	}

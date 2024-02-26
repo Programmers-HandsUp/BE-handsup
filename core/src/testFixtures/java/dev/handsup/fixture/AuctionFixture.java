@@ -16,6 +16,7 @@ public class AuctionFixture {
 
 	static final String TITLE = "거의 새상품 버즈 팔아요";
 	static final String DATE = "2022-10-18";
+	static final String DIGITAL_DEVICE = "디지털 기기";
 	static final String DESCRIPTION = "거의 새상품이에요";
 	static final String SI = "서울시";
 	static final String GU = "성북구";
@@ -27,7 +28,7 @@ public class AuctionFixture {
 			1L,
 			UserFixture.user(),
 			TITLE,
-			ProductCategory.of("DIGITAL_DEVICE"),
+			ProductCategory.of(DIGITAL_DEVICE),
 			10000,
 			LocalDate.parse(DATE),
 			ProductStatus.NEW,
