@@ -21,7 +21,7 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.service.UserService;
 
-@DisplayName("[AuthApiController 테스트]")
+@DisplayName("[Auth 통합 테스트]")
 class AuthApiControllerTest extends ApiTestSupport {
 
 	private final User user = UserFixture.user(1L);

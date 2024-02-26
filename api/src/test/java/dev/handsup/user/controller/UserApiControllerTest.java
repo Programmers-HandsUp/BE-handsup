@@ -16,7 +16,7 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 
-@DisplayName("[UserApiController 테스트]")
+@DisplayName("[User 통합 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
 	@Autowired

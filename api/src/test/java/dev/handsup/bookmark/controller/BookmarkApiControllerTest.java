@@ -26,6 +26,7 @@ import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
+@DisplayName("[Bookmark 통합 테스트]")
 class BookmarkApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";

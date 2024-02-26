@@ -20,7 +20,7 @@ import dev.handsup.auth.jwt.JwtInterceptor;
 import dev.handsup.auth.service.JwtProvider;
 import jakarta.servlet.http.HttpServletResponse;
 
-@DisplayName("[JwtInterceptor 테스트]")
+@DisplayName("[JwtInterceptor 통합 테스트]")
 @ExtendWith(MockitoExtension.class)
 class JwtInterceptorTest {
 
