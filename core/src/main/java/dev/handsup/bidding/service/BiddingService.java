@@ -2,16 +2,21 @@ package dev.handsup.bidding.service;
 
 import static dev.handsup.bidding.exception.BiddingErrorCode.*;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
-import dev.handsup.bidding.dto.response.RegisterBiddingResponse;
+import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -37,16 +42,21 @@ public class BiddingService {
 		}
 	}
 
-	public RegisterBiddingResponse registerBidding(RegisterBiddingRequest request) {
-		Auction auction = auctionService.getAuctionEntity(request.auctionId());
+	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
+		Auction auction = auctionService.getAuctionEntity(auctionId);
 		validateBiddingPrice(request.biddingPrice(), auction);
 
-		Bidding savedBidding = biddingRepository.save(Bidding.of(
-				request.biddingPrice(),
-				auction,
-				request.bidder()
-			)
+		Bidding savedBidding = biddingRepository.save(
+			BiddingMapper.toBidding(request, auction, bidder)
 		);
-		return BiddingMapper.toRegisterBiddingResponse(savedBidding);
+		return BiddingMapper.toBiddingResponse(savedBidding);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<BiddingResponse> getBidsOfAuction(Long auctionId, Pageable pageable) {
+		Slice<BiddingResponse> biddingResponsePage = biddingRepository
+			.findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageable)
+			.map(BiddingMapper::toBiddingResponse);
+		return BiddingMapper.toBiddingPageResponse(biddingResponsePage);
 	}
 }

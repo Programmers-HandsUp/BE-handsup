@@ -13,7 +13,6 @@ import dev.handsup.auction.dto.response.AuctionResponse;
 
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 
 import dev.handsup.auction.repository.auction.AuctionRepository;
