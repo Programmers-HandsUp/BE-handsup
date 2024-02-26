@@ -71,17 +71,10 @@ class SearchApiControllerTest extends ApiTestSupport {
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].title").value(auction1.getTitle()))
-			.andExpect(jsonPath("$.content[0].description").value(auction1.getProduct().getDescription()))
-			.andExpect(jsonPath("$.content[0].productStatus").value(auction1.getProduct().getStatus().getLabel()))
-			.andExpect(jsonPath("$.content[0].tradeMethod").value(auction1.getTradeMethod().getLabel()))
-			.andExpect(jsonPath("$.content[0].endDate").value(auction1.getEndDate().toString()))
 			.andExpect(jsonPath("$.content[0].initPrice").value(auction1.getInitPrice()))
-			.andExpect(jsonPath("$.content[0].purchaseTime").value(auction1.getProduct().getPurchaseTime().getLabel()))
-			.andExpect(jsonPath("$.content[0].productCategory").value(
-				auction1.getProduct().getProductCategory().getCategoryValue()))
-			.andExpect(jsonPath("$.content[0].si").value(auction1.getTradingLocation().getSi()))
-			.andExpect(jsonPath("$.content[0].gu").value(auction1.getTradingLocation().getGu()))
+			.andExpect(jsonPath("$.content[0].bookmarkCount").value(auction1.getBookmarkCount()))
 			.andExpect(jsonPath("$.content[0].dong").value(auction1.getTradingLocation().getDong()))
+			.andExpect(jsonPath("$.content[0].createdDate").value(auction1.getCreatedAt().toLocalDate().toString()))
 			.andExpect(jsonPath("$.content[1].title").value(auction3.getTitle()));
 	}
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
-import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.search.dto.PopularKeywordsResponse;
@@ -25,13 +25,15 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/auctions/search")
 public class SearchApiController {
 	private final SearchService searchService;
+
 	@NoAuth
 	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping
-	public ResponseEntity<PageResponse<AuctionResponse>> searchAuctions(@RequestBody AuctionSearchCondition condition,
+	public ResponseEntity<PageResponse<AuctionSimpleResponse>> searchAuctions(
+		@RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
-		PageResponse<AuctionResponse> response = searchService.searchAuctions(condition, pageable);
+		PageResponse<AuctionSimpleResponse> response = searchService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
 	}
 

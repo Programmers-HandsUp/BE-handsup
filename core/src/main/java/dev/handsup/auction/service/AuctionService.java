@@ -3,18 +3,14 @@ package dev.handsup.auction.service;
 import static dev.handsup.auction.exception.AuctionErrorCode.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-
-import dev.handsup.auction.dto.response.AuctionResponse;
-
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.repository.auction.AuctionQueryRepository;
-
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.exception.NotFoundException;
@@ -38,7 +34,6 @@ public class AuctionService {
 		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
 		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
 	}
-
 
 	@Transactional(readOnly = true)
 	public AuctionDetailResponse getAuctionDetail(Long auctionId) {

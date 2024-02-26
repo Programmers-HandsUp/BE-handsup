@@ -61,12 +61,12 @@ class RedisSearchRepositoryTest extends TestContainerSupport {
 		//then
 		assertAll(
 			() -> assertThat(popularKeywords.get(0).count()).isEqualTo(5),
-			() ->assertThat(popularKeywords.get(1).count()).isEqualTo(3),
-			() ->assertThat(popularKeywords.get(2).count()).isEqualTo(1),
-			() ->assertThat(popularKeywords.get(0).keyword()).isEqualTo(KEYWORD3),
-			() ->assertThat(popularKeywords.get(1).keyword()).isEqualTo(KEYWORD2),
-			() ->assertThat(popularKeywords.get(2).keyword()).isEqualTo(KEYWORD1),
-			() ->assertThat(popularKeywords).hasSize(3)
+			() -> assertThat(popularKeywords.get(1).count()).isEqualTo(3),
+			() -> assertThat(popularKeywords.get(2).count()).isEqualTo(1),
+			() -> assertThat(popularKeywords.get(0).keyword()).isEqualTo(KEYWORD3),
+			() -> assertThat(popularKeywords.get(1).keyword()).isEqualTo(KEYWORD2),
+			() -> assertThat(popularKeywords.get(2).keyword()).isEqualTo(KEYWORD1),
+			() -> assertThat(popularKeywords).hasSize(3)
 		);
 
 	}

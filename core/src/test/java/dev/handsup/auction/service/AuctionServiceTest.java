@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,29 +14,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.test.util.ReflectionTestUtils;
-
-
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
-
-import dev.handsup.auction.dto.response.AuctionResponse;
-
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
-
-import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
-import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
@@ -52,12 +36,9 @@ class AuctionServiceTest {
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
-	private final PageRequest pageRequest = PageRequest.of(0, 5);
 
 	@Mock
 	private AuctionRepository auctionRepository;
-	@Mock
-	private AuctionQueryRepository auctionQueryRepository;
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
 
@@ -100,8 +81,8 @@ class AuctionServiceTest {
 			() -> assertThat(response.productCategory()).isEqualTo(request.productCategory())
 		);
 	}
-  
-  @DisplayName("[경매 상세정보를 조회할 수 있다.]")
+
+	@DisplayName("[경매 상세정보를 조회할 수 있다.]")
 	@Test
 	void getAuctionDetail() {
 		//given

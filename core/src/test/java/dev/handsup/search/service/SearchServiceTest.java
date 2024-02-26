@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,11 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
-import dev.handsup.auction.dto.response.AuctionResponse;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
@@ -31,8 +33,6 @@ class SearchServiceTest {
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 5;
-
-	private final Auction auction = AuctionFixture.auction();
 
 	@Mock
 	private AuctionQueryRepository auctionQueryRepository;
@@ -48,6 +48,8 @@ class SearchServiceTest {
 	void searchAuctions() {
 		//given
 		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
+
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
@@ -57,12 +59,12 @@ class SearchServiceTest {
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, true));
 
 		//when
-		PageResponse<AuctionResponse> response
+		PageResponse<AuctionSimpleResponse> response
 			= searchService.searchAuctions(condition, pageRequest);
 
 		//then
-		AuctionResponse auctionResponse = response.content().get(0);
-		assertThat(auctionResponse).isNotNull();
+		AuctionSimpleResponse auctionSimpleResponse = response.content().get(0);
+		assertThat(auctionSimpleResponse).isNotNull();
 		verify(redisSearchRepository).increaseSearchCount(condition.keyword());
 	}
 

@@ -10,12 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.annotation.NoAuth;
-
 import dev.handsup.auth.jwt.JwtAuthorization;
-import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

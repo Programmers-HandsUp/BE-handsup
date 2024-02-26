@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
@@ -21,6 +22,7 @@ import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
+import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
