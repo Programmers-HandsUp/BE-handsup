@@ -31,8 +31,6 @@ public class QComment extends EntityPathBase<Comment> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final NumberPath<Integer> evaluationScore = createNumber("evaluationScore", Integer.class);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     //inherited

@@ -31,11 +31,9 @@ public class QReview extends EntityPathBase<Review> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> evaluationScore = createNumber("evaluationScore", Integer.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    public final QReviewLabel reviewLabel;
-
-    public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
@@ -61,7 +59,6 @@ public class QReview extends EntityPathBase<Review> {
     public QReview(Class<? extends Review> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.auction = inits.isInitialized("auction") ? new dev.handsup.auction.domain.QAuction(forProperty("auction"), inits.get("auction")) : null;
-        this.reviewLabel = inits.isInitialized("reviewLabel") ? new QReviewLabel(forProperty("reviewLabel")) : null;
         this.writer = inits.isInitialized("writer") ? new dev.handsup.user.domain.QUser(forProperty("writer"), inits.get("writer")) : null;
     }
 
