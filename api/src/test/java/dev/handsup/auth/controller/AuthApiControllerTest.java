@@ -1,6 +1,7 @@
 package dev.handsup.auth.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -13,7 +14,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.request.LoginRequest;
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.service.AuthService;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.UserFixture;
@@ -66,8 +67,8 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@DisplayName("[토큰 재발급 API를 호출하면 새로운 엑세스 토큰이 응답된다]")
 	void reIssueAccessTokenTest() throws Exception {
 		// given
-		LoginResponse loginResponse = authService.login(loginRequest);
-		String refreshToken = loginResponse.refreshToken();
+		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
+		String refreshToken = loginDetailResponse.refreshToken();
 		TokenReIssueRequest tokenReIssueRequest = new TokenReIssueRequest(refreshToken);
 
 		// when
@@ -86,13 +87,13 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@DisplayName("[로그아웃 API를 호출하면 200 OK 응답이 반환된다]")
 	void logoutTest() throws Exception {
 		// given
-		LoginResponse loginResponse = authService.login(loginRequest);
-		String accessToken = loginResponse.accessToken();
+		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
+		String accessToken = loginDetailResponse.accessToken();
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/logout")
-				.header("Authorization", accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 		);
 
 		// then

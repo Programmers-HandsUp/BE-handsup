@@ -63,7 +63,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		ResultActions resultActions = mockMvc.perform(
 			MockMvcRequestBuilders
 				.post("/api/auctions/{auctionId}/bids", auction.getId())
-				.header(AUTHORIZATION, accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(toJson(request))
 		);

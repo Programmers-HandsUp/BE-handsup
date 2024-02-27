@@ -18,7 +18,7 @@ import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.auth.dto.request.LoginRequest;
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
@@ -59,11 +59,11 @@ class AuthServiceTest {
 		when(jwtProvider.createRefreshToken(anyLong())).thenReturn("refresh-token");
 
 		// when
-		LoginResponse loginResponse = authService.login(loginRequest);
+		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
 
 		// then
-		assertEquals("access-token", loginResponse.accessToken());
-		assertEquals("refresh-token", loginResponse.refreshToken());
+		assertEquals("access-token", loginDetailResponse.accessToken());
+		assertEquals("refresh-token", loginDetailResponse.refreshToken());
 	}
 
 	@Test

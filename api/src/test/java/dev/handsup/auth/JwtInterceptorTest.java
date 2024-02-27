@@ -62,7 +62,7 @@ class JwtInterceptorTest {
 	void shouldThrowExceptionWhenTokenIsMissing() {
 		assertThatThrownBy(() -> jwtInterceptor.preHandle(request, response, handlerMethod))
 			.isInstanceOf(AuthException.class)
-			.hasMessageContaining(NOT_INCLUDE_ACCESS_TOKEN.getMessage());
+			.hasMessageContaining(NOT_FOUND_ACCESS_TOKEN_IN_REQUEST.getMessage());
 	}
 
 	@Test
