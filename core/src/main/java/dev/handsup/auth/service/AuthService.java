@@ -1,7 +1,5 @@
 package dev.handsup.auth.service;
 
-import static dev.handsup.auth.exception.AuthErrorCode.*;
-
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +12,7 @@ import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.response.LoginResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
 import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
@@ -34,7 +33,7 @@ public class AuthService {
 
 	private Auth getAuthByRefreshToken(String refreshToken) {
 		return authRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new NotFoundException(NOT_FOUND_REFRESH_TOKEN));
+			.orElseThrow(() -> new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN));
 	}
 
 	private LoginResponse saveAuth(Long userId) {
@@ -54,23 +53,20 @@ public class AuthService {
 			}
 		);
 
-		return LoginResponse.builder()
-			.refreshToken(refreshToken)
-			.accessToken(accessToken)
-			.build();
+		return LoginResponse.of(refreshToken, accessToken);
 	}
 
 	@Transactional
-	public LoginResponse login(LoginRequest loginRequest) {
-		Long userId = userService.getUserByEmail(loginRequest.email()).getId();
-		LoginResponse loginResponse = saveAuth(userId);
-		String plainPassword = loginRequest.password();
+	public LoginResponse login(LoginRequest request) {
+		Long userId = userService.getUserByEmail(request.email()).getId();
+		LoginResponse response = saveAuth(userId);
+		String plainPassword = request.password();
 		String hashedPassword = userService.getUserById(userId).getPassword();
 
 		if (encryptHelper.isMatch(plainPassword, hashedPassword)) {
-			return loginResponse;
+			return response;
 		}
-		throw new NotFoundException(FAILED_LOGIN_BY_ANYTHING);
+		throw new NotFoundException(AuthErrorCode.FAILED_LOGIN_BY_ANYTHING);
 	}
 
 	@Transactional
@@ -82,7 +78,7 @@ public class AuthService {
 						.refreshToken(auth.getRefreshToken())
 						.build()),
 			() -> {
-				throw new NotFoundException(NOT_FOUND_USER_ID);
+				throw new NotFoundException(AuthErrorCode.NOT_FOUND_USER_ID);
 			}
 		);
 	}
@@ -90,7 +86,7 @@ public class AuthService {
 	public TokenReIssueResponse createAccessTokenByRefreshToken(TokenReIssueRequest request) {
 		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(request.refreshToken());
 		if (isBlacklisted) {
-			throw new AuthException(BLACKLISTED_TOKEN);
+			throw new AuthException(AuthErrorCode.BLACKLISTED_TOKEN);
 		}
 
 		Auth auth = getAuthByRefreshToken(request.refreshToken());

@@ -1,5 +1,8 @@
 package dev.handsup.auth.controller;
 
+import static org.springframework.http.HttpHeaders.*;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
-import dev.handsup.auth.dto.AuthApiMapper;
+import dev.handsup.auth.dto.AuthMapper;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.response.LoginResponse;
@@ -38,9 +41,21 @@ public class AuthApiController {
 	public ResponseEntity<LoginResponse> login(
 		@Valid @RequestBody LoginRequest request
 	) {
-		LoginRequest loginRequest = AuthApiMapper.toAuthRequest(request);
-		LoginResponse loginResponse = authService.login(loginRequest);
-		return ResponseEntity.ok(loginResponse);
+		LoginResponse response = authService.login(request);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(SET_COOKIE, AuthMapper.createCookie(
+			"accessToken",
+			response.accessToken(),
+			7 * 24 * 60 * 60
+		));
+		headers.add(SET_COOKIE, AuthMapper.createCookie(
+			"refreshToken",
+			response.refreshToken(),
+			14 * 24 * 60 * 60
+		));
+
+		return ResponseEntity.ok().headers(headers).body(response);
 	}
 
 	@PostMapping("/logout")
@@ -55,12 +70,20 @@ public class AuthApiController {
 
 	@NoAuth
 	@PostMapping("/token")
-	@Operation(summary = "토큰 재발급 API", description = "토큰을 재발급한다")
+	@Operation(summary = "토큰 재발급 API", description = "리프레쉬 토큰으로 요청하여 액세스 토큰을 재발급 받는다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<TokenReIssueResponse> reIssueAccessToken(
 		@RequestBody TokenReIssueRequest request
 	) {
 		TokenReIssueResponse response = authService.createAccessTokenByRefreshToken(request);
-		return ResponseEntity.ok(response);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.add(SET_COOKIE, AuthMapper.createCookie(
+			"accessToken",
+			response.accessToken(),
+			7 * 24 * 60 * 60
+		));
+
+		return ResponseEntity.ok().headers(headers).body(response);
 	}
 }
