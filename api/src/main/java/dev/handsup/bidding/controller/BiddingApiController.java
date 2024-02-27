@@ -30,8 +30,8 @@ public class BiddingApiController {
 	@Operation(summary = "입찰 등록 API", description = "입찰한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<RegisterBiddingResponse> registerBidding(
-		@PathVariable Long auctionId,
 		@RequestBody RegisterBiddingRequest request,
+		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User bidder
 	) {
 		RegisterBiddingResponse response = biddingService.registerBidding(
