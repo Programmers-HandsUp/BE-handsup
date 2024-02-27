@@ -12,29 +12,28 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
-import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
-import dev.handsup.auth.service.AuthService;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.service.UserService;
+import jakarta.servlet.http.Cookie;
 
 @DisplayName("[AuthApiController 테스트]")
 class AuthApiControllerTest extends ApiTestSupport {
 
-	private final User user = UserFixture.user(1L);
+	private static final User user = UserFixture.user();
+	private LoginRequest loginRequest;
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private AuthService authService;
-	private LoginRequest loginRequest;
+	private JoinUserRequest joinUserRequest;
 
 	@BeforeEach
 	void setUp() {
-		JoinUserRequest joinUserRequest = JoinUserRequest.of(
+		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
+		joinUserRequest = JoinUserRequest.of(
 			user.getEmail(),
 			user.getPassword(),
 			user.getNickname(),
@@ -43,39 +42,21 @@ class AuthApiControllerTest extends ApiTestSupport {
 			user.getAddress().getDong(),
 			user.getProfileImageUrl()
 		);
-		userService.join(joinUserRequest);
-		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
-	}
-
-	@Test
-	@DisplayName("[로그인 API를 호출하면 토큰이 응답된다]")
-	void loginTest() throws Exception {
-		// when
-		ResultActions actions = mockMvc.perform(
-			post("/api/auth/login")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(loginRequest))
-		);
-
-		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.accessToken").exists())
-			.andExpect(jsonPath("$.refreshToken").exists());
 	}
 
 	@Test
 	@DisplayName("[토큰 재발급 API를 호출하면 새로운 엑세스 토큰이 응답된다]")
 	void reIssueAccessTokenTest() throws Exception {
 		// given
+		userService.join(joinUserRequest);
 		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
 		String refreshToken = loginDetailResponse.refreshToken();
-		TokenReIssueRequest tokenReIssueRequest = new TokenReIssueRequest(refreshToken);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/token")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(tokenReIssueRequest))
+				.cookie(new Cookie("refreshToken", refreshToken))
 		);
 
 		// then
@@ -87,6 +68,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@DisplayName("[로그아웃 API를 호출하면 200 OK 응답이 반환된다]")
 	void logoutTest() throws Exception {
 		// given
+		userService.join(joinUserRequest);
 		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
 		String accessToken = loginDetailResponse.accessToken();
 
@@ -98,5 +80,23 @@ class AuthApiControllerTest extends ApiTestSupport {
 
 		// then
 		actions.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("[로그인 API를 호출하면 토큰이 응답된다]")
+	void loginTest() throws Exception {
+		
+		// when
+		ResultActions actions = mockMvc.perform(
+			post("/api/auth/login")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(loginRequest))
+		);
+
+		// then
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.accessToken").exists())
+			.andExpect(cookie().exists("refreshToken"))
+			.andExpect(cookie().value("refreshToken", not(emptyOrNullString())));
 	}
 }

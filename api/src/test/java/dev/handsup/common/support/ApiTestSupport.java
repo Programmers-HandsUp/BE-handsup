@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
+import dev.handsup.auth.service.AuthService;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.DatabaseCleaner;
@@ -48,6 +49,8 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected ObjectMapper objectMapper;
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	protected AuthService authService;
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);

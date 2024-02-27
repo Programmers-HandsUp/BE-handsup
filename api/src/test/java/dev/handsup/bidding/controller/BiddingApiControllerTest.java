@@ -36,8 +36,6 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private BiddingRepository biddingRepository;
 
 	private Auction auction;

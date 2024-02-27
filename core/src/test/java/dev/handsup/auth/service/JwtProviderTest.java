@@ -77,7 +77,7 @@ class JwtProviderTest {
 		assertThat(claims.getIssuedAt()).isNotNull();
 		assertThat(claims.getExpiration()).isNotNull();
 		assertThat(claims.getExpiration().getTime() - claims.getIssuedAt().getTime())
-			.isCloseTo(tokenValidSeconds * 1000L * 30, within(1000L));    // 토큰 생성 자체에 드는 시간 고려
+			.isCloseTo(tokenValidSeconds * 1000L * 2 * 24 * 14, within(1000L));    // 토큰 생성 자체에 드는 시간 고려
 	}
 
 	@Test

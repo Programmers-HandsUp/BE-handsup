@@ -9,7 +9,6 @@ import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.auth.dto.request.LoginRequest;
-import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
@@ -83,13 +82,13 @@ public class AuthService {
 		);
 	}
 
-	public TokenReIssueResponse createAccessTokenByRefreshToken(TokenReIssueRequest request) {
-		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(request.refreshToken());
+	public TokenReIssueResponse createAccessTokenByRefreshToken(String refreshTokenFromCookies) {
+		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(refreshTokenFromCookies);
 		if (isBlacklisted) {
 			throw new AuthException(AuthErrorCode.BLACKLISTED_TOKEN);
 		}
 
-		Auth auth = getAuthByRefreshToken(request.refreshToken());
+		Auth auth = getAuthByRefreshToken(refreshTokenFromCookies);
 		Long userId = userService.getUserById(auth.getUserId()).getId();
 		String accessToken = jwtProvider.createAccessToken(userId);
 

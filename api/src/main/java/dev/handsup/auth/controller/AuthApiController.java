@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
+import dev.handsup.auth.dto.AuthMapper;
 import dev.handsup.auth.dto.request.LoginRequest;
-import dev.handsup.auth.dto.request.TokenReIssueRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,12 +45,8 @@ public class AuthApiController {
 		LoginDetailResponse loginDetailResponse = authService.login(request);
 		LoginSimpleResponse loginSimpleResponse = LoginSimpleResponse.from(loginDetailResponse.accessToken());
 
-		Cookie refreshTokenCookie = new Cookie("refreshToken", loginDetailResponse.refreshToken());
-		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(true);
-		refreshTokenCookie.setPath("/");
-		refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 14일
-		httpServletResponse.addCookie(refreshTokenCookie);
+		Cookie cookie = AuthMapper.toCookie(loginDetailResponse);
+		httpServletResponse.addCookie(cookie);
 
 		return ResponseEntity.ok(loginSimpleResponse);
 	}
@@ -69,9 +66,10 @@ public class AuthApiController {
 	@Operation(summary = "토큰 재발급 API", description = "리프레쉬 토큰으로 요청하여 액세스 토큰을 재발급 받는다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<TokenReIssueResponse> reIssueAccessToken(
-		@RequestBody TokenReIssueRequest request
+		HttpServletRequest request
 	) {
-		TokenReIssueResponse response = authService.createAccessTokenByRefreshToken(request);
+		String refreshTokenFromCookies = AuthMapper.extractRefreshTokenFromCookies(request);
+		TokenReIssueResponse response = authService.createAccessTokenByRefreshToken(refreshTokenFromCookies);
 		return ResponseEntity.ok(response);
 	}
 }
