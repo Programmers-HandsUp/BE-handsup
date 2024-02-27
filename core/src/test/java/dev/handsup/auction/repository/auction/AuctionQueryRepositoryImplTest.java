@@ -27,7 +27,10 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final String APPLIANCE = "가전제품";
+
+	private final String KEYWORD = "버즈";
 	private final PageRequest pageRequest = PageRequest.of(0, 10);
+
 	private ProductCategory category1;
 	private ProductCategory category2;
 	@Autowired
@@ -56,6 +59,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.productCategory(DIGITAL_DEVICE)
 			.build();
 
@@ -80,6 +84,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.minPrice(2000)
 			.maxPrice(5000)
 			.build();
@@ -105,6 +110,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.isNewProduct(false)
 			.build();
 
@@ -129,6 +135,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.isProgress(true)
 			.build();
 
@@ -151,6 +158,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.tradeMethod("택배")
 			.build();
 
@@ -174,7 +182,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword("버즈")
+			.keyword(KEYWORD)
 			.productCategory(DIGITAL_DEVICE)
 			.build();
 		//when
@@ -196,6 +204,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.si("서울시")
 			.productCategory(DIGITAL_DEVICE)
 			.build();

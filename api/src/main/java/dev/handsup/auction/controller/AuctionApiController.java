@@ -1,6 +1,5 @@
 package dev.handsup.auction.controller;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,14 +8,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.jwt.JwtAuthorization;
-import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,17 +46,6 @@ public class AuctionApiController {
 	@GetMapping("/{auctionId}")
 	public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable("auctionId") Long auctionId) {
 		AuctionDetailResponse response = auctionService.getAuctionDetail(auctionId);
-		return ResponseEntity.ok(response);
-	}
-
-	@NoAuth
-	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
-	@ApiResponse(useReturnTypeSchema = true)
-	@PostMapping("/search")
-	public ResponseEntity<PageResponse<AuctionSimpleResponse>> searchAuctions(
-		@RequestBody AuctionSearchCondition condition,
-		Pageable pageable) {
-		PageResponse<AuctionSimpleResponse> response = auctionService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
 	}
 }
