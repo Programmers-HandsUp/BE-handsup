@@ -2,6 +2,8 @@ package dev.handsup.common.support;
 
 import static org.springframework.http.MediaType.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +17,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.handsup.auth.dto.request.LoginRequest;
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginSimpleResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.DatabaseCleaner;
 import dev.handsup.support.DatabaseCleanerExtension;
@@ -24,7 +28,10 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
+
+;
 
 @Slf4j
 @SpringBootTest
@@ -75,6 +82,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			joinUserRequest.email(),
 			joinUserRequest.password()
 		);
+
 		MvcResult loginResult = mockMvc.perform(
 			MockMvcRequestBuilders
 				.post("/api/auth/login")
@@ -82,13 +90,29 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 				.content(toJson(loginRequest))
 		).andReturn();
 
-		String stringLoginResponse = loginResult.getResponse().getContentAsString();
-		LoginResponse loginResponse = objectMapper.readValue(stringLoginResponse, LoginResponse.class);
+		Cookie[] cookies = loginResult.getResponse().getCookies();
 
-		accessToken = loginResponse.accessToken();
-		refreshToken = loginResponse.refreshToken();
+		String refreshTokenOfCookie = Arrays.stream(cookies)
+			.filter(cookie -> "refreshToken".equals(cookie.getName()))
+			.findFirst()
+			.map(Cookie::getValue)
+			.orElse(null);
 
-		log.info("setUpUser() is finished.");
+		if (refreshTokenOfCookie != null) {
+			refreshToken = refreshTokenOfCookie;
+		} else {
+			throw new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN_IN_RESPONSE);
+		}
+
+		String stringLoginSimpleResponse = loginResult.getResponse().getContentAsString();
+		LoginSimpleResponse loginSimpleResponse = objectMapper.readValue(
+			stringLoginSimpleResponse,
+			LoginSimpleResponse.class
+		);
+
+		accessToken = loginSimpleResponse.accessToken();
+
+		log.info("setUpUser() is success.");
 	}
 
 }
