@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.dto.AuthApiMapper;
-import dev.handsup.auth.dto.AuthApiRequest;
-import dev.handsup.auth.dto.TokenReIssueApiRequest;
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.request.TokenReIssueRequest;
+import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.auth.service.AuthService;
 import dev.handsup.user.domain.User;
@@ -35,12 +35,12 @@ public class AuthApiController {
 	@PostMapping("/login")
 	@Operation(summary = "로그인 API", description = "로그인을 한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<AuthResponse> login(
-		@Valid @RequestBody AuthApiRequest request
+	public ResponseEntity<LoginResponse> login(
+		@Valid @RequestBody LoginRequest request
 	) {
-		AuthRequest authRequest = AuthApiMapper.toAuthRequest(request);
-		AuthResponse authResponse = authService.login(authRequest);
-		return ResponseEntity.ok(authResponse);
+		LoginRequest loginRequest = AuthApiMapper.toAuthRequest(request);
+		LoginResponse loginResponse = authService.login(loginRequest);
+		return ResponseEntity.ok(loginResponse);
 	}
 
 	@PostMapping("/logout")
@@ -57,10 +57,10 @@ public class AuthApiController {
 	@PostMapping("/token")
 	@Operation(summary = "토큰 재발급 API", description = "토큰을 재발급한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<String> reIssueAccessToken(
-		@RequestBody TokenReIssueApiRequest tokenReIssueApiRequest
+	public ResponseEntity<TokenReIssueResponse> reIssueAccessToken(
+		@RequestBody TokenReIssueRequest request
 	) {
-		String accessToken = authService.createAccessTokenByRefreshToken(tokenReIssueApiRequest.refreshToken());
-		return ResponseEntity.ok(accessToken);
+		TokenReIssueResponse response = authService.createAccessTokenByRefreshToken(request);
+		return ResponseEntity.ok(response);
 	}
 }

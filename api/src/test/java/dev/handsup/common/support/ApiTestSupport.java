@@ -14,8 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginResponse;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.DatabaseCleaner;
 import dev.handsup.support.DatabaseCleanerExtension;
@@ -71,7 +71,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 				.content(toJson(joinUserRequest))
 		);
 
-		AuthRequest authRequest = AuthRequest.of(
+		LoginRequest loginRequest = LoginRequest.of(
 			joinUserRequest.email(),
 			joinUserRequest.password()
 		);
@@ -79,14 +79,14 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			MockMvcRequestBuilders
 				.post("/api/auth/login")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(authRequest))
+				.content(toJson(loginRequest))
 		).andReturn();
 
 		String stringLoginResponse = loginResult.getResponse().getContentAsString();
-		AuthResponse authResponse = objectMapper.readValue(stringLoginResponse, AuthResponse.class);
+		LoginResponse loginResponse = objectMapper.readValue(stringLoginResponse, LoginResponse.class);
 
-		accessToken = authResponse.accessToken();
-		refreshToken = authResponse.refreshToken();
+		accessToken = loginResponse.accessToken();
+		refreshToken = loginResponse.refreshToken();
 
 		log.info("setUpUser() is finished.");
 	}

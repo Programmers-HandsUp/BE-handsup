@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
-import dev.handsup.auth.dto.TokenReIssueApiRequest;
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.TokenReIssueRequest;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginResponse;
 import dev.handsup.auth.service.AuthService;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.UserFixture;
@@ -29,7 +29,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 	private UserService userService;
 	@Autowired
 	private AuthService authService;
-	private AuthRequest authRequest;
+	private LoginRequest loginRequest;
 
 	@BeforeEach
 	void setUp() {
@@ -43,7 +43,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 			user.getProfileImageUrl()
 		);
 		userService.join(joinUserRequest);
-		authRequest = new AuthRequest(user.getEmail(), user.getPassword());
+		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
 	}
 
 	@Test
@@ -53,7 +53,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/login")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(authRequest))
+				.content(toJson(loginRequest))
 		);
 
 		// then
@@ -66,15 +66,15 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@DisplayName("[토큰 재발급 API를 호출하면 새로운 엑세스 토큰이 응답된다]")
 	void reIssueAccessTokenTest() throws Exception {
 		// given
-		AuthResponse authResponse = authService.login(authRequest);
-		String refreshToken = authResponse.refreshToken();
-		TokenReIssueApiRequest tokenReIssueApiRequest = new TokenReIssueApiRequest(refreshToken);
+		LoginResponse loginResponse = authService.login(loginRequest);
+		String refreshToken = loginResponse.refreshToken();
+		TokenReIssueRequest tokenReIssueRequest = new TokenReIssueRequest(refreshToken);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/token")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(tokenReIssueApiRequest))
+				.content(toJson(tokenReIssueRequest))
 		);
 
 		// then
@@ -86,8 +86,8 @@ class AuthApiControllerTest extends ApiTestSupport {
 	@DisplayName("[로그아웃 API를 호출하면 200 OK 응답이 반환된다]")
 	void logoutTest() throws Exception {
 		// given
-		AuthResponse authResponse = authService.login(authRequest);
-		String accessToken = authResponse.accessToken();
+		LoginResponse loginResponse = authService.login(loginRequest);
+		String accessToken = loginResponse.accessToken();
 
 		// when
 		ResultActions actions = mockMvc.perform(

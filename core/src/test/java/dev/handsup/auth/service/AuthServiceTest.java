@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginResponse;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
@@ -44,13 +44,13 @@ class AuthServiceTest {
 	private BlacklistTokenRepository blacklistTokenRepository;
 
 	private User user = UserFixture.user(1L);
-	private AuthRequest authRequest = new AuthRequest(user.getEmail(), user.getPassword());
+	private LoginRequest loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
 
 	@Test
 	@DisplayName("[로그인 성공 시 토큰을 발급한다]")
 	void loginSuccessTest() {
 		// given
-		when(userService.getUserByEmail(authRequest.email())).thenReturn(user);
+		when(userService.getUserByEmail(loginRequest.email())).thenReturn(user);
 		when(userService.getUserById(1L)).thenReturn(user);
 		when(encryptHelper.isMatch(anyString(), anyString())).thenReturn(true);
 		Auth anyAuth = new Auth();
@@ -59,23 +59,23 @@ class AuthServiceTest {
 		when(jwtProvider.createRefreshToken(anyLong())).thenReturn("refresh-token");
 
 		// when
-		AuthResponse authResponse = authService.login(authRequest);
+		LoginResponse loginResponse = authService.login(loginRequest);
 
 		// then
-		assertEquals("access-token", authResponse.accessToken());
-		assertEquals("refresh-token", authResponse.refreshToken());
+		assertEquals("access-token", loginResponse.accessToken());
+		assertEquals("refresh-token", loginResponse.refreshToken());
 	}
 
 	@Test
 	@DisplayName("[로그인 실패 시 예외를 던진다]")
 	void loginFailTest() {
 		// given
-		when(userService.getUserByEmail(authRequest.email())).thenReturn(user);
+		when(userService.getUserByEmail(loginRequest.email())).thenReturn(user);
 		when(userService.getUserById(1L)).thenReturn(user);
 		when(encryptHelper.isMatch(anyString(), anyString())).thenReturn(false);
 
 		// when & then
-		assertThrows(NotFoundException.class, () -> authService.login(authRequest));
+		assertThrows(NotFoundException.class, () -> authService.login(loginRequest));
 	}
 
 	@Test
