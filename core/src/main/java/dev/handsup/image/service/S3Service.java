@@ -73,7 +73,7 @@ public class S3Service {
 
 	private String getFileExtension(String fileName) {
 		if (isNull(fileName) || fileName.isBlank()) {
-			throw new ValidationException(ImageErrorCode.INVALID_FILE_NAME);
+			throw new ValidationException(ImageErrorCode.EMPTY_FILE_NAME);
 		}
 
 		String extension = fileName.substring(fileName.lastIndexOf("."));
