@@ -4,10 +4,9 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public record RegisterAuctionRequest(
 
@@ -16,8 +15,7 @@ public record RegisterAuctionRequest(
 	@NotBlank(message = "productCategory 값이 공백입니다.")
 	String productCategory,
 	@NotNull(message = "initPrice 값이 공백입니다.")
-	@Min(value = 1000, message = "최소 금액은 1000원입니다.")
-	@Max(value = 100000000, message = "최대 금액은 1억입니다.")
+	@Size(min = 1000, max = 100_000_000, message = "평가 점수는 -2 ~ 2 이어야 합니다.")
 	int initPrice,
 
 	@NotNull(message = "endDate 값이 공백입니다.")
