@@ -78,7 +78,7 @@ class SearchServiceTest {
 		PopularKeywordResponse popularKeywordResponse2
 			= PopularKeywordResponse.of("keyword2", 1);
 
-		given(redisSearchRepository.getPopularKeywords()).willReturn(
+		given(redisSearchRepository.getPopularKeywords(10)).willReturn(
 			List.of(popularKeywordResponse1, popularKeywordResponse2));
 
 		//when

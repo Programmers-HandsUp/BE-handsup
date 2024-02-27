@@ -33,6 +33,6 @@ public class SearchService {
 
 	@Transactional(readOnly = true)
 	public PopularKeywordsResponse getPopularKeywords() {
-		return SearchMapper.toPopularKeywordsResponse(redisSearchRepository.getPopularKeywords());
+		return SearchMapper.toPopularKeywordsResponse(redisSearchRepository.getPopularKeywords(10));
 	}
 }

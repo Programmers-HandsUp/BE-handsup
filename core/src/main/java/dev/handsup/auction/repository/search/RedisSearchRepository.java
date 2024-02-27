@@ -20,9 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisSearchRepository {
 	private final StringRedisTemplate redisTemplate;
 
-	public List<PopularKeywordResponse> getPopularKeywords() {
+	public List<PopularKeywordResponse> getPopularKeywords(int number) {
 		// 인기순 검색어, 검색 수 조회
-		Set<ZSetOperations.TypedTuple<String>> typedTuples = getKeywordsWithScore(KeywordType.POPULAR.getKey());
+		Set<ZSetOperations.TypedTuple<String>> typedTuples = getKeywordsWithScore(KeywordType.POPULAR.getKey(), number);
 
 		// set(typedTuple) -> list(response) 로 변환
 		List<PopularKeywordResponse> popularKeywords = new ArrayList<>();
@@ -39,9 +39,9 @@ public class RedisSearchRepository {
 		return popularKeywords;
 	}
 
-	public Set<ZSetOperations.TypedTuple<String>> getKeywordsWithScore(String key) {
+	public Set<ZSetOperations.TypedTuple<String>> getKeywordsWithScore(String key, int number) {
 		return redisTemplate.opsForZSet()
-			.reverseRangeWithScores(key, 0, 9);
+			.reverseRangeWithScores(key, 0, number);
 	}
 
 	public void increaseSearchCount(String keyword) {

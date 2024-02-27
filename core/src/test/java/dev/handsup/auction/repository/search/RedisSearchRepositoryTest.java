@@ -57,7 +57,7 @@ class RedisSearchRepositoryTest extends TestContainerSupport {
 		repository.increaseSearchCount(KEYWORD3, 5);
 
 		//when
-		List<PopularKeywordResponse> popularKeywords = repository.getPopularKeywords();
+		List<PopularKeywordResponse> popularKeywords = repository.getPopularKeywords(3);
 
 		//then
 		assertAll(
