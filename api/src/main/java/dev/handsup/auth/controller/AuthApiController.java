@@ -1,8 +1,5 @@
 package dev.handsup.auth.controller;
 
-import static org.springframework.http.HttpHeaders.*;
-
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
-import dev.handsup.auth.dto.AuthMapper;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.request.TokenReIssueRequest;
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
+import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.auth.service.AuthService;
@@ -23,10 +20,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Auth API")
+@Tag(name = "인증 API")
 @RequestMapping("/api/auth")
 @RestController
 @RequiredArgsConstructor
@@ -38,24 +37,21 @@ public class AuthApiController {
 	@PostMapping("/login")
 	@Operation(summary = "로그인 API", description = "로그인을 한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<LoginResponse> login(
-		@Valid @RequestBody LoginRequest request
+	public ResponseEntity<LoginSimpleResponse> login(
+		@Valid @RequestBody LoginRequest request,
+		HttpServletResponse httpServletResponse
 	) {
-		LoginResponse response = authService.login(request);
+		LoginDetailResponse loginDetailResponse = authService.login(request);
+		LoginSimpleResponse loginSimpleResponse = LoginSimpleResponse.from(loginDetailResponse.accessToken());
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(SET_COOKIE, AuthMapper.createCookie(
-			"accessToken",
-			response.accessToken(),
-			7 * 24 * 60 * 60
-		));
-		headers.add(SET_COOKIE, AuthMapper.createCookie(
-			"refreshToken",
-			response.refreshToken(),
-			14 * 24 * 60 * 60
-		));
+		Cookie refreshTokenCookie = new Cookie("refreshToken", loginDetailResponse.refreshToken());
+		refreshTokenCookie.setHttpOnly(true);
+		refreshTokenCookie.setSecure(true);
+		refreshTokenCookie.setPath("/");
+		refreshTokenCookie.setMaxAge(14 * 24 * 60 * 60); // 14일
+		httpServletResponse.addCookie(refreshTokenCookie);
 
-		return ResponseEntity.ok().headers(headers).body(response);
+		return ResponseEntity.ok(loginSimpleResponse);
 	}
 
 	@PostMapping("/logout")
@@ -76,14 +72,6 @@ public class AuthApiController {
 		@RequestBody TokenReIssueRequest request
 	) {
 		TokenReIssueResponse response = authService.createAccessTokenByRefreshToken(request);
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add(SET_COOKIE, AuthMapper.createCookie(
-			"accessToken",
-			response.accessToken(),
-			7 * 24 * 60 * 60
-		));
-
-		return ResponseEntity.ok().headers(headers).body(response);
+		return ResponseEntity.ok(response);
 	}
 }

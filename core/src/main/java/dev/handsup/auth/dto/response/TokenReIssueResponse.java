@@ -10,10 +10,8 @@ public record TokenReIssueResponse(
 	String accessToken
 ) {
 	public static TokenReIssueResponse from(String accessToken) {
-		String bearerAccessToken = "Bearer " + accessToken;
-
 		return TokenReIssueResponse.builder()
-			.accessToken(bearerAccessToken)
+			.accessToken(accessToken)
 			.build();
 	}
 }

@@ -10,7 +10,7 @@ import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.request.TokenReIssueRequest;
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
 import dev.handsup.auth.exception.AuthException;
@@ -36,7 +36,7 @@ public class AuthService {
 			.orElseThrow(() -> new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN));
 	}
 
-	private LoginResponse saveAuth(Long userId) {
+	private LoginDetailResponse saveAuth(Long userId) {
 		String refreshToken = jwtProvider.createRefreshToken(userId);
 		String accessToken = jwtProvider.createAccessToken(userId);
 		Optional<Auth> auth = authRepository.findByUserId(userId);
@@ -53,13 +53,13 @@ public class AuthService {
 			}
 		);
 
-		return LoginResponse.of(refreshToken, accessToken);
+		return LoginDetailResponse.of(refreshToken, accessToken);
 	}
 
 	@Transactional
-	public LoginResponse login(LoginRequest request) {
+	public LoginDetailResponse login(LoginRequest request) {
 		Long userId = userService.getUserByEmail(request.email()).getId();
-		LoginResponse response = saveAuth(userId);
+		LoginDetailResponse response = saveAuth(userId);
 		String plainPassword = request.password();
 		String hashedPassword = userService.getUserById(userId).getPassword();
 

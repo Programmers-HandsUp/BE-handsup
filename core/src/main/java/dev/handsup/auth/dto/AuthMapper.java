@@ -2,30 +2,33 @@ package dev.handsup.auth.dto;
 
 import static lombok.AccessLevel.*;
 
-import org.springframework.http.ResponseCookie;
+import org.springframework.http.HttpHeaders;
 
-import dev.handsup.auth.dto.response.LoginResponse;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
+import dev.handsup.auth.exception.AuthException;
+import dev.handsup.common.exception.NotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class AuthMapper {
 
-	public static String createCookie(String name, String value, long maxAge) {
-		return ResponseCookie.from(name, value)
-			.httpOnly(true)
-			.secure(true) // HTTPS에서만 전송
-			// 같은 사이트 내에서만 쿠키를 전송하고, GET 요청과 같은 안전한 요청에서만 타 사이트 요청에 의해 쿠키를 전송
-			.sameSite("Lax")
-			.path("/")
-			.maxAge(maxAge)
-			.build()
-			.toString();
-	}
-
-	public static LoginResponse of(String refreshToken, String accessToken) {
-		return LoginResponse.builder()
+	public static LoginDetailResponse of(String refreshToken, String accessToken) {
+		return LoginDetailResponse.builder()
 			.refreshToken(refreshToken)
 			.accessToken(accessToken)
 			.build();
+	}
+
+	public static String toAccessToken(HttpServletRequest request) {
+		String bearerAccessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (bearerAccessToken != null) {
+			if (bearerAccessToken.startsWith("Bearer ")) {
+				return bearerAccessToken.substring(7);
+			}
+			throw new AuthException(AuthErrorCode.NOT_FOUND_BEARER_IN_REQUEST_ACCESS_TOKEN);
+		}
+		throw new NotFoundException(AuthErrorCode.NOT_FOUND_ACCESS_TOKEN_IN_REQUEST);
 	}
 }
