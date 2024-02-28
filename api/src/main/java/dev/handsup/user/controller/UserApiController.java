@@ -17,7 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "User API")
+@Tag(name = "회원 API")
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {

@@ -38,9 +38,9 @@ public class UserService {
 	}
 
 	@Transactional
-	public Long join(JoinUserRequest joinUserRequest) {
-		validateDuplicateEmail(joinUserRequest.email());
-		User user = UserMapper.toUser(joinUserRequest, encryptHelper);
+	public Long join(JoinUserRequest request) {
+		validateDuplicateEmail(request.email());
+		User user = UserMapper.toUser(request, encryptHelper);
 		return userRepository.save(user).getId();
 	}
 }

@@ -1,8 +1,8 @@
 package dev.handsup.auth.jwt;
 
+import static dev.handsup.auth.dto.AuthMapper.*;
 import static dev.handsup.auth.exception.AuthErrorCode.*;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -21,7 +21,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
 	private final JwtProvider jwtProvider;
 
-	private boolean isAnnotationPresent(Object handler) {
+	private boolean isPresentAnnotation(Object handler) {
 		HandlerMethod handlerMethod = (HandlerMethod)handler;
 		return handlerMethod.getMethodAnnotation(NoAuth.class) != null;
 	}
@@ -32,13 +32,13 @@ public class JwtInterceptor implements HandlerInterceptor {
 		@NonNull HttpServletResponse response,
 		@NonNull Object handler
 	) {
-		if (isAnnotationPresent(handler)) {
+		if (isPresentAnnotation(handler)) {
 			return true;
 		}
 
-		String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+		String accessToken = toAccessToken(request);
 		if (accessToken == null) {
-			throw new AuthException(NOT_INCLUDE_ACCESS_TOKEN);
+			throw new AuthException(NOT_FOUND_ACCESS_TOKEN_IN_REQUEST);
 		}
 
 		jwtProvider.validateToken(accessToken);

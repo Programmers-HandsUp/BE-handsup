@@ -1,9 +1,9 @@
 package dev.handsup.auth.jwt;
 
+import static dev.handsup.auth.dto.AuthMapper.*;
 import static dev.handsup.auth.exception.AuthErrorCode.*;
 
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -39,7 +39,7 @@ public class JwtAuthorizationArgumentResolver implements HandlerMethodArgumentRe
 		HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 
 		if (httpServletRequest != null) {
-			String accessToken = httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION);
+			String accessToken = toAccessToken(httpServletRequest);
 			Long userId = jwtProvider.getClaim(accessToken);
 			return userService.getUserById(userId);
 		}

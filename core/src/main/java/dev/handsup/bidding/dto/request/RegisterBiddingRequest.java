@@ -13,7 +13,7 @@ public record RegisterBiddingRequest(
 	@Max(value = 1_000_000_000, message = "최대 입찰가는 10억입니다.")
 	int biddingPrice
 ) {
-	public static RegisterBiddingRequest of(int biddingPrice) {
+	public static RegisterBiddingRequest from(int biddingPrice) {
 		return RegisterBiddingRequest.builder()
 			.biddingPrice(biddingPrice)
 			.build();

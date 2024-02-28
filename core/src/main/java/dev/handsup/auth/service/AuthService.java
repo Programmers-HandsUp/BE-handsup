@@ -1,7 +1,5 @@
 package dev.handsup.auth.service;
 
-import static dev.handsup.auth.exception.AuthErrorCode.*;
-
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -10,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
+import dev.handsup.auth.dto.response.TokenReIssueResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
 import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
@@ -32,10 +32,10 @@ public class AuthService {
 
 	private Auth getAuthByRefreshToken(String refreshToken) {
 		return authRepository.findByRefreshToken(refreshToken)
-			.orElseThrow(() -> new NotFoundException(NOT_FOUND_REFRESH_TOKEN));
+			.orElseThrow(() -> new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN));
 	}
 
-	private AuthResponse saveAuth(Long userId) {
+	private LoginDetailResponse saveAuth(Long userId) {
 		String refreshToken = jwtProvider.createRefreshToken(userId);
 		String accessToken = jwtProvider.createAccessToken(userId);
 		Optional<Auth> auth = authRepository.findByUserId(userId);
@@ -52,28 +52,24 @@ public class AuthService {
 			}
 		);
 
-		return AuthResponse.builder()
-			.refreshToken(refreshToken)
-			.accessToken(accessToken)
-			.build();
+		return LoginDetailResponse.of(refreshToken, accessToken);
 	}
 
 	@Transactional
-	public AuthResponse login(AuthRequest authRequest) {
-		Long userId = userService.getUserByEmail(authRequest.email()).getId();
-		AuthResponse authResponse = saveAuth(userId);
-		String plainPassword = authRequest.password();
+	public LoginDetailResponse login(LoginRequest request) {
+		Long userId = userService.getUserByEmail(request.email()).getId();
+		LoginDetailResponse response = saveAuth(userId);
+		String plainPassword = request.password();
 		String hashedPassword = userService.getUserById(userId).getPassword();
 
 		if (encryptHelper.isMatch(plainPassword, hashedPassword)) {
-			return authResponse;
+			return response;
 		}
-		throw new NotFoundException(FAILED_LOGIN_BY_ANYTHING);
+		throw new NotFoundException(AuthErrorCode.FAILED_LOGIN_BY_ANYTHING);
 	}
 
 	@Transactional
 	public void logout(User user) {
-
 		authRepository.findByUserId(user.getId()).ifPresentOrElse(
 			auth ->
 				blacklistTokenRepository.save(
@@ -81,20 +77,22 @@ public class AuthService {
 						.refreshToken(auth.getRefreshToken())
 						.build()),
 			() -> {
-				throw new NotFoundException(NOT_FOUND_USER_ID);
+				throw new NotFoundException(AuthErrorCode.NOT_FOUND_USER_ID);
 			}
 		);
 	}
 
-	public String createAccessTokenByRefreshToken(String refreshToken) {
-		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(refreshToken);
+	public TokenReIssueResponse createAccessTokenByRefreshToken(String refreshTokenFromCookies) {
+		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(refreshTokenFromCookies);
 		if (isBlacklisted) {
-			throw new AuthException(BLACKLISTED_TOKEN);
+			throw new AuthException(AuthErrorCode.BLACKLISTED_TOKEN);
 		}
 
-		Auth auth = getAuthByRefreshToken(refreshToken);
+		Auth auth = getAuthByRefreshToken(refreshTokenFromCookies);
 		Long userId = userService.getUserById(auth.getUserId()).getId();
-		return jwtProvider.createAccessToken(userId);
+		String accessToken = jwtProvider.createAccessToken(userId);
+
+		return TokenReIssueResponse.from(accessToken);
 	}
 
 }

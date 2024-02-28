@@ -27,7 +27,11 @@ public class SwaggerConfig {
 	public OpenAPI openAPI() {
 		SecurityScheme securityScheme = new SecurityScheme()
 			.type(SecurityScheme.Type.HTTP)
-			.in(SecurityScheme.In.HEADER).name(AUTHORIZATION);
+			.scheme("bearer")
+			.bearerFormat("JWT")
+			.in(SecurityScheme.In.HEADER)
+			.name(AUTHORIZATION);
+
 		SecurityRequirement securityRequirement = new SecurityRequirement().addList(AUTHORIZATION);
 
 		return new OpenAPI()

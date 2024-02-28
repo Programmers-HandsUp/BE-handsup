@@ -2,6 +2,8 @@ package dev.handsup.common.support;
 
 import static org.springframework.http.MediaType.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,8 +16,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginSimpleResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
+import dev.handsup.auth.service.AuthService;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.DatabaseCleaner;
 import dev.handsup.support.DatabaseCleanerExtension;
@@ -24,7 +29,10 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
+
+;
 
 @Slf4j
 @SpringBootTest
@@ -33,14 +41,17 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(DatabaseCleanerExtension.class)
 public abstract class ApiTestSupport extends TestContainerSupport {
 
-	protected static String accessToken;
-	protected static String refreshToken;
+	protected final User user = UserFixture.user();
+	protected String accessToken;
+	protected String refreshToken;
 	@Autowired
 	protected MockMvc mockMvc;
 	@Autowired
 	protected ObjectMapper objectMapper;
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	protected AuthService authService;
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
@@ -53,7 +64,6 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			return;
 		}
 
-		User user = UserFixture.user();
 		JoinUserRequest joinUserRequest = JoinUserRequest.of(
 			user.getEmail(),
 			user.getPassword(),
@@ -71,24 +81,41 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 				.content(toJson(joinUserRequest))
 		);
 
-		AuthRequest authRequest = AuthRequest.of(
-			joinUserRequest.email(),
-			joinUserRequest.password()
+		LoginRequest loginRequest = LoginRequest.of(
+			user.getEmail(),
+			user.getPassword()
 		);
+
 		MvcResult loginResult = mockMvc.perform(
 			MockMvcRequestBuilders
 				.post("/api/auth/login")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(authRequest))
+				.content(toJson(loginRequest))
 		).andReturn();
 
-		String stringLoginResponse = loginResult.getResponse().getContentAsString();
-		AuthResponse authResponse = objectMapper.readValue(stringLoginResponse, AuthResponse.class);
+		Cookie[] cookies = loginResult.getResponse().getCookies();
 
-		accessToken = authResponse.accessToken();
-		refreshToken = authResponse.refreshToken();
+		String refreshTokenOfCookie = Arrays.stream(cookies)
+			.filter(cookie -> "refreshToken".equals(cookie.getName()))
+			.findFirst()
+			.map(Cookie::getValue)
+			.orElse(null);
 
-		log.info("setUpUser() is finished.");
+		if (refreshTokenOfCookie != null) {
+			refreshToken = refreshTokenOfCookie;
+		} else {
+			throw new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN_IN_RESPONSE);
+		}
+
+		String stringLoginSimpleResponse = loginResult.getResponse().getContentAsString();
+		LoginSimpleResponse loginSimpleResponse = objectMapper.readValue(
+			stringLoginSimpleResponse,
+			LoginSimpleResponse.class
+		);
+
+		accessToken = loginSimpleResponse.accessToken();
+
+		log.info("setUpUser() is success.");
 	}
 
 }

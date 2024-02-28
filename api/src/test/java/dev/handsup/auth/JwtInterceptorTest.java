@@ -18,6 +18,7 @@ import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.jwt.JwtInterceptor;
 import dev.handsup.auth.service.JwtProvider;
+import dev.handsup.common.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 
 @DisplayName("[JwtInterceptor 통합 테스트]")
@@ -49,7 +50,7 @@ class JwtInterceptorTest {
 	@DisplayName("[토큰이 유효하다면 -> 통과]")
 	void shouldPassWithValidToken() {
 		// given
-		request.addHeader(HttpHeaders.AUTHORIZATION, "validToken");
+		request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer validToken");
 		// when
 		doNothing().when(jwtProvider).validateToken("validToken");
 		// then
@@ -61,15 +62,15 @@ class JwtInterceptorTest {
 	@DisplayName("[토큰이 없고 @NoAuth 없으면 -> 실패]")
 	void shouldThrowExceptionWhenTokenIsMissing() {
 		assertThatThrownBy(() -> jwtInterceptor.preHandle(request, response, handlerMethod))
-			.isInstanceOf(AuthException.class)
-			.hasMessageContaining(NOT_INCLUDE_ACCESS_TOKEN.getMessage());
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining(NOT_FOUND_ACCESS_TOKEN_IN_REQUEST.getMessage());
 	}
 
 	@Test
 	@DisplayName("[토큰이 유효하지 않고 @NoAuth 없으면 -> 실패]")
 	void shouldThrowExceptionWithInvalidToken() {
 		// given
-		request.addHeader(HttpHeaders.AUTHORIZATION, "invalidToken");
+		request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer invalidToken");
 		doThrow(new AuthException(TOKEN_EXPIRED))
 			.when(jwtProvider).validateToken("invalidToken");
 

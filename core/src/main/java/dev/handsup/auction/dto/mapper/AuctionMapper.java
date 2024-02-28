@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class AuctionMapper {
-
 	public static Auction toAuction(RegisterAuctionRequest request, ProductCategory productCategory, User user) {
 
 		ProductStatus productStatus = ProductStatus.of(request.productStatus());

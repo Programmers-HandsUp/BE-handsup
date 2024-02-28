@@ -13,6 +13,10 @@ public class BcryptImpl implements EncryptHelper {
 
 	@Override
 	public boolean isMatch(String plainPassword, String hashedPassword) {
-		return BCrypt.checkpw(plainPassword, hashedPassword);
+		try {
+			return BCrypt.checkpw(plainPassword, hashedPassword);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

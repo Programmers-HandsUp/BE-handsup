@@ -50,7 +50,7 @@ class JwtAuthorizationArgumentResolverTest {
 	void shouldResolveArgumentWithValidToken() {
 		// given
 		User user = UserFixture.user(1L);
-		mockHttpServletRequest.addHeader(HttpHeaders.AUTHORIZATION, "validToken");
+		mockHttpServletRequest.addHeader(HttpHeaders.AUTHORIZATION, "Bearer validToken");
 		when(userService.getUserById(user.getId())).thenReturn(user);
 		when(webRequest.getNativeRequest(HttpServletRequest.class)).thenReturn(mockHttpServletRequest);
 		when(jwtProvider.getClaim("validToken")).thenReturn(user.getId());

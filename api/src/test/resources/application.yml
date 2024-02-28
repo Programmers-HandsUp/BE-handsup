@@ -13,3 +13,14 @@ logging.level:
 jwt:
   secret: prgrmsdevcoursehandsupjsonwebtokensecretkeytest123
   token-validity-in-seconds: 864000
+cloud:
+  aws:
+    credentials:
+      access-key: s3-access-key
+      secret-key: s3-secret-key
+    region:
+      static: s3-region
+    s3:
+      bucket: s3-bucket-name
+    stack:
+      auto: false
