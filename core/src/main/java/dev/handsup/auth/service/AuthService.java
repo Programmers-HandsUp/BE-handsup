@@ -65,7 +65,7 @@ public class AuthService {
 		if (encryptHelper.isMatch(plainPassword, hashedPassword)) {
 			return response;
 		}
-		throw new NotFoundException(AuthErrorCode.FAILED_LOGIN_BY_ANYTHING);
+		return null;
 	}
 
 	@Transactional

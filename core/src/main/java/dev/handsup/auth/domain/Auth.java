@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "auth_table")
 public class Auth extends TimeBaseEntity {
 
 	@Id
