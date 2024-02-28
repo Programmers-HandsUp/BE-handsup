@@ -67,7 +67,7 @@ public class BookmarkService {
 
 	private Auction getAuctionEntity(Long auctionId) {
 		return auctionRepository.findById(auctionId).
-			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
+			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
 	private void validateIfBookmarkExists(User user, Auction auction) {
