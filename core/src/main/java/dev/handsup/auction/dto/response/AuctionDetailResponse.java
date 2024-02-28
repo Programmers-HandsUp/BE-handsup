@@ -14,13 +14,14 @@ public record AuctionDetailResponse(
 	String purchaseTime,
 	String description,
 	String tradeMethod,
+	List<String> imgUrls,
 	String si,
 	String gu,
 	String dong,
 
 	int bookmarkCount,
-	String createdAt,
-	List<String> imgUrls
+	String createdAt
+
 ) {
 	public static AuctionDetailResponse of(
 		Long auctionId,
@@ -34,15 +35,15 @@ public record AuctionDetailResponse(
 		String purchaseTime,
 		String description,
 		String tradeMethod,
+		List<String> imgUrls,
 		String si,
 		String gu,
 		String dong,
 		int bookmarkCount,
-		String createdAt,
-		List<String> imgUrls
+		String createdAt
 	) {
 		return new AuctionDetailResponse(
 			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
-			tradeMethod, si, gu, dong, bookmarkCount, createdAt, imgUrls);
+			tradeMethod, imgUrls, si, gu, dong, bookmarkCount, createdAt);
 	}
 }

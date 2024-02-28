@@ -54,14 +54,13 @@ public class AuctionMapper {
 			auction.getProduct().getPurchaseTime().getLabel(),
 			auction.getProduct().getDescription(),
 			auction.getTradeMethod().getLabel(),
+			auction.getProduct().getImages().stream()
+				.map(ProductImage::getImageUrl).toList(),
 			auction.getTradingLocation().getSi(),
 			auction.getTradingLocation().getGu(),
 			auction.getTradingLocation().getDong(),
 			auction.getBookmarkCount(),
-			auction.getCreatedAt().toString(),
-			auction.getProduct().getImages().stream()
-				.map(ProductImage::getImageUrl) // ProductImage에서 imageUrl을 추출
-				.toList()
+			auction.getCreatedAt().toString()
 		);
 	}
 
@@ -70,10 +69,10 @@ public class AuctionMapper {
 			auction.getId(),
 			auction.getTitle(),
 			auction.getInitPrice(),
+			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getBookmarkCount(),
 			auction.getTradingLocation().getDong(),
-			auction.getCreatedAt().toLocalDate().toString(),
-			auction.getProduct().getImages().get(0).getImageUrl()
+			auction.getCreatedAt().toLocalDate().toString()
 		);
 
 	}
