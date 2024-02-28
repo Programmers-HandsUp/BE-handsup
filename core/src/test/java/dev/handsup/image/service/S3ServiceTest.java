@@ -38,7 +38,7 @@ class S3ServiceTest {
 	@DisplayName("[이미지를 s3에 업로드하고 url을 반환받을 수 있다.]")
 	@Test
 	void uploadImages() {
-	    //given
+		//given
 		MockMultipartFile file1 = new MockMultipartFile("file1", "test1.jpg", "image/jpeg",
 			"file content".getBytes());
 		MockMultipartFile file2 = new MockMultipartFile("file2", "test2.jpg", "image/jpeg",
@@ -54,10 +54,10 @@ class S3ServiceTest {
 					"/" + bucketName + "/" + fileName);
 			});
 
-	    //when
+		//when
 		List<String> uploadedUrls = s3Service.uploadImages(List.of(file1, file2));
 
-	    //then
+		//then
 		assertAll(
 			() -> assertThat(uploadedUrls).hasSize(2),
 			() -> assertThat(uploadedUrls.get(0)).contains(expectedUri),
@@ -65,12 +65,10 @@ class S3ServiceTest {
 		);
 	}
 
-
-
 	@DisplayName("[이미지 파일 확장자가 유효하지 않을 경우, 예외를 반환한다.]")
 	@Test
 	void uploadImages_fail() {
-	    //given
+		//given
 		MockMultipartFile file = new MockMultipartFile("file1", "test1.wow", "image/jpeg",
 			"file content".getBytes());
 
@@ -96,18 +94,17 @@ class S3ServiceTest {
 	@DisplayName("[업로드된 이미지를 각각 삭제할 수 있다.]")
 	@Test
 	void deleteImages() {
-	    //given
-	    List<String> imageUrlsToDelete = List.of(
+		//given
+		List<String> imageUrlsToDelete = List.of(
 			"https://example.com/bucket-name/images/random-uuid.jpg",
 			"https://example.com/bucket-name/images/random-uuid.jpg"
 		);
 
-	    //when
-	    s3Service.deleteImages(imageUrlsToDelete);
+		//when
+		s3Service.deleteImages(imageUrlsToDelete);
 
-	    //then
+		//then
 		verify(amazonS3, times(imageUrlsToDelete.size())).deleteObject(any(), any()); // url 개수만큼 메서드 호출 보장
 	}
-
 
 }

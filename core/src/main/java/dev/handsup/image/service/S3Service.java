@@ -25,14 +25,12 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class S3Service {
-	@Value("${cloud.aws.s3.bucket}")
-	private String bucket;
-
-	private final AmazonS3 amazonS3;
 	private static final String s3FolderName = "images";
-
 	private static final List<String> FILE_EXTENSIONS = List.of(".jpg", ".jpeg", ".png", ".JPG",
 		".JPEG", ".PNG", ".webp", ".WEBP");
+	private final AmazonS3 amazonS3;
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucket;
 
 	public List<String> uploadImages(List<MultipartFile> multipartFileList) {
 		ObjectMetadata objectMetadata = new ObjectMetadata();
