@@ -20,7 +20,6 @@ import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
 import dev.handsup.auth.service.AuthService;
-import dev.handsup.auth.service.JwtProvider;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.DatabaseCleaner;
@@ -52,9 +51,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected UserRepository userRepository;
 	@Autowired
 	protected AuthService authService;
-	@Autowired
-	private JwtProvider jwtProvider;
-	protected User user;
+	protected final User user = UserFixture.user();
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
@@ -67,61 +64,56 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			return;
 		}
 
-		user = userRepository.save(UserFixture.user());
+		JoinUserRequest joinUserRequest = JoinUserRequest.of(
+			user.getEmail(),
+			user.getPassword(),
+			user.getNickname(),
+			user.getAddress().getSi(),
+			user.getAddress().getGu(),
+			user.getAddress().getDong(),
+			user.getProfileImageUrl()
+		);
 
-		// JoinUserRequest joinUserRequest = JoinUserRequest.of(
-		// 	user.getEmail(),
-		// 	user.getPassword(),
-		// 	user.getNickname(),
-		// 	user.getAddress().getSi(),
-		// 	user.getAddress().getGu(),
-		// 	user.getAddress().getDong(),
-		// 	user.getProfileImageUrl()
-		// );
-		//
-		// mockMvc.perform(
-		// 	MockMvcRequestBuilders
-		// 		.post("/api/users")
-		// 		.contentType(APPLICATION_JSON)
-		// 		.content(toJson(joinUserRequest))
-		// );
-		//
-		// LoginRequest loginRequest = LoginRequest.of(
-		// 	joinUserRequest.email(),
-		// 	joinUserRequest.password()
-		// );
+		mockMvc.perform(
+			MockMvcRequestBuilders
+				.post("/api/users")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(joinUserRequest))
+		);
 
-		// MvcResult loginResult = mockMvc.perform(
-		// 	MockMvcRequestBuilders
-		// 		.post("/api/auth/login")
-		// 		.contentType(APPLICATION_JSON)
-		// 		.content(toJson(loginRequest))
-		// ).andReturn();
-		//
-		// Cookie[] cookies = loginResult.getResponse().getCookies();
-		//
-		// String refreshTokenOfCookie = Arrays.stream(cookies)
-		// 	.filter(cookie -> "refreshToken".equals(cookie.getName()))
-		// 	.findFirst()
-		// 	.map(Cookie::getValue)
-		// 	.orElse(null);
-		//
-		// if (refreshTokenOfCookie != null) {
-		// 	refreshToken = refreshTokenOfCookie;
-		// } else {
-		// 	throw new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN_IN_RESPONSE);
-		// }
-		//
-		// String stringLoginSimpleResponse = loginResult.getResponse().getContentAsString();
-		// LoginSimpleResponse loginSimpleResponse = objectMapper.readValue(
-		// 	stringLoginSimpleResponse,
-		// 	LoginSimpleResponse.class
-		// );
-		//
-		// accessToken = loginSimpleResponse.accessToken();
+		LoginRequest loginRequest = LoginRequest.of(
+			user.getEmail(),
+			user.getPassword()
+		);
 
-		accessToken = jwtProvider.createAccessToken(this.user.getId());
-		refreshToken = jwtProvider.createRefreshToken(this.user.getId());
+		MvcResult loginResult = mockMvc.perform(
+			MockMvcRequestBuilders
+				.post("/api/auth/login")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(loginRequest))
+		).andReturn();
+
+		Cookie[] cookies = loginResult.getResponse().getCookies();
+
+		String refreshTokenOfCookie = Arrays.stream(cookies)
+			.filter(cookie -> "refreshToken".equals(cookie.getName()))
+			.findFirst()
+			.map(Cookie::getValue)
+			.orElse(null);
+
+		if (refreshTokenOfCookie != null) {
+			refreshToken = refreshTokenOfCookie;
+		} else {
+			throw new NotFoundException(AuthErrorCode.NOT_FOUND_REFRESH_TOKEN_IN_RESPONSE);
+		}
+
+		String stringLoginSimpleResponse = loginResult.getResponse().getContentAsString();
+		LoginSimpleResponse loginSimpleResponse = objectMapper.readValue(
+			stringLoginSimpleResponse,
+			LoginSimpleResponse.class
+		);
+
+		accessToken = loginSimpleResponse.accessToken();
 
 		log.info("setUpUser() is success.");
 	}

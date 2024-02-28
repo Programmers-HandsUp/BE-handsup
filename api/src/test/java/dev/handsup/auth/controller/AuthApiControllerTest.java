@@ -11,10 +11,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.common.support.ApiTestSupport;
+import dev.handsup.fixture.UserFixture;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.service.UserService;
 import jakarta.servlet.http.Cookie;
@@ -23,29 +26,17 @@ import jakarta.servlet.http.Cookie;
 class AuthApiControllerTest extends ApiTestSupport {
 
 	private LoginRequest loginRequest;
-	@Autowired
-	private UserService userService;
-	private JoinUserRequest joinUserRequest;
 
 	@BeforeEach
 	void setUp() {
 		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
-		joinUserRequest = JoinUserRequest.of(
-			user.getEmail(),
-			user.getPassword(),
-			user.getNickname(),
-			user.getAddress().getSi(),
-			user.getAddress().getGu(),
-			user.getAddress().getDong(),
-			user.getProfileImageUrl()
-		);
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[로그인 API를 호출하면 토큰이 응답된다]")
 	void loginTest() throws Exception {
 		// when
-		// userService.join(joinUserRequest);
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/login")
 				.contentType(APPLICATION_JSON)
@@ -60,10 +51,10 @@ class AuthApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[토큰 재발급 API를 호출하면 새로운 엑세스 토큰이 응답된다]")
 	void reIssueAccessTokenTest() throws Exception {
 		// given
-		// userService.join(joinUserRequest);
 		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
 		String refreshToken = loginDetailResponse.refreshToken();
 
@@ -80,10 +71,10 @@ class AuthApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[로그아웃 API를 호출하면 200 OK 응답이 반환된다]")
 	void logoutTest() throws Exception {
 		// given
-		// userService.join(joinUserRequest);
 		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
 		String accessToken = loginDetailResponse.accessToken();
 

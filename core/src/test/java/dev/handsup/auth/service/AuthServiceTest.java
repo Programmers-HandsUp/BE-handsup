@@ -14,11 +14,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
+import dev.handsup.auth.exception.AuthErrorCode;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
@@ -43,8 +45,8 @@ class AuthServiceTest {
 	@Mock
 	private BlacklistTokenRepository blacklistTokenRepository;
 
-	private User user = UserFixture.user(1L);
-	private LoginRequest loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
+	private final User user = UserFixture.user(1L);
+	private final LoginRequest loginRequest = LoginRequest.of(user.getEmail(), user.getPassword());
 
 	@Test
 	@DisplayName("[로그인 성공 시 토큰을 발급한다]")
@@ -75,7 +77,9 @@ class AuthServiceTest {
 		when(encryptHelper.isMatch(anyString(), anyString())).thenReturn(false);
 
 		// when & then
-		assertThrows(NotFoundException.class, () -> authService.login(loginRequest));
+		assertThatThrownBy(() -> authService.login(loginRequest))
+			.isInstanceOf(NotFoundException.class)
+			.hasMessageContaining(AuthErrorCode.FAILED_LOGIN_BY_ANYTHING.getMessage());
 	}
 
 	@Test

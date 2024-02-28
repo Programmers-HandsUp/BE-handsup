@@ -3,9 +3,6 @@ package dev.handsup.auth.domain;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Component;
 
-import dev.handsup.auth.exception.AuthErrorCode;
-import dev.handsup.common.exception.NotFoundException;
-
 @Component
 public class BcryptImpl implements EncryptHelper {
 
@@ -19,7 +16,7 @@ public class BcryptImpl implements EncryptHelper {
 		try {
 			return BCrypt.checkpw(plainPassword, hashedPassword);
 		} catch (Exception e) {
-			throw new NotFoundException(AuthErrorCode.FAILED_LOGIN_BY_ANYTHING);
+			return false;
 		}
 	}
 }
