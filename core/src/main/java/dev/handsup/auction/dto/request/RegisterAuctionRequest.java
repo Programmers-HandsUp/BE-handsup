@@ -58,7 +58,8 @@ public record RegisterAuctionRequest(
 		String dong
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls, si, gu,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls,
+			si, gu,
 			dong);
 	}
 
@@ -74,7 +75,8 @@ public record RegisterAuctionRequest(
 		List<String> imgUrls
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls, null,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls,
+			null,
 			null, null);
 	}
 }
