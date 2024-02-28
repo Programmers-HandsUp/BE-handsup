@@ -17,6 +17,7 @@ import dev.handsup.search.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Tag(name = "검색 API")
@@ -31,7 +32,7 @@ public class SearchApiController {
 	@ApiResponse(useReturnTypeSchema = true)
 	@PostMapping
 	public ResponseEntity<PageResponse<AuctionSimpleResponse>> searchAuctions(
-		@RequestBody AuctionSearchCondition condition,
+		@Valid @RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
 		PageResponse<AuctionSimpleResponse> response = searchService.searchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
