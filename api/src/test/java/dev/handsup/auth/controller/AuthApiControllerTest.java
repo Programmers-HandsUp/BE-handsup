@@ -9,17 +9,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.common.support.ApiTestSupport;
-import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.JoinUserRequest;
-import dev.handsup.user.service.UserService;
 import jakarta.servlet.http.Cookie;
 
 @DisplayName("[AuthApiController 테스트]")

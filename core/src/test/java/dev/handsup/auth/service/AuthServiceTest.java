@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auth.domain.Auth;
 import dev.handsup.auth.domain.BlacklistToken;
 import dev.handsup.auth.domain.EncryptHelper;
@@ -32,6 +31,8 @@ import dev.handsup.user.service.UserService;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
+	private final User user = UserFixture.user(1L);
+	private final LoginRequest loginRequest = LoginRequest.of(user.getEmail(), user.getPassword());
 	@InjectMocks
 	private AuthService authService;
 	@Mock
@@ -44,9 +45,6 @@ class AuthServiceTest {
 	private EncryptHelper encryptHelper;
 	@Mock
 	private BlacklistTokenRepository blacklistTokenRepository;
-
-	private final User user = UserFixture.user(1L);
-	private final LoginRequest loginRequest = LoginRequest.of(user.getEmail(), user.getPassword());
 
 	@Test
 	@DisplayName("[로그인 성공 시 토큰을 발급한다]")

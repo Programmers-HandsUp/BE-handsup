@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(DatabaseCleanerExtension.class)
 public abstract class ApiTestSupport extends TestContainerSupport {
 
+	protected final User user = UserFixture.user();
 	protected String accessToken;
 	protected String refreshToken;
 	@Autowired
@@ -51,7 +52,6 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected UserRepository userRepository;
 	@Autowired
 	protected AuthService authService;
-	protected final User user = UserFixture.user();
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
