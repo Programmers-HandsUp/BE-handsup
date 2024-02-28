@@ -4,7 +4,7 @@ public record AuctionSimpleResponse(
 	Long auctionId,
 	String title,
 	int initPrice,
-	String imgUrl,
+	String imageUrl,
 	int bookmarkCount,
 	String dong,
 	String createdDate
@@ -14,7 +14,7 @@ public record AuctionSimpleResponse(
 		Long auctionId,
 		String title,
 		int initPrice,
-		String imgUrl,
+		String imageUrl,
 		int bookmarkCount,
 		String dong,
 		String createDate
@@ -23,7 +23,7 @@ public record AuctionSimpleResponse(
 			auctionId,
 			title,
 			initPrice,
-			imgUrl,
+			imageUrl,
 			bookmarkCount,
 			dong,
 			createDate

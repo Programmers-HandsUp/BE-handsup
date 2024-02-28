@@ -75,7 +75,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.initPrice").value(request.initPrice()))
 			.andExpect(jsonPath("$.purchaseTime").value(request.purchaseTime()))
 			.andExpect(jsonPath("$.productCategory").value(request.productCategory()))
-			.andExpect(jsonPath("$.imgUrls[0]").value(request.imageUrls().get(0)))
+			.andExpect(jsonPath("$.imageUrls[0]").value(request.imageUrls().get(0)))
 			.andExpect(jsonPath("$.si").isEmpty())
 			.andExpect(jsonPath("$.gu").isEmpty())
 			.andExpect(jsonPath("$.dong").isEmpty());
@@ -133,7 +133,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
 			.andExpect(jsonPath("$.description").value(auction.getProduct().getDescription()))
 			.andExpect(jsonPath("$.tradeMethod").value(auction.getTradeMethod().getLabel()))
-			.andExpect(jsonPath("$.imgUrls[0]").value(auction.getProduct().getImages().get(0).getImageUrl()))
+			.andExpect(jsonPath("$.imageUrls[0]").value(auction.getProduct().getImages().get(0).getImageUrl()))
 			.andExpect(jsonPath("$.si").value(auction.getTradingLocation().getSi()))
 			.andExpect(jsonPath("$.gu").value(auction.getTradingLocation().getGu()))
 			.andExpect(jsonPath("$.dong").value(auction.getTradingLocation().getDong()))

@@ -14,7 +14,7 @@ public record AuctionDetailResponse(
 	String purchaseTime,
 	String description,
 	String tradeMethod,
-	List<String> imgUrls,
+	List<String> imageUrls,
 	String si,
 	String gu,
 	String dong,
@@ -35,7 +35,7 @@ public record AuctionDetailResponse(
 		String purchaseTime,
 		String description,
 		String tradeMethod,
-		List<String> imgUrls,
+		List<String> imageUrls,
 		String si,
 		String gu,
 		String dong,
@@ -44,6 +44,6 @@ public record AuctionDetailResponse(
 	) {
 		return new AuctionDetailResponse(
 			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
-			tradeMethod, imgUrls, si, gu, dong, bookmarkCount, createdAt);
+			tradeMethod, imageUrls, si, gu, dong, bookmarkCount, createdAt);
 	}
 }

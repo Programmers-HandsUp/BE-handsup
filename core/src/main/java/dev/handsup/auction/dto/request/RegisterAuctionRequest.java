@@ -52,13 +52,13 @@ public record RegisterAuctionRequest(
 		String purchaseTime,
 		String description,
 		String tradeMethod,
-		List<String> imgUrls,
+		List<String> imageUrls,
 		String si,
 		String gu,
 		String dong
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imageUrls,
 			si, gu,
 			dong);
 	}
@@ -72,10 +72,10 @@ public record RegisterAuctionRequest(
 		String purchaseTime,
 		String description,
 		String tradeMethod,
-		List<String> imgUrls
+		List<String> imageUrls
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imgUrls,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, imageUrls,
 			null,
 			null, null);
 	}
