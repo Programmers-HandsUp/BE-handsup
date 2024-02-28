@@ -7,7 +7,7 @@ public record AuctionSimpleResponse(
 	int bookmarkCount,
 	String dong,
 	String createdDate,
-	String profileImgUrl
+	String imgUrl
 ) {
 	public static AuctionSimpleResponse of(
 		Long auctionId,
@@ -16,7 +16,7 @@ public record AuctionSimpleResponse(
 		int bookmarkCount,
 		String dong,
 		String createDate,
-		String profileImgUrl
+		String imgUrl
 	) {
 		return new AuctionSimpleResponse(
 			auctionId,
@@ -25,7 +25,7 @@ public record AuctionSimpleResponse(
 			bookmarkCount,
 			dong,
 			createDate,
-			profileImgUrl
+			imgUrl
 		);
 	}
 }

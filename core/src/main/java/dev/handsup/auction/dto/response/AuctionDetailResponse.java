@@ -1,5 +1,7 @@
 package dev.handsup.auction.dto.response;
 
+import java.util.List;
+
 public record AuctionDetailResponse(
 
 	Long auctionId,
@@ -17,7 +19,8 @@ public record AuctionDetailResponse(
 	String dong,
 
 	int bookmarkCount,
-	String createdAt
+	String createdAt,
+	List<String> imgUrls
 ) {
 	public static AuctionDetailResponse of(
 		Long auctionId,
@@ -35,10 +38,11 @@ public record AuctionDetailResponse(
 		String gu,
 		String dong,
 		int bookmarkCount,
-		String createdAt
+		String createdAt,
+		List<String> imgUrls
 	) {
 		return new AuctionDetailResponse(
 			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
-			tradeMethod, si, gu, dong, bookmarkCount, createdAt);
+			tradeMethod, si, gu, dong, bookmarkCount, createdAt, imgUrls);
 	}
 }

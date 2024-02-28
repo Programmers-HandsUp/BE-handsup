@@ -7,6 +7,7 @@ import org.springframework.data.domain.Slice;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.product.ProductImage;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
@@ -34,6 +35,7 @@ public class AuctionMapper {
 			purchaseTime,
 			request.description(),
 			tradeMethod,
+			request.imageUrls(),
 			request.si(),
 			request.gu(),
 			request.dong()
@@ -56,7 +58,10 @@ public class AuctionMapper {
 			auction.getTradingLocation().getGu(),
 			auction.getTradingLocation().getDong(),
 			auction.getBookmarkCount(),
-			auction.getCreatedAt().toString()
+			auction.getCreatedAt().toString(),
+			auction.getProduct().getImages().stream()
+				.map(ProductImage::getImageUrl) // ProductImage에서 imageUrl을 추출
+				.toList()
 		);
 	}
 
@@ -68,7 +73,7 @@ public class AuctionMapper {
 			auction.getBookmarkCount(),
 			auction.getTradingLocation().getDong(),
 			auction.getCreatedAt().toLocalDate().toString(),
-			null
+			auction.getProduct().getImages().get(0).getImageUrl()
 		);
 
 	}
