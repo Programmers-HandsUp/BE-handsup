@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +57,8 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			ProductStatus.NEW.getLabel(),
 			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
 			"거의 새상품이에요",
-			TradeMethod.DELIVER.getLabel()
+			TradeMethod.DELIVER.getLabel(),
+			List.of("test.jpg")
 		);
 
 		mockMvc.perform(post("/api/auctions")
@@ -73,6 +75,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.initPrice").value(request.initPrice()))
 			.andExpect(jsonPath("$.purchaseTime").value(request.purchaseTime()))
 			.andExpect(jsonPath("$.productCategory").value(request.productCategory()))
+			.andExpect(jsonPath("$.imgUrls[0]").value(request.imageUrls().get(0)))
 			.andExpect(jsonPath("$.si").isEmpty())
 			.andExpect(jsonPath("$.gu").isEmpty())
 			.andExpect(jsonPath("$.dong").isEmpty());
@@ -91,6 +94,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
 			"거의 새상품이에요",
 			TradeMethod.DELIVER.getLabel(),
+			List.of("test.jpg"),
 			"서울시",
 			"성북구",
 			"동선동"
@@ -129,6 +133,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
 			.andExpect(jsonPath("$.description").value(auction.getProduct().getDescription()))
 			.andExpect(jsonPath("$.tradeMethod").value(auction.getTradeMethod().getLabel()))
+			.andExpect(jsonPath("$.imgUrls[0]").value(auction.getProduct().getImages().get(0).getImageUrl()))
 			.andExpect(jsonPath("$.si").value(auction.getTradingLocation().getSi()))
 			.andExpect(jsonPath("$.gu").value(auction.getTradingLocation().getGu()))
 			.andExpect(jsonPath("$.dong").value(auction.getTradingLocation().getDong()))

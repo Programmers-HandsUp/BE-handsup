@@ -6,6 +6,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +65,7 @@ class AuctionServiceTest {
 				PurchaseTime.UNDER_ONE_MONTH.getLabel(),
 				"거의 새상품이에요",
 				TradeMethod.DELIVER.getLabel(),
+				List.of("image.jpg"),
 				"서울시",
 				"성북구",
 				"동선동"
