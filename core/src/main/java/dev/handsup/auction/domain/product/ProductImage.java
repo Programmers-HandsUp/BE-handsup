@@ -27,18 +27,18 @@ public class ProductImage extends TimeBaseEntity {
 	@Column(name = "product_image_id")
 	private Long id;
 
-	@Column(name = "image_url", nullable = false)
-	private String imageUrl;
-
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "product_id",
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private Product product;
 
+	@Column(name = "image_url", nullable = false)
+	private String imageUrl;
+
 	@Builder
-	public ProductImage(String imageUrl, Product product) {
-		this.imageUrl = imageUrl;
+	public ProductImage(Product product, String imageUrl) {
 		this.product = product;
+		this.imageUrl = imageUrl;
 	}
 }
