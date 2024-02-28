@@ -55,7 +55,8 @@ public class AuctionMapper {
 			auction.getTradingLocation().getSi(),
 			auction.getTradingLocation().getGu(),
 			auction.getTradingLocation().getDong(),
-			auction.getBookmarkCount()
+			auction.getBookmarkCount(),
+			auction.getCreatedAt().toString()
 		);
 	}
 

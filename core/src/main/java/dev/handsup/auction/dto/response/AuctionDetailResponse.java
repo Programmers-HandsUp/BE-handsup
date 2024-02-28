@@ -16,7 +16,8 @@ public record AuctionDetailResponse(
 	String gu,
 	String dong,
 
-	int bookmarkCount
+	int bookmarkCount,
+	String createdAt
 ) {
 	public static AuctionDetailResponse of(
 		Long auctionId,
@@ -33,10 +34,11 @@ public record AuctionDetailResponse(
 		String si,
 		String gu,
 		String dong,
-		int bookmarkCount
+		int bookmarkCount,
+		String createdAt
 	) {
 		return new AuctionDetailResponse(
 			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
-			tradeMethod, si, gu, dong, bookmarkCount);
+			tradeMethod, si, gu, dong, bookmarkCount, createdAt);
 	}
 }
