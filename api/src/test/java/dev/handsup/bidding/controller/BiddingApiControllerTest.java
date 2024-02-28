@@ -25,7 +25,6 @@ import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
-import dev.handsup.user.repository.UserRepository;
 
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
@@ -35,8 +34,6 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-	@Autowired
-	private UserRepository userRepository;
 	@Autowired
 	private BiddingRepository biddingRepository;
 
@@ -63,7 +60,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		ResultActions resultActions = mockMvc.perform(
 			MockMvcRequestBuilders
 				.post("/api/auctions/{auctionId}/bids", auction.getId())
-				.header(AUTHORIZATION, accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(toJson(request))
 		);

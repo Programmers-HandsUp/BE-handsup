@@ -24,7 +24,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Bidding API")
+@Tag(name = "입찰 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auctions")

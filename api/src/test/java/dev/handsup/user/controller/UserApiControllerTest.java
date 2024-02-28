@@ -11,21 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 
 import dev.handsup.common.support.ApiTestSupport;
-import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 
 @DisplayName("[UserApiController 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
-	@Autowired
-	private UserRepository userRepository;
-
-	private User user = UserFixture.user();
-
-	private JoinUserRequest request = JoinUserRequest.of(
-		user.getEmail(),
+	private final JoinUserRequest request = JoinUserRequest.of(
+		"hello12345@naver.com",
 		user.getPassword(),
 		user.getNickname(),
 		user.getAddress().getSi(),
@@ -33,11 +26,12 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getAddress().getDong(),
 		user.getProfileImageUrl()
 	);
+	@Autowired
+	private UserRepository userRepository;
 
 	@Test
 	@DisplayName("[회원가입 API를 호출하면 회원이 등록되고 회원 ID를 응답한다]")
 	void joinUserTest() throws Exception {
-
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/users")

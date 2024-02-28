@@ -35,7 +35,8 @@ public class AuctionApiController {
 	@PostMapping
 	public ResponseEntity<AuctionDetailResponse> registerAuction(
 		@Valid @RequestBody RegisterAuctionRequest request,
-		@Parameter(hidden = true) @JwtAuthorization User user) {
+		@Parameter(hidden = true) @JwtAuthorization User user
+	) {
 		AuctionDetailResponse response = auctionService.registerAuction(request, user);
 		return ResponseEntity.ok(response);
 	}

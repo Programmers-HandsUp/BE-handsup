@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Product extends TimeBaseEntity {
-	private static final String PRODUCT = "product";
+	private static final String PRODUCT_STRING = "product";
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -55,7 +55,7 @@ public class Product extends TimeBaseEntity {
 	@Builder
 	private Product(ProductStatus status, String description, PurchaseTime purchaseTime,
 		ProductCategory productCategory) {
-		Assert.hasText(description, getNotEmptyMessage(PRODUCT, "description"));
+		Assert.hasText(description, getNotEmptyMessage(PRODUCT_STRING, "description"));
 		this.status = status;
 		this.description = description;
 		this.purchaseTime = purchaseTime;

@@ -1,6 +1,7 @@
 package dev.handsup.auth.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -8,73 +9,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
-import dev.handsup.auth.dto.TokenReIssueApiRequest;
-import dev.handsup.auth.dto.request.AuthRequest;
-import dev.handsup.auth.dto.response.AuthResponse;
-import dev.handsup.auth.service.AuthService;
+import dev.handsup.auth.dto.request.LoginRequest;
+import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.common.support.ApiTestSupport;
-import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.JoinUserRequest;
-import dev.handsup.user.service.UserService;
+import jakarta.servlet.http.Cookie;
 
 @DisplayName("[AuthApiController 테스트]")
 class AuthApiControllerTest extends ApiTestSupport {
 
-	private final User user = UserFixture.user(1L);
-	@Autowired
-	private UserService userService;
-	@Autowired
-	private AuthService authService;
-	private AuthRequest authRequest;
+	private LoginRequest loginRequest;
 
 	@BeforeEach
 	void setUp() {
-		JoinUserRequest joinUserRequest = JoinUserRequest.of(
-			user.getEmail(),
-			user.getPassword(),
-			user.getNickname(),
-			user.getAddress().getSi(),
-			user.getAddress().getGu(),
-			user.getAddress().getDong(),
-			user.getProfileImageUrl()
-		);
-		userService.join(joinUserRequest);
-		authRequest = new AuthRequest(user.getEmail(), user.getPassword());
+		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[로그인 API를 호출하면 토큰이 응답된다]")
 	void loginTest() throws Exception {
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/login")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(authRequest))
+				.content(toJson(loginRequest))
 		);
 
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.accessToken").exists())
-			.andExpect(jsonPath("$.refreshToken").exists());
+			.andExpect(cookie().exists("refreshToken"))
+			.andExpect(cookie().value("refreshToken", not(emptyOrNullString())));
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[토큰 재발급 API를 호출하면 새로운 엑세스 토큰이 응답된다]")
 	void reIssueAccessTokenTest() throws Exception {
 		// given
-		AuthResponse authResponse = authService.login(authRequest);
-		String refreshToken = authResponse.refreshToken();
-		TokenReIssueApiRequest tokenReIssueApiRequest = new TokenReIssueApiRequest(refreshToken);
+		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
+		String refreshToken = loginDetailResponse.refreshToken();
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/token")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(tokenReIssueApiRequest))
+				.cookie(new Cookie("refreshToken", refreshToken))
 		);
 
 		// then
@@ -83,16 +66,17 @@ class AuthApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[로그아웃 API를 호출하면 200 OK 응답이 반환된다]")
 	void logoutTest() throws Exception {
 		// given
-		AuthResponse authResponse = authService.login(authRequest);
-		String accessToken = authResponse.accessToken();
+		LoginDetailResponse loginDetailResponse = authService.login(loginRequest);
+		String accessToken = loginDetailResponse.accessToken();
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/auth/logout")
-				.header("Authorization", accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 		);
 
 		// then

@@ -51,7 +51,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	void addBookmark() throws Exception {
 		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.bookmarkCount").value(1));
 	}
@@ -64,7 +64,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message")
 				.value(BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK.getMessage()))
@@ -80,7 +80,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount() - 1));
 	}
@@ -90,7 +90,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	void deleteBookmark_fails() throws Exception {
 		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getMessage()))
 			.andExpect(jsonPath("$.code").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getCode()));
@@ -101,7 +101,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	void getBookmarkStatusFalse() throws Exception {
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isBookmarked").value(false));
 	}
@@ -113,7 +113,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 		bookmarkRepository.save(bookmark);
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isBookmarked").value(true));
 	}
@@ -130,7 +130,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 		mockMvc.perform(get("/api/auctions/bookmarks")
 				.contentType(APPLICATION_JSON)
-				.header(AUTHORIZATION, accessToken))
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(2))
 			.andExpect(jsonPath("$.content[0].auctionId").value(auction.getId()))

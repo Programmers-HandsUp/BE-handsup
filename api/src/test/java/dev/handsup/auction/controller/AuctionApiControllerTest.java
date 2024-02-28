@@ -60,7 +60,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.header(AUTHORIZATION, accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.content(toJson(request))
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -97,7 +97,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		);
 
 		mockMvc.perform(post("/api/auctions")
-				.header(AUTHORIZATION, accessToken)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.content(toJson(request))
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
