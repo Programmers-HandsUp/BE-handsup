@@ -9,6 +9,7 @@ public record AuctionDetailResponse(
 	String title,
 	String productCategory,
 	int initPrice,
+	int currentBiddingPrice,
 	String endDate,
 	String productStatus,
 	String purchaseTime,
@@ -30,6 +31,7 @@ public record AuctionDetailResponse(
 		String title,
 		String productCategory,
 		int initPrice,
+		int currentBiddingPrice,
 		String endDate,
 		String productStatus,
 		String purchaseTime,
@@ -43,7 +45,7 @@ public record AuctionDetailResponse(
 		String createdAt
 	) {
 		return new AuctionDetailResponse(
-			auctionId, sellerId, title, productCategory, initPrice, endDate, productStatus, purchaseTime, description,
+			auctionId, sellerId, title, productCategory, initPrice, currentBiddingPrice, endDate, productStatus, purchaseTime, description,
 			tradeMethod, imageUrls, si, gu, dong, bookmarkCount, createdAt);
 	}
 }
