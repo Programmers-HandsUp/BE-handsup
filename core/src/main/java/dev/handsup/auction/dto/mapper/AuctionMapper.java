@@ -72,7 +72,7 @@ public class AuctionMapper {
 			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getBookmarkCount(),
 			auction.getTradingLocation().getDong(),
-			auction.getCreatedAt().toLocalDate().toString()
+			auction.getCreatedAt().toString()
 		);
 
 	}

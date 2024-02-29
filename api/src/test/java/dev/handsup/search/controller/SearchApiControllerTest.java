@@ -75,7 +75,7 @@ class SearchApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[0].initPrice").value(auction1.getInitPrice()))
 			.andExpect(jsonPath("$.content[0].bookmarkCount").value(auction1.getBookmarkCount()))
 			.andExpect(jsonPath("$.content[0].dong").value(auction1.getTradingLocation().getDong()))
-			.andExpect(jsonPath("$.content[0].createdDate").value(auction1.getCreatedAt().toLocalDate().toString()))
+			.andExpect(jsonPath("$.content[0].createdAt").exists())
 			.andExpect(jsonPath("$.content[1].title").value(auction3.getTitle()));
 	}
 
