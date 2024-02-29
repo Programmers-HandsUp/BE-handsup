@@ -13,6 +13,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
@@ -75,7 +76,18 @@ public class AuctionMapper {
 			auction.getTradingLocation().getDong(),
 			auction.getCreatedAt().toString()
 		);
+	}
 
+	public static RecommendAuctionResponse toRecommendAuctionResponse(Auction auction){
+		return RecommendAuctionResponse.of(
+			auction.getTitle(),
+			auction.getTradingLocation().getDong(),
+			auction.getCurrentBiddingPrice(),
+			auction.getProduct().getImages().get(0).getImageUrl(),
+			auction.getBookmarkCount(),
+			auction.getBiddingCount(),
+			auction.getCreatedAt().toString()
+		);
 	}
 
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
