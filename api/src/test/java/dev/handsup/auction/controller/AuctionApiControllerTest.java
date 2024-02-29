@@ -128,6 +128,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.productCategory")
 				.value(auction.getProduct().getProductCategory().getCategoryValue()))
 			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
+			.andExpect(jsonPath("$.currentBiddingPrice").value(auction.getCurrentBiddingPrice()))
 			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
 			.andExpect(jsonPath("$.productStatus").value(auction.getProduct().getStatus().getLabel()))
 			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
