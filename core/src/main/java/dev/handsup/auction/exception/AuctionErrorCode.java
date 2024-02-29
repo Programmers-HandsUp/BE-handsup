@@ -12,8 +12,9 @@ public enum AuctionErrorCode implements ErrorCode {
 	NOT_FOUND_PRODUCT_STATUS("상품 상태를 올바르게 입력해주세요.", "AU_001"),
 	NOT_FOUND_PURCHASE_TIME("구매 시기를 올바르게 입력해주세요.", "AU_002"),
 	NOT_FOUND_TADE_METHOD("거래 방법을 올바르게 입력해주세요.", "AU_003"),
-	NOT_FOUND_PRODUCT_CATEGORY("상품 카테고리를 올바르게 입력해주세요.", "AU_004");
-
+	NOT_FOUND_PRODUCT_CATEGORY("상품 카테고리를 올바르게 입력해주세요.", "AU_004"),
+	INVALID_SORT_INPUT("정렬 기준을 올바르게 입력해주세요.", "AU_005"),
+	EMPTY_SORT_INPUT("정렬 기준을 입력해주세요.", "AU_006");
 	private final String message;
 	private final String code;
 }
