@@ -22,8 +22,8 @@ public class BookmarkMapper {
 			auction.getId(),
 			auction.getTitle(),
 			auction.getStatus().getLabel(),
-			auction.getCreatedAt().toLocalDate().toString(),
-			null
+			auction.getProduct().getImages().get(0).getImageUrl(),
+			auction.getCreatedAt().toLocalDate().toString()
 		);
 	}
 

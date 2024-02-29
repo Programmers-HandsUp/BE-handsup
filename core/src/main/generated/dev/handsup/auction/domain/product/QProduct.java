@@ -31,6 +31,8 @@ public class QProduct extends EntityPathBase<Product> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final ListPath<ProductImage, QProductImage> images = this.<ProductImage, QProductImage>createList("images", ProductImage.class, QProductImage.class, PathInits.DIRECT2);
+
     public final dev.handsup.auction.domain.product.product_category.QProductCategory productCategory;
 
     public final EnumPath<dev.handsup.auction.domain.auction_field.PurchaseTime> purchaseTime = createEnum("purchaseTime", dev.handsup.auction.domain.auction_field.PurchaseTime.class);

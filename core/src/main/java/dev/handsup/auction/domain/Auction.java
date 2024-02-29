@@ -10,6 +10,7 @@ import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.util.Assert;
 
@@ -121,12 +122,12 @@ public class Auction extends TimeBaseEntity {
 
 	public static Auction of(User seller, String title, ProductCategory productCategory, int initPrice,
 		LocalDate endDate,
-		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod, String si,
-		String gu, String dong) {
+		ProductStatus status, PurchaseTime purchaseTime, String description, TradeMethod tradeMethod,
+		List<String> imageUrls, String si, String gu, String dong) {
 		return Auction.builder()
 			.seller(seller)
 			.title(title)
-			.product(Product.of(status, description, purchaseTime, productCategory))
+			.product(Product.of(status, description, purchaseTime, productCategory, imageUrls))
 			.initPrice(initPrice)
 			.endDate(endDate)
 			.tradingLocation(TradingLocation.of(si, gu, dong))
@@ -136,12 +137,12 @@ public class Auction extends TimeBaseEntity {
 
 	public static Auction of(Long id, User seller, String title, ProductCategory productCategory, int initPrice,
 		LocalDate endDate, ProductStatus status, PurchaseTime purchaseTime, String description,
-		TradeMethod tradeMethod, String si, String gu, String dong) {
+		TradeMethod tradeMethod, List<String> imageUrls, String si, String gu, String dong) {
 		return new Auction(
 			id,
 			seller,
 			title,
-			Product.of(status, description, purchaseTime, productCategory),
+			Product.of(status, description, purchaseTime, productCategory, imageUrls),
 			initPrice,
 			endDate,
 			TradingLocation.of(si, gu, dong),

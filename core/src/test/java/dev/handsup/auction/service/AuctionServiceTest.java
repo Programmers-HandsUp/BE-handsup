@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
@@ -50,6 +53,8 @@ class AuctionServiceTest {
 	void registerAuction() {
 		// given
 		Auction auction = AuctionFixture.auction(productCategory);
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
+
 		RegisterAuctionRequest request =
 			RegisterAuctionRequest.of(
 				"거의 새상품 버즈 팔아요",
@@ -60,6 +65,7 @@ class AuctionServiceTest {
 				PurchaseTime.UNDER_ONE_MONTH.getLabel(),
 				"거의 새상품이에요",
 				TradeMethod.DELIVER.getLabel(),
+				List.of("image.jpg"),
 				"서울시",
 				"성북구",
 				"동선동"
@@ -86,6 +92,7 @@ class AuctionServiceTest {
 	@Test
 	void getAuctionDetail() {
 		//given
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 		given(auctionRepository.findById(anyLong())).willReturn(Optional.of(auction));
 		//when
 		AuctionDetailResponse response = auctionService.getAuctionDetail(auction.getId());

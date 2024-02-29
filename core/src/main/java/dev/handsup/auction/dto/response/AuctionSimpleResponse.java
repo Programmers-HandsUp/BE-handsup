@@ -4,28 +4,29 @@ public record AuctionSimpleResponse(
 	Long auctionId,
 	String title,
 	int initPrice,
+	String imageUrl,
 	int bookmarkCount,
 	String dong,
-	String createdDate,
-	String profileImgUrl
+	String createdDate
+
 ) {
 	public static AuctionSimpleResponse of(
 		Long auctionId,
 		String title,
 		int initPrice,
+		String imageUrl,
 		int bookmarkCount,
 		String dong,
-		String createDate,
-		String profileImgUrl
+		String createDate
 	) {
 		return new AuctionSimpleResponse(
 			auctionId,
 			title,
 			initPrice,
+			imageUrl,
 			bookmarkCount,
 			dong,
-			createDate,
-			profileImgUrl
+			createDate
 		);
 	}
 }

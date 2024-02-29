@@ -7,16 +7,17 @@ public record FindUserBookmarkResponse(
 	Long auctionId,
 	String title,
 	String auctionStatus,
-	String createdDate,
-	String imgUrl
+	String imageUrl,
+	String createdDate
+
 ) {
 	public static FindUserBookmarkResponse of(
 		Long auctionId,
 		String title,
 		String auctionStatus,
-		String createdDate,
-		String imgUrl
+		String imageUrl,
+		String createdDate
 	) {
-		return new FindUserBookmarkResponse(auctionId, title, auctionStatus, createdDate, imgUrl);
+		return new FindUserBookmarkResponse(auctionId, title, auctionStatus, imageUrl, createdDate);
 	}
 }
