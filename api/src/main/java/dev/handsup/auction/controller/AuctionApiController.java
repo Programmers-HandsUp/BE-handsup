@@ -1,18 +1,22 @@
 package dev.handsup.auction.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.jwt.JwtAuthorization;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -47,6 +51,20 @@ public class AuctionApiController {
 	@GetMapping("/{auctionId}")
 	public ResponseEntity<AuctionDetailResponse> getAuctionDetail(@PathVariable("auctionId") Long auctionId) {
 		AuctionDetailResponse response = auctionService.getAuctionDetail(auctionId);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@Operation(summary = "메인 페이지 추천 API", description = "정렬 조건에 따라 경매를 추천한다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	@GetMapping("/recommend")
+	public ResponseEntity<PageResponse<RecommendAuctionResponse>> getRecommendAuctions(
+		@RequestParam(value = "si", required = false) String si,
+		@RequestParam(value = "gu", required = false) String gu,
+		@RequestParam(value = "dong", required = false) String dong,
+		Pageable pageable
+	) {
+		PageResponse<RecommendAuctionResponse> response = auctionService.getRecommendAuctions(si, gu, dong, pageable);
 		return ResponseEntity.ok(response);
 	}
 }
