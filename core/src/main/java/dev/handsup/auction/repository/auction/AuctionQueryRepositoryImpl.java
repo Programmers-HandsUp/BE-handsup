@@ -81,7 +81,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 			.findFirst()
 			.map(order -> switch (order.getProperty()) {
 				case "북마크수" -> auction.bookmarkCount.desc();
-				case "마감일" -> auction.endDate.desc();
+				case "마감일" -> auction.endDate.asc();
 				case "입찰수" -> auction.biddingCount.desc();
 				default -> auction.createdAt.desc();
 			})
@@ -93,7 +93,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 			.findFirst()
 			.map(order -> switch (order.getProperty()) {
 				case "북마크수" -> auction.bookmarkCount.desc();
-				case "마감일" -> auction.endDate.desc();
+				case "마감일" -> auction.endDate.asc();
 				case "입찰수" -> auction.biddingCount.desc();
 				case "최근생성" -> auction.createdAt.desc();
 				default -> throw new ValidationException(AuctionErrorCode.INVALID_SORT_INPUT); //기본값 비허용
