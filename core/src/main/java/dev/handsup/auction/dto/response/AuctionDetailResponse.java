@@ -45,7 +45,8 @@ public record AuctionDetailResponse(
 		String createdAt
 	) {
 		return new AuctionDetailResponse(
-			auctionId, sellerId, title, productCategory, initPrice, currentBiddingPrice, endDate, productStatus, purchaseTime, description,
+			auctionId, sellerId, title, productCategory, initPrice, currentBiddingPrice, endDate, productStatus,
+			purchaseTime, description,
 			tradeMethod, imageUrls, si, gu, dong, bookmarkCount, createdAt);
 	}
 }

@@ -222,7 +222,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@DisplayName("[입찰수 순으로 경매를 조회할 수 있다.]")
 	@Test
 	void sortAuctionByCriteria() {
-	    //given
+		//given
 		Auction auction1 = AuctionFixture.auction(category1);
 		ReflectionTestUtils.setField(auction1, "biddingCount", 4);
 		Auction auction2 = AuctionFixture.auction(category1);
@@ -230,7 +230,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 		auctionRepository.saveAll(List.of(auction1, auction2));
 		PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("입찰수"));
-	    //when
+		//when
 		List<Auction> auctions = auctionQueryRepository.sortAuctionByCriteria(null, null, null, pageRequest)
 			.getContent();
 		//then
@@ -241,7 +241,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@Test
 	void sortAuctionByCriteria2() {
 		//given
-		String si = "서울시", gu="서초구", dong1 = "방배동", dong2 = "반포동";
+		String si = "서울시", gu = "서초구", dong1 = "방배동", dong2 = "반포동";
 		Auction auction1 = AuctionFixture.auction(category1, si, gu, dong1);
 		ReflectionTestUtils.setField(auction1, "bookmarkCount", 4);
 		Auction auction2 = AuctionFixture.auction(category2, si, gu, dong1);

@@ -78,7 +78,7 @@ public class AuctionMapper {
 		);
 	}
 
-	public static RecommendAuctionResponse toRecommendAuctionResponse(Auction auction){
+	public static RecommendAuctionResponse toRecommendAuctionResponse(Auction auction) {
 		return RecommendAuctionResponse.of(
 			auction.getId(),
 			auction.getTitle(),

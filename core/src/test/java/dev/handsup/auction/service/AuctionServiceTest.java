@@ -128,7 +128,7 @@ class AuctionServiceTest {
 	void getRecommendAuctions() {
 		//given
 		PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("북마크수"));
-		ReflectionTestUtils.setField(auction, "createdAt",LocalDateTime.now());
+		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 		given(auctionQueryRepository.sortAuctionByCriteria(null, null, null, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
 		//when

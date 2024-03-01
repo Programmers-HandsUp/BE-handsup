@@ -48,7 +48,8 @@ public class AuctionService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<RecommendAuctionResponse> getRecommendAuctions(String si, String gu, String dong, Pageable pageable) {
+	public PageResponse<RecommendAuctionResponse> getRecommendAuctions(String si, String gu, String dong,
+		Pageable pageable) {
 		Slice<RecommendAuctionResponse> auctionResponsePage = auctionQueryRepository
 			.sortAuctionByCriteria(si, gu, dong, pageable)
 			.map(AuctionMapper::toRecommendAuctionResponse);

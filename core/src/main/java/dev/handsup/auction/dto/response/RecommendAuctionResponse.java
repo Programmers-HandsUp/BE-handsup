@@ -23,6 +23,6 @@ public record RecommendAuctionResponse(
 		String endDate
 	) {
 		return new RecommendAuctionResponse(
-			 auctionId, title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt, endDate);
+			auctionId, title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt, endDate);
 	}
 }

@@ -98,7 +98,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				case "최근생성" -> auction.createdAt.desc();
 				default -> throw new ValidationException(AuctionErrorCode.INVALID_SORT_INPUT); //기본값 비허용
 			})
-			.orElseThrow(()-> new ValidationException(AuctionErrorCode.EMPTY_SORT_INPUT)); //null 비허용
+			.orElseThrow(() -> new ValidationException(AuctionErrorCode.EMPTY_SORT_INPUT)); //null 비허용
 	}
 
 	private BooleanExpression keywordContains(String keyword) {
