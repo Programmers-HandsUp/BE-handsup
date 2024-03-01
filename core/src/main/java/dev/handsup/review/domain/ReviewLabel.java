@@ -1,12 +1,10 @@
 package dev.handsup.review.domain;
 
-import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.Builder;
@@ -24,27 +22,26 @@ public class ReviewLabel {
 	private Long id;
 
 	@Column(name = "review_label_value", nullable = false)
-	@Enumerated(STRING)
-	private ReviewLabelValue value;
+	private String value;
 
 	@Builder
-	private ReviewLabel(ReviewLabelValue value) {
+	private ReviewLabel(String value) {
 		this.value = value;
 	}
 
-	public static ReviewLabel from(ReviewLabelValue value) {
+	public static ReviewLabel from(String value) {
 		return ReviewLabel.builder()
 			.value(value)
 			.build();
 	}
 
 	//==테스트용 생성자==//
-	private ReviewLabel(Long id, ReviewLabelValue value) {
+	private ReviewLabel(Long id, String value) {
 		this.id = id;
 		this.value = value;
 	}
 
-	public static ReviewLabel getTestReviewLabel(Long id, ReviewLabelValue value) {
+	public static ReviewLabel getTestReviewLabel(Long id, String value) {
 		return new ReviewLabel(id, value);
 	}
 }
