@@ -118,11 +118,11 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	}
 
 	private BooleanExpression guEq(String gu) {
-		return hasText(gu) ? auction.tradingLocation.si.eq(gu) : null;
+		return hasText(gu) ? auction.tradingLocation.gu.eq(gu) : null;
 	}
 
 	private BooleanExpression dongEq(String dong) {
-		return hasText(dong) ? auction.tradingLocation.si.eq(dong) : null;
+		return hasText(dong) ? auction.tradingLocation.dong.eq(dong) : null;
 	}
 
 	private BooleanExpression initPriceBetween(Integer minPrice, Integer maxPrice) {
