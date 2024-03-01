@@ -18,7 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "Review API")
+@Tag(name = "리뷰 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auctions")
@@ -27,7 +27,7 @@ public class ReviewApiController {
 	private final ReviewService reviewService;
 
 	@PostMapping("/{auctionId}/reviews")
-	@Operation(summary = "거래 후기 등록 API", description = "거래 후기를 등록한다")
+	@Operation(summary = "리뷰 등록 API", description = "리뷰를 등록한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<ReviewResponse> registerReview(
 		@Valid @RequestBody RegisterReviewRequest request,
