@@ -8,7 +8,8 @@ public record RecommendAuctionResponse(
 	String imgUrl,
 	int bookmarkCount,
 	int biddingCount,
-	String createdAt
+	String createdAt,
+	String endDate
 ) {
 	public static RecommendAuctionResponse of(
 		Long auctionId,
@@ -18,9 +19,10 @@ public record RecommendAuctionResponse(
 		String imgUrl,
 		int bookmarkCount,
 		int biddingCount,
-		String createdAt
+		String createdAt,
+		String endDate
 	) {
 		return new RecommendAuctionResponse(
-			 auctionId, title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt);
+			 auctionId, title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt, endDate);
 	}
 }

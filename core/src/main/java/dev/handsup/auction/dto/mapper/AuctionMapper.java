@@ -87,7 +87,8 @@ public class AuctionMapper {
 			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getBookmarkCount(),
 			auction.getBiddingCount(),
-			auction.getCreatedAt().toString()
+			auction.getCreatedAt().toString(),
+			auction.getEndDate().toString()
 		);
 	}
 
