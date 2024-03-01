@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auth.dto.request.LoginRequest;
@@ -40,6 +41,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 
 		// then
 		actions.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.accessToken").exists())
 			.andExpect(cookie().exists("refreshToken"))
 			.andExpect(cookie().value("refreshToken", not(emptyOrNullString())));
@@ -62,6 +64,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 
 		// then
 		actions.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print())
 			.andExpect(content().string(not(emptyOrNullString())));
 	}
 
@@ -80,6 +83,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 		);
 
 		// then
-		actions.andExpect(status().isOk());
+		actions.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print());
 	}
 }

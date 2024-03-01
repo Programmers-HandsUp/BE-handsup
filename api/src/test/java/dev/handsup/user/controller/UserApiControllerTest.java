@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.user.dto.request.JoinUserRequest;
@@ -41,6 +42,7 @@ class UserApiControllerTest extends ApiTestSupport {
 
 		// then
 		actions.andExpect(status().isOk())
+			.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.userId").exists());
 
 		assertThat(userRepository.findByEmail(user.getEmail())).isPresent();

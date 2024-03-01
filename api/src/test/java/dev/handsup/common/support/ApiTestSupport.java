@@ -32,8 +32,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 
-;
-
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
