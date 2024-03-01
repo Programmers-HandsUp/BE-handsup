@@ -150,4 +150,22 @@ public class AuctionFixture {
 			DONG
 		);
 	}
+
+	public static Auction auction(ProductCategory productCategory, String si, String gu, String dong) {
+		return Auction.of(
+			UserFixture.user(),
+			TITLE,
+			productCategory,
+			10000,
+			LocalDate.parse(DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DIRECT,
+			List.of("image.jpg"),
+			si,
+			gu,
+			dong
+		);
+	}
 }

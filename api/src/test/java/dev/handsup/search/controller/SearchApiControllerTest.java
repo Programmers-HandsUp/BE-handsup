@@ -94,7 +94,7 @@ class SearchApiControllerTest extends ApiTestSupport {
 		mockMvc.perform(post("/api/auctions/search")
 				.content(toJson(condition))
 				.contentType(APPLICATION_JSON)
-				.param("sort", "bookmarkCount,desc"))
+				.param("sort", "북마크수"))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(3))
