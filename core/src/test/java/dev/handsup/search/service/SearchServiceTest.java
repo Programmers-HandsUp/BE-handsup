@@ -15,14 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
@@ -34,7 +31,6 @@ import dev.handsup.search.dto.PopularKeywordsResponse;
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
 	private final Auction auction = AuctionFixture.auction();
-	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 5;
 
@@ -51,7 +47,6 @@ class SearchServiceTest {
 	@Test
 	void searchAuctions() {
 		//given
-		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
 		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
@@ -99,20 +94,5 @@ class SearchServiceTest {
 			() -> assertThat(response.keywords().get(1).count())
 				.isEqualTo(popularKeywordResponse2.count())
 		);
-	}
-
-	@DisplayName("정렬 조건에 따라 추천 경매를 조회할 수 있다.")
-	@Test
-	void getRecommendAuctions() {
-		//given
-		PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("북마크수"));
-		ReflectionTestUtils.setField(auction, "createdAt",LocalDateTime.now());
-		given(auctionQueryRepository.sortAuctionByCriteria(null, null, null, pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
-		//when
-		PageResponse<RecommendAuctionResponse> response
-			= searchService.getRecommendAuctions(null, null, null, pageRequest);
-		//then
-		assertThat(response.content().get(0)).isNotNull();
 	}
 }

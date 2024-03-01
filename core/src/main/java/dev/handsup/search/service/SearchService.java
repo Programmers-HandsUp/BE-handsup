@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
@@ -35,13 +34,5 @@ public class SearchService {
 	@Transactional(readOnly = true)
 	public PopularKeywordsResponse getPopularKeywords() {
 		return SearchMapper.toPopularKeywordsResponse(redisSearchRepository.getPopularKeywords(10));
-	}
-
-	@Transactional(readOnly = true)
-	public PageResponse<RecommendAuctionResponse> getRecommendAuctions(String si, String gu, String dong, Pageable pageable) {
-		Slice<RecommendAuctionResponse> auctionResponsePage = auctionQueryRepository
-			.sortAuctionByCriteria(si, gu, dong, pageable)
-			.map(AuctionMapper::toRecommendAuctionResponse);
-		return AuctionMapper.toPageResponse(auctionResponsePage);
 	}
 }
