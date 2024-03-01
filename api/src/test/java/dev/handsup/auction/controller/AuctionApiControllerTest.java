@@ -50,20 +50,11 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[경매를 등록할 수 있다.]")
 	@Test
 	void registerAuction() throws Exception {
-		RegisterAuctionRequest request = RegisterAuctionRequest.of(
-			"거의 새상품 버즈 팔아요",
-			DIGITAL_DEVICE,
-			10000,
-			LocalDate.parse("2022-10-18"),
-			ProductStatus.NEW.getLabel(),
-			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
-			"거의 새상품이에요",
-			TradeMethod.DELIVER.getLabel(),
-			List.of("test.jpg")
-		);
+		RegisterAuctionRequest request = RegisterAuctionRequest.of("거의 새상품 버즈 팔아요", DIGITAL_DEVICE, 10000,
+			LocalDate.parse("2022-10-18"), ProductStatus.NEW.getLabel(), PurchaseTime.UNDER_ONE_MONTH.getLabel(),
+			"거의 새상품이에요", TradeMethod.DELIVER.getLabel(), List.of("test.jpg"));
 
-		mockMvc.perform(post("/api/auctions")
-				.header(AUTHORIZATION, "Bearer " + accessToken)
+		mockMvc.perform(post("/api/auctions").header(AUTHORIZATION, "Bearer " + accessToken)
 				.content(toJson(request))
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -86,30 +77,16 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@Test
 	void registerAuctionFails() throws Exception {
 		final String NOT_EXIST_CATEGORY = "아";
-		RegisterAuctionRequest request = RegisterAuctionRequest.of(
-			"거의 새상품 버즈 팔아요",
-			NOT_EXIST_CATEGORY,
-			10000,
-			LocalDate.parse("2022-10-18"),
-			ProductStatus.NEW.getLabel(),
-			PurchaseTime.UNDER_ONE_MONTH.getLabel(),
-			"거의 새상품이에요",
-			TradeMethod.DELIVER.getLabel(),
-			List.of("test.jpg"),
-			"서울시",
-			"성북구",
-			"동선동"
-		);
+		RegisterAuctionRequest request = RegisterAuctionRequest.of("거의 새상품 버즈 팔아요", NOT_EXIST_CATEGORY, 10000,
+			LocalDate.parse("2022-10-18"), ProductStatus.NEW.getLabel(), PurchaseTime.UNDER_ONE_MONTH.getLabel(),
+			"거의 새상품이에요", TradeMethod.DELIVER.getLabel(), List.of("test.jpg"), "서울시", "성북구", "동선동");
 
-		mockMvc.perform(post("/api/auctions")
-				.header(AUTHORIZATION, "Bearer " + accessToken)
+		mockMvc.perform(post("/api/auctions").header(AUTHORIZATION, "Bearer " + accessToken)
 				.content(toJson(request))
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message")
-				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getMessage()))
-			.andExpect(jsonPath("$.code")
-				.value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getCode()));
+			.andExpect(jsonPath("$.message").value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getMessage()))
+			.andExpect(jsonPath("$.code").value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getCode()));
 	}
 
 	@DisplayName("[경매를 상세정보를 조회할 수 있다.]")
@@ -120,14 +97,13 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		auctionRepository.save(auction);
 
 		//when, then
-		mockMvc.perform(get("/api/auctions/{auctionId}", auction.getId())
-				.contentType(APPLICATION_JSON))
+		mockMvc.perform(get("/api/auctions/{auctionId}", auction.getId()).contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
 			.andExpect(jsonPath("$.sellerId").value(user.getId()))
 			.andExpect(jsonPath("$.title").value(auction.getTitle()))
-			.andExpect(jsonPath("$.productCategory")
-				.value(auction.getProduct().getProductCategory().getCategoryValue()))
+			.andExpect(
+				jsonPath("$.productCategory").value(auction.getProduct().getProductCategory().getCategoryValue()))
 			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
 			.andExpect(jsonPath("$.currentBiddingPrice").value(auction.getCurrentBiddingPrice()))
 			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
@@ -153,8 +129,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
-		mockMvc.perform(get("/api/auctions/recommend")
-				.param("sort", "마감일")
+		mockMvc.perform(get("/api/auctions/recommend").param("sort", "마감일")
 				.param("si", si)
 				.param("gu", gu)
 				.param("dong", dong1)
@@ -162,9 +137,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(2))
 			.andExpect(jsonPath("$.content[0].auctionId").value(auction2.getId()))
-			.andExpect(jsonPath("$.content[0].createdAt").value(auction2.getCreatedAt().toString()))
+			.andExpect(jsonPath("$.content[0].endDate").value(auction2.getEndDate().toString()))
 			.andExpect(jsonPath("$.content[1].auctionId").value(auction1.getId()))
-			.andExpect(jsonPath("$.content[1].createdAt").value(auction1.getCreatedAt().toString()))
+			.andExpect(jsonPath("$.content[1].endDate").value(auction1.getEndDate().toString()))
 			.andExpect(jsonPath("$.hasNext").value(false));
 	}
 
@@ -178,9 +153,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
-		mockMvc.perform(get("/api/auctions/recommend")
-				.param("sort", "최근생성")
-				.contentType(APPLICATION_JSON))
+		mockMvc.perform(get("/api/auctions/recommend").param("sort", "최근생성").contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(3))
 			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
@@ -192,8 +165,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[정렬 조건이 없을 시 예외를 반환한다.]")
 	@Test
 	void getRecommendAuctions_fails() throws Exception {
-		mockMvc.perform(get("/api/auctions/recommend")
-				.contentType(APPLICATION_JSON))
+		mockMvc.perform(get("/api/auctions/recommend").contentType(APPLICATION_JSON))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.message").value(AuctionErrorCode.EMPTY_SORT_INPUT.getMessage()))
 			.andExpect(jsonPath("$.code").value(AuctionErrorCode.EMPTY_SORT_INPUT.getCode()));
@@ -202,9 +174,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[정렬 조건이 잘못되면 예외를 반환한다.]")
 	@Test
 	void getRecommendAuctions_fails2() throws Exception {
-		mockMvc.perform(get("/api/auctions/recommend")
-				.contentType(APPLICATION_JSON)
-				.param("sort", "NAN"))
+		mockMvc.perform(get("/api/auctions/recommend").contentType(APPLICATION_JSON).param("sort", "NAN"))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(jsonPath("$.message").value(AuctionErrorCode.INVALID_SORT_INPUT.getMessage()))
 			.andExpect(jsonPath("$.code").value(AuctionErrorCode.INVALID_SORT_INPUT.getCode()));
