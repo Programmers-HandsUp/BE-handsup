@@ -42,6 +42,7 @@ class AuctionServiceTest {
 
 	@Mock
 	private AuctionRepository auctionRepository;
+
 	@Mock
 	private ProductCategoryRepository productCategoryRepository;
 
@@ -112,5 +113,4 @@ class AuctionServiceTest {
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
 	}
-
 }
