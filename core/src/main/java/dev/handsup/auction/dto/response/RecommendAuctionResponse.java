@@ -1,6 +1,7 @@
 package dev.handsup.auction.dto.response;
 
 public record RecommendAuctionResponse(
+	Long auctionId,
 	String title,
 	String dong,
 	int currentBiddingPrice,
@@ -10,6 +11,7 @@ public record RecommendAuctionResponse(
 	String createdAt
 ) {
 	public static RecommendAuctionResponse of(
+		Long auctionId,
 		String title,
 		String dong,
 		int currentBiddingPrice,
@@ -19,6 +21,6 @@ public record RecommendAuctionResponse(
 		String createdAt
 	) {
 		return new RecommendAuctionResponse(
-			title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt);
+			 auctionId, title, dong, currentBiddingPrice, imgUrl, bookmarkCount, biddingCount, createdAt);
 	}
 }
