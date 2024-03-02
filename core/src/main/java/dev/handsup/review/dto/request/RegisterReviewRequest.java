@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 
+import dev.handsup.common.exception.CommonValidationError;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import lombok.Builder;
 @Builder(access = PRIVATE)
 public record RegisterReviewRequest(
 
-	@NotNull(message = "evaluationScore")
+	@NotNull(message = "evaluationScore 은 필수입니다.")
 	@Min(value = -2, message = "평가 점수는 -2 이상이어야 합니다.")
 	@Max(value = 2, message = "평가 점수는 2 이하이어야 합니다.")
 	int evaluationScore,
