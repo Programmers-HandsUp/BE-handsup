@@ -123,9 +123,10 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	void getRecommendAuctionsWithFilter() throws Exception {
 		//given
 		String si = "서울시", gu = "서초구", dong1 = "방배동", dong2 = "반포동";
-		Auction auction1 = AuctionFixture.auction(productCategory, "2024-03-11", si, gu, dong1);
-		Auction auction2 = AuctionFixture.auction(productCategory, "2024-03-07", si, gu, dong1);
-		Auction auction3 = AuctionFixture.auction(productCategory, "2024-03-08", si, gu, dong2);
+		String earlyEndDate = "2024-03-02", lateEndDate = "2024-03-10";
+		Auction auction1 = AuctionFixture.auction(productCategory, lateEndDate, si, gu, dong1);
+		Auction auction2 = AuctionFixture.auction(productCategory, earlyEndDate, si, gu, dong1);
+		Auction auction3 = AuctionFixture.auction(productCategory, lateEndDate, si, gu, dong2);
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
