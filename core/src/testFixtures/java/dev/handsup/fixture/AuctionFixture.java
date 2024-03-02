@@ -150,4 +150,22 @@ public class AuctionFixture {
 			DONG
 		);
 	}
+
+	public static Auction auction(ProductCategory productCategory, LocalDate endDate) {
+		return Auction.of(
+			UserFixture.user(),
+			TITLE,
+			productCategory,
+			10000,
+			endDate,
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DIRECT,
+			List.of("image.jpg"),
+			SI,
+			GU,
+			DONG
+		);
+	}
 }
