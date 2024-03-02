@@ -89,7 +89,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.code").value(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY.getCode()));
 	}
 
-	@DisplayName("[경매를 상세정보를 조회할 수 있다.]")
+	@DisplayName("[경매 상세정보를 조회할 수 있다.]")
 	@Test
 	void getAuctionDetail() throws Exception {
 		//given

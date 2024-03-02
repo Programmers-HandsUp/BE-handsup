@@ -55,7 +55,7 @@ public class AuctionApiController {
 	}
 
 	@NoAuth
-	@Operation(summary = "메인 페이지 추천 API", description = "정렬 조건에 따라 경매를 추천한다.")
+	@Operation(summary = "경매 추천 API", description = "정렬 조건에 따라 경매를 추천한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/recommend")
 	public ResponseEntity<PageResponse<RecommendAuctionResponse>> getRecommendAuctions(
