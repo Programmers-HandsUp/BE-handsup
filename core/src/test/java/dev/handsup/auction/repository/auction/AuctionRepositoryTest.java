@@ -84,7 +84,7 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	@DisplayName("[특정 날짜의 이전의 특정 경매 상태를 새로운 경매 상태로 변경한다.")
 	@Test
 	void updateAuctionStatus() {
-	    //given
+		//given
 		LocalDate today = LocalDate.now();
 		Auction auction1 = AuctionFixture.auction(category, today.minusDays(1));
 		Auction auction2 = AuctionFixture.auction(category, today);
@@ -92,12 +92,13 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
-		auctionRepository.updateAuctionStatus(AuctionStatus.BIDDING, AuctionStatus.TRADING, today); //벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
+		auctionRepository.updateAuctionStatus(AuctionStatus.BIDDING, AuctionStatus.TRADING,
+			today); //벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
 		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
 		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
 		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
 
-	    //then
+		//then
 		assertAll(
 			() -> assertThat(savedAuction1.getStatus()).isEqualTo(AuctionStatus.TRADING),
 			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING),
