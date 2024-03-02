@@ -22,8 +22,8 @@ class BiddingRepositoryTest extends DataJpaTestSupport {
 	@Autowired
 	private BiddingRepository biddingRepository;
 
-	private Auction auction = AuctionFixture.auction();
-	private User bidder = UserFixture.user();
+	private final Auction auction = AuctionFixture.auction();
+	private final User bidder = UserFixture.user();
 
 	@BeforeEach
 	void setUp() {
