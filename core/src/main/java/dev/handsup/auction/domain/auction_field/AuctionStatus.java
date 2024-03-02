@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum AuctionStatus {
 
-	PROGRESS("입찰중"),
+	BIDDING("입찰중"),
 	TRADING("거래중"),
 	COMPLETED("종료"),
 	CANCELED("취소");

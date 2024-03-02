@@ -92,7 +92,7 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
-		auctionRepository.updateAuctionStatus(AuctionStatus.PROGRESS, AuctionStatus.TRADING, today); //벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
+		auctionRepository.updateAuctionStatus(AuctionStatus.BIDDING, AuctionStatus.TRADING, today); //벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
 		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
 		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
 		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
@@ -100,8 +100,8 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	    //then
 		assertAll(
 			() -> assertThat(savedAuction1.getStatus()).isEqualTo(AuctionStatus.TRADING),
-			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.PROGRESS),
-			() -> assertThat(savedAuction3.getStatus()).isEqualTo(AuctionStatus.PROGRESS)
+			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING),
+			() -> assertThat(savedAuction3.getStatus()).isEqualTo(AuctionStatus.BIDDING)
 		);
 	}
 }

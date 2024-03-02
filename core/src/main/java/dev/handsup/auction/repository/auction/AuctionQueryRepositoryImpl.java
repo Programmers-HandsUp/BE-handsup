@@ -112,7 +112,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 
 	private BooleanExpression isProgressEq(Boolean isProgress) {
 		if (Boolean.TRUE.equals(isProgress)) {
-			return auction.status.eq(AuctionStatus.PROGRESS);
+			return auction.status.eq(AuctionStatus.BIDDING);
 		}
 		return null;
 	}

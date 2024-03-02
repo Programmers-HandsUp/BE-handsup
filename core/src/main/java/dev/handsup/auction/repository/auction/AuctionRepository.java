@@ -25,7 +25,7 @@ public interface AuctionRepository extends JpaRepository<Auction, Long> {
 		+ "where a.status = :currentStatus and a.endDate < :todayDate")
 	void updateAuctionStatus(
 		@Param("currentStatus") AuctionStatus currentStatus,
-		@Param("newStatus")AuctionStatus newStatus,
+		@Param("newStatus") AuctionStatus newStatus,
 		@Param("todayDate") LocalDate todayDate
 	);
 }
