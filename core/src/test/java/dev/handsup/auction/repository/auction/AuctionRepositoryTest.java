@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
@@ -80,13 +79,12 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 
 	}
 
-	@Transactional
-	@DisplayName("[특정 날짜의 이전의 특정 경매 상태를 새로운 경매 상태로 변경한다.")
+	@DisplayName("[마감 일자가 지난 경매의 상태를 새로운 경매 상태로 변경한다.")
 	@Test
 	void updateAuctionStatus() {
 		//given
 		LocalDate today = LocalDate.now();
-		Auction auction1 = AuctionFixture.auction(category, today.minusDays(1));
+		Auction auction1 = AuctionFixture.auction(category, today.minusDays(1)); // 마감 일자(endDate)
 		Auction auction2 = AuctionFixture.auction(category, today);
 		Auction auction3 = AuctionFixture.auction(category, today.plusDays(1));
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
