@@ -87,7 +87,7 @@ public class Auction extends TimeBaseEntity {
 
 	@Column(name = "auction_status", nullable = false)
 	@Enumerated(STRING)
-	private AuctionStatus status = PROGRESS;
+	private AuctionStatus status = BIDDING;
 
 	@Column(name = "bidding_count", nullable = false)
 	private int biddingCount = 0;
