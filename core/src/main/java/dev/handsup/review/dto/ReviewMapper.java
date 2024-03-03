@@ -33,4 +33,5 @@ public class ReviewMapper {
 			review.getWriter().getId()
 		);
 	}
+
 }

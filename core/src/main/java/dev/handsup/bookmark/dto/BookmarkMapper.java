@@ -2,11 +2,8 @@ package dev.handsup.bookmark.dto;
 
 import static lombok.AccessLevel.*;
 
-import org.springframework.data.domain.Slice;
-
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.bookmark.domain.Bookmark;
-import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
@@ -33,10 +30,6 @@ public class BookmarkMapper {
 
 	public static GetBookmarkStatusResponse toGetBookmarkStatusResponse(boolean isBookmarked) {
 		return new GetBookmarkStatusResponse(isBookmarked);
-	}
-
-	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {
-		return PageResponse.of(page);
 	}
 
 }
