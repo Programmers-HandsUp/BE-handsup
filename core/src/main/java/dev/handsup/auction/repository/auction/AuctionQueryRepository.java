@@ -8,4 +8,6 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 
 public interface AuctionQueryRepository {
 	Slice<Auction> searchAuctions(AuctionSearchCondition auctionSearchCondition, Pageable pageable);
+
+	Slice<Auction> sortAuctionByCriteria(String si, String gu, String dong, Pageable pageable);
 }

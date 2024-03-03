@@ -50,6 +50,7 @@ public class BiddingService {
 		Bidding savedBidding = biddingRepository.save(
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
+		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
 		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
 

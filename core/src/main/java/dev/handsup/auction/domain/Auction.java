@@ -72,6 +72,9 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "init_price", nullable = false)
 	private int initPrice;
 
+	@Column(name = "current_bidding_price", nullable = false)
+	private int currentBiddingPrice;
+
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
 
@@ -84,7 +87,7 @@ public class Auction extends TimeBaseEntity {
 
 	@Column(name = "auction_status", nullable = false)
 	@Enumerated(STRING)
-	private AuctionStatus status = PROGRESS;
+	private AuctionStatus status = BIDDING;
 
 	@Column(name = "bidding_count", nullable = false)
 	private int biddingCount = 0;
@@ -101,6 +104,7 @@ public class Auction extends TimeBaseEntity {
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
+		this.currentBiddingPrice = initPrice;
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
@@ -115,6 +119,7 @@ public class Auction extends TimeBaseEntity {
 		this.title = title;
 		this.product = product;
 		this.initPrice = initPrice;
+		this.currentBiddingPrice = initPrice;
 		this.endDate = endDate;
 		this.tradingLocation = tradingLocation;
 		this.tradeMethod = tradeMethod;
@@ -160,5 +165,9 @@ public class Auction extends TimeBaseEntity {
 
 	public void decreaseBookmarkCount() {
 		bookmarkCount--;
+	}
+
+	public void updateCurrentBiddingPrice(int currentBiddingPrice) {
+		this.currentBiddingPrice = currentBiddingPrice;
 	}
 }
