@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
@@ -24,15 +23,10 @@ import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
-import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
 
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
-	private final User user = UserFixture.user();
-	@Autowired
-	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
