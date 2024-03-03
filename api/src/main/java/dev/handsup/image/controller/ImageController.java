@@ -28,7 +28,7 @@ public class ImageController {
 	public ResponseEntity<UploadImagesResponse> uploadImages(
 		@ModelAttribute @Valid UploadImagesRequest uploadImagesRequest
 	) {
-		List<String> imgUrls = s3Service.uploadImages(uploadImagesRequest.images());
-		return ResponseEntity.ok(UploadImagesResponse.from(imgUrls));
+		List<String> imageUrls = s3Service.uploadImages(uploadImagesRequest.images());
+		return ResponseEntity.ok(UploadImagesResponse.from(imageUrls));
 	}
 }

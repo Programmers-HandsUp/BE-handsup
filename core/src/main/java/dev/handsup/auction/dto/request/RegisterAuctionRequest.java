@@ -1,6 +1,7 @@
 package dev.handsup.auction.dto.request;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -36,6 +37,8 @@ public record RegisterAuctionRequest(
 	@NotBlank(message = "tradeMethod 은 필수입니다.")
 	String tradeMethod,
 
+	@NotNull(message = "이미지 주소는 필수값입니다.")
+	List<String> imageUrls,
 	String si,
 	String gu,
 	String dong
@@ -49,12 +52,15 @@ public record RegisterAuctionRequest(
 		String purchaseTime,
 		String description,
 		String tradeMethod,
+		List<String> imageUrls,
 		String si,
 		String gu,
 		String dong
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, si, gu,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod,
+			imageUrls,
+			si, gu,
 			dong);
 	}
 
@@ -66,10 +72,13 @@ public record RegisterAuctionRequest(
 		String productStatus,
 		String purchaseTime,
 		String description,
-		String tradeMethod
+		String tradeMethod,
+		List<String> imageUrls
 	) {
 		return new RegisterAuctionRequest(
-			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod, null,
+			title, productCategory, initPrice, endDate, productStatus, purchaseTime, description, tradeMethod,
+			imageUrls,
+			null,
 			null, null);
 	}
 }

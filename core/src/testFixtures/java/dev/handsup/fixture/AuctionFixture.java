@@ -3,6 +3,7 @@ package dev.handsup.fixture;
 import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
@@ -35,6 +36,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -52,6 +54,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -69,6 +72,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -86,6 +90,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -103,6 +108,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			tradeMethod,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -120,6 +126,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
@@ -137,6 +144,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
