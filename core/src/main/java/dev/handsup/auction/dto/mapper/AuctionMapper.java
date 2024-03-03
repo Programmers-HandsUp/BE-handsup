@@ -11,6 +11,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
