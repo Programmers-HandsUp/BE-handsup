@@ -12,7 +12,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -23,6 +22,8 @@ import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
+import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.common.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -48,7 +49,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				isNewProductEq(condition.isNewProduct()),
 				isProgressEq(condition.isProgress())
 			)
-			.orderBy(auctionSort(pageable))
+			.orderBy(searchAuctionSort(pageable))
 			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
 			.fetch();
@@ -56,19 +57,48 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
-	private OrderSpecifier<?> auctionSort(Pageable pageable) {
+	@Override
+	public Slice<Auction> sortAuctionByCriteria(String si, String gu, String dong, Pageable pageable) {
+		List<Auction> content = queryFactory.select(QAuction.auction)
+			.from(auction)
+			.join(auction.product, product).fetchJoin()
+			.where(
+				auction.status.eq(AuctionStatus.PROGRESS),
+				siEq(si),
+				guEq(gu),
+				dongEq(dong)
+			)
+			.orderBy(recommendAuctionSort(pageable))
+			.limit(pageable.getPageSize() + 1L)
+			.offset(pageable.getOffset())
+			.fetch();
+		boolean hasNext = hasNext(pageable.getPageSize(), content);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	private OrderSpecifier<?> searchAuctionSort(Pageable pageable) {
 		return pageable.getSort().stream()
 			.findFirst()
-			.map(order -> {
-				Order direction = order.getDirection().isAscending() ? Order.ASC : Order.DESC;
-				return switch (order.getProperty()) {
-					case "bookmarkCount" -> new OrderSpecifier<>(direction, auction.bookmarkCount);
-					case "endDate" -> new OrderSpecifier<>(direction, auction.endDate);
-					case "initPrice" -> new OrderSpecifier<>(direction, auction.initPrice);
-					default -> auction.createdAt.desc();
-				};
+			.map(order -> switch (order.getProperty()) {
+				case "북마크수" -> auction.bookmarkCount.desc();
+				case "마감일" -> auction.endDate.asc();
+				case "입찰수" -> auction.biddingCount.desc();
+				default -> auction.createdAt.desc();
 			})
-			.orElse(auction.createdAt.desc());
+			.orElse(auction.createdAt.desc()); // 기본값 최신순
+	}
+
+	private OrderSpecifier<?> recommendAuctionSort(Pageable pageable) {
+		return pageable.getSort().stream()
+			.findFirst()
+			.map(order -> switch (order.getProperty()) {
+				case "북마크수" -> auction.bookmarkCount.desc();
+				case "마감일" -> auction.endDate.asc();
+				case "입찰수" -> auction.biddingCount.desc();
+				case "최근생성" -> auction.createdAt.desc();
+				default -> throw new ValidationException(AuctionErrorCode.INVALID_SORT_INPUT); //기본값 비허용
+			})
+			.orElseThrow(() -> new ValidationException(AuctionErrorCode.EMPTY_SORT_INPUT)); //null 비허용
 	}
 
 	private BooleanExpression keywordContains(String keyword) {
@@ -88,11 +118,11 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	}
 
 	private BooleanExpression guEq(String gu) {
-		return hasText(gu) ? auction.tradingLocation.si.eq(gu) : null;
+		return hasText(gu) ? auction.tradingLocation.gu.eq(gu) : null;
 	}
 
 	private BooleanExpression dongEq(String dong) {
-		return hasText(dong) ? auction.tradingLocation.si.eq(dong) : null;
+		return hasText(dong) ? auction.tradingLocation.dong.eq(dong) : null;
 	}
 
 	private BooleanExpression initPriceBetween(Integer minPrice, Integer maxPrice) {
