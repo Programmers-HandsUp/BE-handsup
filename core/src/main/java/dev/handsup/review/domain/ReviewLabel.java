@@ -36,12 +36,9 @@ public class ReviewLabel {
 	}
 
 	//==테스트용 생성자==//
-	private ReviewLabel(Long id, String value) {
+	public ReviewLabel(Long id, String value) {
 		this.id = id;
 		this.value = value;
 	}
 
-	public static ReviewLabel getTestReviewLabel(Long id, String value) {
-		return new ReviewLabel(id, value);
-	}
 }
