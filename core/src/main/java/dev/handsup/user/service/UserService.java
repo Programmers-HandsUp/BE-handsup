@@ -10,7 +10,9 @@ import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
+import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
+import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -42,5 +44,10 @@ public class UserService {
 		validateDuplicateEmail(request.email());
 		User user = UserMapper.toUser(request, encryptHelper);
 		return userRepository.save(user).getId();
+	}
+
+	public EmailAvailabilityResponse isEmailAvailable(EmailAvailibilityRequest request) {
+		boolean isEmailAvailable = userRepository.findByEmail(request.email()).isEmpty();
+		return EmailAvailabilityResponse.from(isEmailAvailable);
 	}
 }
