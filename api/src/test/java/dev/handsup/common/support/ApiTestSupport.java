@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
@@ -42,12 +43,15 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected final User user = UserFixture.user();
 	protected String accessToken;
 	protected String refreshToken;
+
 	@Autowired
 	protected MockMvc mockMvc;
 	@Autowired
 	protected ObjectMapper objectMapper;
 	@Autowired
 	protected UserRepository userRepository;
+	@Autowired
+	protected AuctionRepository auctionRepository;
 	@Autowired
 	protected AuthService authService;
 

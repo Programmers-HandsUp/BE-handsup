@@ -22,4 +22,8 @@ public final class ReviewFixture {
 	public static Review review(int evaluationScore) {
 		return Review.of(evaluationScore, CONTENT, AUCTION, WRITER);
 	}
+
+	public static Review review(String content, Auction auction) {
+		return Review.of(EVALUATION_SCORE, content, auction, WRITER);
+	}
 }

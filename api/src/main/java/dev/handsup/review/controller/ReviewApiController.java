@@ -1,6 +1,8 @@
 package dev.handsup.review.controller;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.jwt.JwtAuthorization;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
 import dev.handsup.review.dto.response.ReviewResponse;
 import dev.handsup.review.service.ReviewService;
@@ -39,6 +42,17 @@ public class ReviewApiController {
 			auctionId,
 			writer
 		);
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/{auctionId}/reviews")
+	@Operation(summary = "경매 리뷰 조회 API", description = "해당 경매의 리뷰를 전체 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<PageResponse<ReviewResponse>> getReviewsOfAuction(
+		@PathVariable Long auctionId,
+		Pageable pageable
+	) {
+		PageResponse<ReviewResponse> response = reviewService.getReviewsOfAuction(auctionId, pageable);
 		return ResponseEntity.ok(response);
 	}
 }

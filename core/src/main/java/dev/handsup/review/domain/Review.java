@@ -100,7 +100,7 @@ public class Review extends TimeBaseEntity {
 	}
 
 	//==테스트용 생성자==//
-	private Review(
+	public Review(
 		Long id,
 		int evaluationScore,
 		String content,
@@ -116,13 +116,4 @@ public class Review extends TimeBaseEntity {
 		this.writer = writer;
 	}
 
-	public static Review getTestReview(
-		Long id,
-		int evaluationScore,
-		String content,
-		Auction auction,
-		User writer
-	) {
-		return new Review(id, evaluationScore, content, auction, writer);
-	}
 }
