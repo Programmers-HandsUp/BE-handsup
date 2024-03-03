@@ -26,6 +26,8 @@ class UserReviewLabelRepositoryTest extends DataJpaTestSupport {
 	private TestEntityManager entityManager;
 	@Autowired
 	private UserReviewLabelRepository userReviewLabelRepository;
+	@Autowired
+	private ReviewLabelRepository reviewLabelRepository;
 
 	private final User user = UserFixture.user();
 
@@ -35,20 +37,17 @@ class UserReviewLabelRepositoryTest extends DataJpaTestSupport {
 	void testUpdateCount() {
 		// given
 		ReviewLabel reviewLabel = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
-		entityManager.persist(reviewLabel);
+		reviewLabelRepository.save(reviewLabel);
+
 		UserReviewLabel userReviewLabel = UserReviewLabel.of(reviewLabel, user);
 		int beforeUpdateCount = 5;
 		ReflectionTestUtils.setField(userReviewLabel, "count", beforeUpdateCount);
-		entityManager.persist(userReviewLabel);
-		entityManager.flush();
 		userReviewLabelRepository.save(userReviewLabel);
 
 		// when
 		int afterUpdateCount = 10;
 		userReviewLabelRepository.updateCount(userReviewLabel.getId(), afterUpdateCount);
-
-		UserReviewLabel refreshedUserReviewLabel = entityManager.find(UserReviewLabel.class, userReviewLabel.getId());
-		entityManager.refresh(refreshedUserReviewLabel);
+		entityManager.refresh(userReviewLabel);
 
 		// then
 		Optional<UserReviewLabel> updatedUserReviewLabel = userReviewLabelRepository.findById(userReviewLabel.getId());
