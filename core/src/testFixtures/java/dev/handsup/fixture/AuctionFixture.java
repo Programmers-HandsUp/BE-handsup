@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class AuctionFixture {
 
 	static final String TITLE = "거의 새상품 버즈 팔아요";
-	static final String DATE = "2022-10-18";
+	static final String END_DATE = "2022-10-18";
 	static final String DIGITAL_DEVICE = "디지털 기기";
 	static final String DESCRIPTION = "거의 새상품이에요";
 	static final String SI = "서울시";
@@ -31,7 +31,7 @@ public class AuctionFixture {
 			TITLE,
 			ProductCategory.of(DIGITAL_DEVICE),
 			10000,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -49,7 +49,7 @@ public class AuctionFixture {
 			TITLE,
 			productCategory,
 			10000,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -67,7 +67,7 @@ public class AuctionFixture {
 			TITLE,
 			productCategory,
 			initPrice,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -85,7 +85,7 @@ public class AuctionFixture {
 			TITLE,
 			productCategory,
 			10000,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			productStatus,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -103,7 +103,7 @@ public class AuctionFixture {
 			TITLE,
 			productCategory,
 			10000,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -121,7 +121,7 @@ public class AuctionFixture {
 			title,
 			productCategory,
 			10000,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -139,7 +139,7 @@ public class AuctionFixture {
 			title,
 			productCategory,
 			initPrice,
-			LocalDate.parse(DATE),
+			LocalDate.parse(END_DATE),
 			ProductStatus.NEW,
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
@@ -148,6 +148,42 @@ public class AuctionFixture {
 			SI,
 			GU,
 			DONG
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, String si, String gu, String dong) {
+		return Auction.of(
+			UserFixture.user(),
+			TITLE,
+			productCategory,
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DIRECT,
+			List.of("image.jpg"),
+			si,
+			gu,
+			dong
+		);
+	}
+
+	public static Auction auction(ProductCategory productCategory, String endDate, String si, String gu, String dong) {
+		return Auction.of(
+			UserFixture.user(),
+			TITLE,
+			productCategory,
+			10000,
+			LocalDate.parse(endDate),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DIRECT,
+			List.of("image.jpg"),
+			si,
+			gu,
+			dong
 		);
 	}
 

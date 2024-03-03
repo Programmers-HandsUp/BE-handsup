@@ -18,7 +18,6 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
@@ -31,7 +30,7 @@ import dev.handsup.search.dto.PopularKeywordsResponse;
 @DisplayName("[검색 service 테스트]")
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
-	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final Auction auction = AuctionFixture.auction();
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 5;
 
@@ -48,7 +47,6 @@ class SearchServiceTest {
 	@Test
 	void searchAuctions() {
 		//given
-		Auction auction = AuctionFixture.auction(ProductCategory.of(DIGITAL_DEVICE));
 		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
 
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
@@ -57,7 +55,7 @@ class SearchServiceTest {
 			.build();
 
 		given(auctionQueryRepository.searchAuctions(condition, pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, true));
+			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
 
 		//when
 		PageResponse<AuctionSimpleResponse> response

@@ -3,30 +3,30 @@ package dev.handsup.auction.dto.response;
 public record AuctionSimpleResponse(
 	Long auctionId,
 	String title,
-	int initPrice,
+	int currentBiddingPrice,
 	String imageUrl,
 	int bookmarkCount,
 	String dong,
-	String createdDate
+	String createdAt
 
 ) {
 	public static AuctionSimpleResponse of(
 		Long auctionId,
 		String title,
-		int initPrice,
+		int currentBiddingPrice,
 		String imageUrl,
 		int bookmarkCount,
 		String dong,
-		String createDate
+		String createdAt
 	) {
 		return new AuctionSimpleResponse(
 			auctionId,
 			title,
-			initPrice,
+			currentBiddingPrice,
 			imageUrl,
 			bookmarkCount,
 			dong,
-			createDate
+			createdAt
 		);
 	}
 }

@@ -72,10 +72,10 @@ class SearchApiControllerTest extends ApiTestSupport {
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].title").value(auction1.getTitle()))
-			.andExpect(jsonPath("$.content[0].initPrice").value(auction1.getInitPrice()))
+			.andExpect(jsonPath("$.content[0].currentBiddingPrice").value(auction1.getCurrentBiddingPrice()))
 			.andExpect(jsonPath("$.content[0].bookmarkCount").value(auction1.getBookmarkCount()))
 			.andExpect(jsonPath("$.content[0].dong").value(auction1.getTradingLocation().getDong()))
-			.andExpect(jsonPath("$.content[0].createdDate").value(auction1.getCreatedAt().toLocalDate().toString()))
+			.andExpect(jsonPath("$.content[0].createdAt").exists())
 			.andExpect(jsonPath("$.content[1].title").value(auction3.getTitle()));
 	}
 
@@ -94,7 +94,7 @@ class SearchApiControllerTest extends ApiTestSupport {
 		mockMvc.perform(post("/api/auctions/search")
 				.content(toJson(condition))
 				.contentType(APPLICATION_JSON)
-				.param("sort", "bookmarkCount,desc"))
+				.param("sort", "북마크수"))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(3))

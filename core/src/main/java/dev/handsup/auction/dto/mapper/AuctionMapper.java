@@ -13,6 +13,7 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,7 @@ public class AuctionMapper {
 			auction.getTitle(),
 			auction.getProduct().getProductCategory().getCategoryValue(),
 			auction.getInitPrice(),
+			auction.getCurrentBiddingPrice(),
 			auction.getEndDate().toString(),
 			auction.getProduct().getStatus().getLabel(),
 			auction.getProduct().getPurchaseTime().getLabel(),
@@ -68,13 +70,26 @@ public class AuctionMapper {
 		return AuctionSimpleResponse.of(
 			auction.getId(),
 			auction.getTitle(),
-			auction.getInitPrice(),
+			auction.getCurrentBiddingPrice(),
 			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getBookmarkCount(),
 			auction.getTradingLocation().getDong(),
-			auction.getCreatedAt().toLocalDate().toString()
+			auction.getCreatedAt().toString()
 		);
+	}
 
+	public static RecommendAuctionResponse toRecommendAuctionResponse(Auction auction) {
+		return RecommendAuctionResponse.of(
+			auction.getId(),
+			auction.getTitle(),
+			auction.getTradingLocation().getDong(),
+			auction.getCurrentBiddingPrice(),
+			auction.getProduct().getImages().get(0).getImageUrl(),
+			auction.getBookmarkCount(),
+			auction.getBiddingCount(),
+			auction.getCreatedAt().toString(),
+			auction.getEndDate().toString()
+		);
 	}
 
 	public static <T> PageResponse<T> toPageResponse(Slice<T> page) {

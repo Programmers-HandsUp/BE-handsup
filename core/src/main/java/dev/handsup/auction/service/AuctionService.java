@@ -2,6 +2,8 @@ package dev.handsup.auction.service;
 
 import static dev.handsup.auction.exception.AuctionErrorCode.*;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,9 +12,12 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +28,7 @@ public class AuctionService {
 
 	private final AuctionRepository auctionRepository;
 	private final ProductCategoryRepository productCategoryRepository;
+	private final AuctionQueryRepository auctionQueryRepository;
 
 	public Auction getAuction(Long auctionId) {
 		return auctionRepository.findById(auctionId)
@@ -39,6 +45,15 @@ public class AuctionService {
 	public AuctionDetailResponse getAuctionDetail(Long auctionId) {
 		Auction auction = getAuction(auctionId);
 		return AuctionMapper.toAuctionDetailResponse(auction);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<RecommendAuctionResponse> getRecommendAuctions(String si, String gu, String dong,
+		Pageable pageable) {
+		Slice<RecommendAuctionResponse> auctionResponsePage = auctionQueryRepository
+			.sortAuctionByCriteria(si, gu, dong, pageable)
+			.map(AuctionMapper::toRecommendAuctionResponse);
+		return AuctionMapper.toPageResponse(auctionResponsePage);
 	}
 
 	private ProductCategory getProductCategoryEntity(RegisterAuctionRequest request) {
