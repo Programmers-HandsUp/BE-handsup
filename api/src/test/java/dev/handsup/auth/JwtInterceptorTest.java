@@ -61,9 +61,7 @@ class JwtInterceptorTest {
 	@Test
 	@DisplayName("[토큰이 없고 @NoAuth 없으면 -> 실패]")
 	void shouldThrowExceptionWhenTokenIsMissing() {
-		assertThatThrownBy(() -> jwtInterceptor.preHandle(request, response, handlerMethod))
-			.isInstanceOf(NotFoundException.class)
-			.hasMessageContaining(NOT_FOUND_ACCESS_TOKEN_IN_REQUEST.getMessage());
+		assertThat(jwtInterceptor.preHandle(request, response, handlerMethod)).isFalse();
 	}
 
 	@Test
@@ -75,9 +73,7 @@ class JwtInterceptorTest {
 			.when(jwtProvider).validateToken("invalidToken");
 
 		// when, then
-		assertThatThrownBy(() -> jwtInterceptor.preHandle(request, response, handlerMethod))
-			.isInstanceOf(AuthException.class)
-			.hasMessageContaining(TOKEN_EXPIRED.getMessage());
+		assertThat(jwtInterceptor.preHandle(request, response, handlerMethod)).isFalse();
 	}
 
 }

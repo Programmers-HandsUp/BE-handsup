@@ -1,7 +1,6 @@
 package dev.handsup.auth.jwt;
 
 import static dev.handsup.auth.dto.AuthMapper.*;
-import static dev.handsup.auth.exception.AuthErrorCode.*;
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -9,8 +8,8 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import dev.handsup.auth.annotation.NoAuth;
-import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.service.JwtProvider;
+import dev.handsup.common.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +31,24 @@ public class JwtInterceptor implements HandlerInterceptor {
 		@NonNull HttpServletResponse response,
 		@NonNull Object handler
 	) {
-		if (isPresentAnnotation(handler)) {
+		try {
+			if (request.getMethod().equals("OPTIONS")) {
+				return true;
+			}
+
+			if (isPresentAnnotation(handler)) {
+				return true;
+			}
+
+			String accessToken = toAccessToken(request);
+			jwtProvider.validateToken(accessToken);
 			return true;
+		} catch (NotFoundException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 상태 코드 설정
+			return false;
+		} catch (Exception e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500 상태 코드 설정
+			return false;
 		}
-
-		String accessToken = toAccessToken(request);
-		if (accessToken == null) {
-			throw new AuthException(NOT_FOUND_ACCESS_TOKEN_IN_REQUEST);
-		}
-
-		jwtProvider.validateToken(accessToken);
-		return true;
 	}
 }
