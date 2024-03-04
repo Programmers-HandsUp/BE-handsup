@@ -10,10 +10,10 @@ import lombok.Builder;
 public record LoginRequest(
 
 	@Email
-	@NotBlank(message = "email 값이 공백입니다.")
+	@NotBlank(message = "email 은 필수입니다.")
 	String email,
 
-	@NotBlank(message = "password 값이 공백입니다.")
+	@NotBlank(message = "password 은 필수입니다.")
 	String password
 ) {
 	public static LoginRequest of(String email, String password) {

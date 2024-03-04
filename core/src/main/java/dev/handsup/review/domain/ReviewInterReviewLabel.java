@@ -12,6 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,4 +37,18 @@ public class ReviewInterReviewLabel {
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private ReviewLabel reviewLabel;
+
+	@Builder
+	private ReviewInterReviewLabel(Review review, ReviewLabel reviewLabel) {
+		this.review = review;
+		this.reviewLabel = reviewLabel;
+	}
+
+	public static ReviewInterReviewLabel of(Review review, ReviewLabel reviewLabel) {
+		return ReviewInterReviewLabel.builder()
+			.review(review)
+			.reviewLabel(reviewLabel)
+			.build();
+	}
+
 }

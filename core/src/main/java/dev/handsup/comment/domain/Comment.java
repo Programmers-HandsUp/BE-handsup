@@ -1,10 +1,11 @@
-package dev.handsup.auction.domain;
+package dev.handsup.comment.domain;
 
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import dev.handsup.auction.domain.Auction;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
@@ -38,15 +39,38 @@ public class Comment extends TimeBaseEntity {
 	private Auction auction;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id",
+	@JoinColumn(name = "writer_id",
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private User user;
+	private User writer;
 
 	@Builder
-	public Comment(String content, Auction auction, User user) {
+	private Comment(String content, Auction auction, User writer) {
 		this.content = content;
 		this.auction = auction;
-		this.user = user;
+		this.writer = writer;
 	}
+
+	public static Comment of(String content, Auction auction, User writer) {
+		return Comment.builder()
+			.content(content)
+			.auction(auction)
+			.writer(writer)
+			.build();
+	}
+
+	// 테스트용 생성자
+	private Comment(Long id, String content, Auction auction, User writer) {
+		this.id = id;
+		this.content = content;
+		this.auction = auction;
+		this.writer = writer;
+	}
+
+	public static Comment getTestComment(
+		Long id, String content, Auction auction, User writer
+	) {
+		return new Comment(id, content, auction, writer);
+	}
+
 }

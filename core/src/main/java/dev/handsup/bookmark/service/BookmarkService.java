@@ -15,6 +15,7 @@ import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
 import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.exception.BookmarkErrorCode;
 import dev.handsup.bookmark.repository.BookmarkRepository;
+import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
@@ -62,7 +63,7 @@ public class BookmarkService {
 			= auctionRepository.findBookmarkAuction(user, pageable)
 			.map(BookmarkMapper::toFindUserBookmarkResponse);
 
-		return BookmarkMapper.toPageResponse(auctionResponsePage);
+		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 
 	private Auction getAuctionEntity(Long auctionId) {
