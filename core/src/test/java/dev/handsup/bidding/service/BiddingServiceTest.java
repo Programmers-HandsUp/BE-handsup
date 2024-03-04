@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
@@ -88,6 +90,7 @@ class BiddingServiceTest {
 			auction,
 			user
 		);
+		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
 		given(biddingRepository.save(any(Bidding.class))).willReturn(bidding);
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(19000);
 
@@ -106,12 +109,18 @@ class BiddingServiceTest {
 		Long auctionId = 1L;
 		Pageable pageRequest = PageRequest.of(0, 10);
 
+		Bidding bidding1 = Bidding.of(40000, auction, user);
+		Bidding bidding2 = Bidding.of(30000, auction, user);
+		Bidding bidding3 = Bidding.of(20000, auction, user);
 		List<Bidding> mockBiddingList = List.of(
-			Bidding.of(40000, auction, user),
-			Bidding.of(30000, auction, user),
-			Bidding.of(20000, auction, user)
+			bidding1,
+			bidding2,
+			bidding3
 		);
 		Slice<Bidding> mockSlice = new SliceImpl<>(mockBiddingList, pageRequest, true);
+		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());
+		ReflectionTestUtils.setField(bidding2, "createdAt", LocalDateTime.now());
+		ReflectionTestUtils.setField(bidding3, "createdAt", LocalDateTime.now());
 
 		given(biddingRepository.findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageRequest))
 			.willReturn(mockSlice);
