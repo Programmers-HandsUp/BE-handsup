@@ -24,7 +24,9 @@ public class BiddingMapper {
 			bidding.getBiddingPrice(),
 			bidding.getAuction().getId(),
 			bidding.getBidder().getId(),
-			bidding.getBidder().getNickname()
+			bidding.getBidder().getNickname(),
+			bidding.getAuction().getProduct().getImages().get(0).getImageUrl(),
+			bidding.getCreatedAt().toString()
 		);
 	}
 
