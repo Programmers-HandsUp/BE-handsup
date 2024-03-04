@@ -41,8 +41,14 @@ public class ChatRoom extends TimeBaseEntity {
 	private User buyer;
 
 	@Builder
-	public ChatRoom(User seller, User buyer) {
+	private ChatRoom(User seller, User buyer) {
 		this.seller = seller;
 		this.buyer = buyer;
+	}
+
+	public static ChatRoom of(User seller, User buyer){
+		return ChatRoom.builder()
+			.seller(seller)
+			.buyer(buyer).build();
 	}
 }
