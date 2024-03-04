@@ -41,15 +41,12 @@ public class ReviewService {
 		Long auctionId,
 		User writer
 	) {
-		Auction auction = entityManagementService.getEntity(auctionRepository, auctionId);
+		Auction auction = getAuction(auctionId);
 		Review review = reviewRepository.save(
 			ReviewMapper.toReview(request, auction, writer)
 		);
 		request.reviewLabelIds().forEach(reviewLabelId -> {
-			ReviewLabel reviewLabel = entityManagementService.getEntity(
-				reviewLabelRepository,
-				reviewLabelId
-			);
+			ReviewLabel reviewLabel = getReviewLabel(reviewLabelId);
 			reviewInterReviewLabelRepository.save(
 				ReviewInterReviewLabel.of(review, reviewLabel)
 			);
@@ -58,14 +55,23 @@ public class ReviewService {
 			UserReviewLabel userReviewLabel = userReviewLabelRepository.save(
 				UserReviewLabel.of(reviewLabel, auction.getSeller())
 			);
-			Long userReviewLabelId = userReviewLabel.getId();
-			int userReviewLabelCount = entityManagementService.getEntity(
-				userReviewLabelRepository, userReviewLabelId
-			).getCount();
-			userReviewLabelRepository.updateCount(userReviewLabelId, userReviewLabelCount + 1);
+			UserReviewLabel sellerReviewLabel = getUserReviewLabel(userReviewLabel);
+			sellerReviewLabel.increaseCount();
 		});
 
 		return ReviewMapper.toReviewResponse(review);
+	}
+
+	private UserReviewLabel getUserReviewLabel(UserReviewLabel userReviewLabel) {
+		return entityManagementService.getEntity(userReviewLabelRepository, userReviewLabel.getId());
+	}
+
+	private ReviewLabel getReviewLabel(Long reviewLabelId) {
+		return entityManagementService.getEntity(reviewLabelRepository, reviewLabelId);
+	}
+
+	private Auction getAuction(Long auctionId) {
+		return entityManagementService.getEntity(auctionRepository, auctionId);
 	}
 
 	@Transactional(readOnly = true)

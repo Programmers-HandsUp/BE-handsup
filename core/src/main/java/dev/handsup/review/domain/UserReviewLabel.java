@@ -60,4 +60,8 @@ public class UserReviewLabel extends TimeBaseEntity {
 		this.id = id;
 		this.reviewLabel = reviewLabel;
 	}
+
+	public void increaseCount() {
+		this.count++;
+	}
 }
