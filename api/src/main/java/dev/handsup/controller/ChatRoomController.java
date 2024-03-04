@@ -36,7 +36,7 @@ public class ChatRoomController {
 	}
 
 
-	@Operation(summary = 가"채팅방 조회 API", description = "채팅방을 조회한다")
+	@Operation(summary = "채팅방 조회 API", description = "채팅방을 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/{chatRoomId}")
 	public ResponseEntity<RegisterChatRoomResponse> getChatroom(
