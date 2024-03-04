@@ -12,29 +12,29 @@ import jakarta.validation.constraints.NotNull;
 
 public record RegisterAuctionRequest(
 
-	@NotBlank(message = "title 값이 공백입니다.")
+	@NotBlank(message = "title 은 필수입니다.")
 	String title,
-	@NotBlank(message = "productCategory 값이 공백입니다.")
+	@NotBlank(message = "productCategory 은 필수입니다.")
 	String productCategory,
-	@NotNull(message = "initPrice 값이 공백입니다.")
-	@Min(value = 1000, message = "최소 금액은 1000원입니다.")
-	@Max(value = 100000000, message = "최대 금액은 1억입니다.")
+	@NotNull(message = "initPrice 은 필수입니다.")
+	@Min(value = 1000, message = "최소 시작가는 1000원 입니다.")
+	@Max(value = 100_000_000, message = "최대 시작가는 100_000_000원 입니다.")
 	int initPrice,
 
-	@NotNull(message = "endDate 값이 공백입니다.")
+	@NotNull(message = "endDate 은 필수입니다.")
 	@JsonFormat(pattern = "yyyy-MM-dd") //localDate 형식으로 받음
 	LocalDate endDate,
 
-	@NotBlank(message = "productStatus가 공백입니다.")
+	@NotBlank(message = "productStatus 은 필수입니다.")
 	String productStatus,
 
-	@NotBlank(message = "purchaseTime이 공백입니다.")
+	@NotBlank(message = "purchaseTime 은 필수입니다.")
 	String purchaseTime,
 
-	@NotBlank(message = "description이 공백입니다.")
+	@NotBlank(message = "description 은 필수입니다.")
 	String description,
 
-	@NotBlank(message = "tradeMethod가 공백입니다.")
+	@NotBlank(message = "tradeMethod 은 필수입니다.")
 	String tradeMethod,
 
 	@NotNull(message = "이미지 주소는 필수값입니다.")

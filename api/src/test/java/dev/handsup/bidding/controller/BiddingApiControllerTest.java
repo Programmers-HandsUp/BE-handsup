@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
@@ -23,15 +23,10 @@ import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
-import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
 
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
-	private final User user = UserFixture.user();
-	@Autowired
-	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
@@ -71,7 +66,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.biddingPrice").value(10000),
 			jsonPath("$.auctionId").value(auction.getId()),
 			jsonPath("$.bidderNickname").value(user.getNickname())
-		);
+		).andDo(MockMvcResultHandlers.print());
 	}
 
 	@DisplayName("[[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다]")
@@ -105,7 +100,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.content[0].biddingPrice").value(40000),
 			jsonPath("$.content[1].biddingPrice").value(30000),
 			jsonPath("$.content[2].biddingPrice").value(20000)
-		);
+		).andDo(MockMvcResultHandlers.print());
 	}
 
 	@DisplayName("[[입찰 목록 상위 3개 조회 API] 한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다]")
@@ -134,7 +129,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.content[0].biddingPrice").value(60000),
 			jsonPath("$.content[1].biddingPrice").value(50000),
 			jsonPath("$.content[2].biddingPrice").value(30000)
-		);
+		).andDo(MockMvcResultHandlers.print());
 	}
 
 }

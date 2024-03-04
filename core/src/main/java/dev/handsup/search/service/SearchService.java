@@ -10,6 +10,7 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
+import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.search.dto.PopularKeywordsResponse;
 import dev.handsup.search.dto.SearchMapper;
@@ -28,7 +29,7 @@ public class SearchService {
 			.map(AuctionMapper::toAuctionSimpleResponse);
 		redisSearchRepository.increaseSearchCount(condition.keyword());
 
-		return AuctionMapper.toPageResponse(auctionResponsePage);
+		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 
 	@Transactional(readOnly = true)

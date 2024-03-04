@@ -21,7 +21,7 @@ public class QReviewLabel extends EntityPathBase<ReviewLabel> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final EnumPath<ReviewLabelValue> value = createEnum("value", ReviewLabelValue.class);
+    public final StringPath value = createString("value");
 
     public QReviewLabel(String variable) {
         super(ReviewLabel.class, forVariable(variable));

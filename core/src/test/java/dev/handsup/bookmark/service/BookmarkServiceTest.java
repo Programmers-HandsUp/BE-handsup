@@ -31,6 +31,7 @@ import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
+@DisplayName("[BookmarkService 테스트]")
 @ExtendWith(MockitoExtension.class)
 class BookmarkServiceTest {
 	private final User user = UserFixture.user();

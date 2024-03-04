@@ -51,22 +51,6 @@ public class User extends TimeBaseEntity {
 	@Column(name = "report_count", nullable = false)
 	private int reportCount = 0;
 
-	private User(
-		Long id,
-		String email,
-		String password,
-		String nickname,
-		Address address,
-		String profileImageUrl
-	) {
-		this.id = id;
-		this.email = email;
-		this.password = password;
-		this.nickname = nickname;
-		this.address = address;
-		this.profileImageUrl = profileImageUrl;
-	}
-
 	@Builder
 	private User(
 		String email,
@@ -99,9 +83,25 @@ public class User extends TimeBaseEntity {
 			.build();
 	}
 
-	/**
-	 * 테스트 용 생성자
-	 */
+	//==테스트용 생성자==//
+
+	private User(
+		Long id,
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		validateUser(email, password, nickname, address);
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.nickname = nickname;
+		this.address = address;
+		this.profileImageUrl = profileImageUrl;
+	}
+
 	public static User getTestUser(
 		Long id,
 		String email,
