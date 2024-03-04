@@ -35,6 +35,8 @@ public class QChatMessage extends EntityPathBase<ChatMessage> {
 
     public final BooleanPath isRead = createBoolean("isRead");
 
+    public final NumberPath<Long> senderId = createNumber("senderId", Long.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
