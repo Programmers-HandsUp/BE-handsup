@@ -81,7 +81,7 @@ class AuctionServiceTest {
 				"동선동"
 			);
 
-		given(productCategoryRepository.findByCategoryValue(DIGITAL_DEVICE))
+		given(productCategoryRepository.findByValue(DIGITAL_DEVICE))
 			.willReturn(Optional.of(productCategory));
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 

@@ -8,5 +8,5 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Long> {
 
-	Optional<ProductCategory> findByCategoryValue(String categoryValue);
+	Optional<ProductCategory> findByValue(String value);
 }

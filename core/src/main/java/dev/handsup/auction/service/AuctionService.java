@@ -58,7 +58,7 @@ public class AuctionService {
 	}
 
 	private ProductCategory getProductCategoryEntity(RegisterAuctionRequest request) {
-		return productCategoryRepository.findByCategoryValue(request.productCategory()).
+		return productCategoryRepository.findByValue(request.productCategory()).
 			orElseThrow(() -> new NotFoundException(NOT_FOUND_PRODUCT_CATEGORY));
 	}
 
