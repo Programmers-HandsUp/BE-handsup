@@ -65,8 +65,10 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			status().isOk(),
 			jsonPath("$.biddingPrice").value(10000),
 			jsonPath("$.auctionId").value(auction.getId()),
-			jsonPath("$.bidderNickname").value(user.getNickname())
-		).andDo(MockMvcResultHandlers.print());
+			jsonPath("$.bidderId").value(user.getId()),
+			jsonPath("$.bidderNickname").value(user.getNickname()),
+			jsonPath("$.imgUrl").value(auction.getProduct().getImages().get(0).getImageUrl())
+		);
 	}
 
 	@DisplayName("[[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다]")

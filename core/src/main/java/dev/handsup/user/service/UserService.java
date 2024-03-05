@@ -14,7 +14,9 @@ import dev.handsup.common.exception.ValidationException;
 import dev.handsup.common.service.EntityManagementService;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
+import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
+import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.exception.UserErrorCode;
 import dev.handsup.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +30,6 @@ public class UserService {
 	private final PreferredProductCategoryRepository preferredProductCategoryRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final EntityManagementService entityManagementService;
-
-	private void validateDuplicateEmail(String email) {
-		if (userRepository.findByEmail(email).isPresent()) {
-			throw new ValidationException(UserErrorCode.DUPLICATED_EMAIL);
-		}
-	}
 
 	public User getUserById(Long userId) {
 		return userRepository.findById(userId)
@@ -61,5 +57,16 @@ public class UserService {
 		});
 
 		return savedUser.getId();
+	}
+
+	public EmailAvailabilityResponse isEmailAvailable(EmailAvailibilityRequest request) {
+		boolean isEmailAvailable = userRepository.findByEmail(request.email()).isEmpty();
+		return EmailAvailabilityResponse.from(isEmailAvailable);
+	}
+
+	private void validateDuplicateEmail(String email) {
+		if (userRepository.findByEmail(email).isPresent()) {
+			throw new ValidationException(UserErrorCode.DUPLICATED_EMAIL);
+		}
 	}
 }

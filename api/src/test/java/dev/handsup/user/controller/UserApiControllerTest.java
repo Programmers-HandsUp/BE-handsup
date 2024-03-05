@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.common.support.ApiTestSupport;
+import dev.handsup.user.domain.User;
+import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 
@@ -30,11 +32,12 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getProfileImageUrl(),
 		List.of(1L)
 	);
+
 	@Autowired
 	private UserRepository userRepository;
 
 	@Test
-	@DisplayName("[회원가입 API를 호출하면 회원이 등록되고 회원 ID를 응답한다]")
+	@DisplayName("[[회원가입 API] 회원이 등록되고 회원 ID를 응답한다]")
 	void joinUserTest() throws Exception {
 		// when
 		ResultActions actions = mockMvc.perform(
@@ -51,4 +54,43 @@ class UserApiControllerTest extends ApiTestSupport {
 		assertThat(userRepository.findByEmail(user.getEmail())).isPresent();
 	}
 
+	@Test
+	@DisplayName("[[이메일 중복 체크 API] 이메일 사용 가능 여부를 응답한다 - 성공]")
+	void checkEmailAvailabilitySuccessTest() throws Exception {
+		// given
+		String existedEmail = user.getEmail();
+		String requestEmail = "hello" + existedEmail;
+		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			get("/api/users/check-email")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(request))
+		);
+
+		// then
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isAvailable").value(true));
+	}
+
+	@Test
+	@DisplayName("[[이메일 중복 체크 API] 이메일 사용 가능 여부를 응답한다 - 실패]")
+	void checkEmailAvailabilityFailTest() throws Exception {
+		// given
+		String existedEmail = user.getEmail();
+		String requestEmail = existedEmail;
+		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			get("/api/users/check-email")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(request))
+		);
+
+		// then
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isAvailable").value(false));
+	}
 }
