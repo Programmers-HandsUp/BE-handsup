@@ -20,18 +20,17 @@ public class ProductCategory {
 	@Column(name = "product_category_id")
 	private Long id;
 
-	@Column(name = "product_category_value", nullable = false)
-	private String categoryValue;
+	@Column(name = "value", nullable = false)
+	private String value;
 
 	@Builder
-	private ProductCategory(String categoryValue) {
-		this.categoryValue = categoryValue;
+	private ProductCategory(String value) {
+		this.value = value;
 	}
 
-	// 테스트 전용
-	public static ProductCategory of(String categoryValue) {
+	public static ProductCategory of(String value) {
 		return ProductCategory.builder()
-			.categoryValue(categoryValue)
+			.value(value)
 			.build();
 	}
 }

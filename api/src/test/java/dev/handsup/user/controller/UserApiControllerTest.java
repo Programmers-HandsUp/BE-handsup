@@ -5,6 +5,8 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,8 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getAddress().getSi(),
 		user.getAddress().getGu(),
 		user.getAddress().getDong(),
-		user.getProfileImageUrl()
+		user.getProfileImageUrl(),
+		List.of(1L)
 	);
 
 	@Autowired

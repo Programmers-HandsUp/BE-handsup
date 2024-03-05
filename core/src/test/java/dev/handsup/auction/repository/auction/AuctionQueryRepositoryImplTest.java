@@ -57,7 +57,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		//given
 		Auction auction1 = AuctionFixture.auction(category1);
 		Auction auction2 = AuctionFixture.auction(category2);
-		assertThat(auction1.getProduct().getProductCategory().getCategoryValue()).isEqualTo(DIGITAL_DEVICE);
+		assertThat(auction1.getProduct().getProductCategory().getValue()).isEqualTo(DIGITAL_DEVICE);
 		auctionRepository.saveAll(List.of(auction1, auction2));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
