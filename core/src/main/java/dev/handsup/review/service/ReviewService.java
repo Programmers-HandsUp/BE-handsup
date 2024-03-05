@@ -51,19 +51,13 @@ public class ReviewService {
 				ReviewInterReviewLabel.of(review, reviewLabel)
 			);
 
-			// UserReviewLabel 카운팅
-			UserReviewLabel userReviewLabel = userReviewLabelRepository.save(
+			UserReviewLabel sellerReviewLabel = userReviewLabelRepository.save(
 				UserReviewLabel.of(reviewLabel, auction.getSeller())
 			);
-			UserReviewLabel sellerReviewLabel = getUserReviewLabel(userReviewLabel);
 			sellerReviewLabel.increaseCount();
 		});
 
 		return ReviewMapper.toReviewResponse(review);
-	}
-
-	private UserReviewLabel getUserReviewLabel(UserReviewLabel userReviewLabel) {
-		return entityManagementService.getEntity(userReviewLabelRepository, userReviewLabel.getId());
 	}
 
 	private ReviewLabel getReviewLabel(Long reviewLabelId) {
