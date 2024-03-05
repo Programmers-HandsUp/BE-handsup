@@ -23,12 +23,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final EncryptHelper encryptHelper;
 
-	private void validateDuplicateEmail(String email) {
-		if (userRepository.findByEmail(email).isPresent()) {
-			throw new ValidationException(UserErrorCode.DUPLICATED_EMAIL);
-		}
-	}
-
 	public User getUserById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(CommonErrorCode.NOT_FOUND_BY_ID));
@@ -49,5 +43,11 @@ public class UserService {
 	public EmailAvailabilityResponse isEmailAvailable(EmailAvailibilityRequest request) {
 		boolean isEmailAvailable = userRepository.findByEmail(request.email()).isEmpty();
 		return EmailAvailabilityResponse.from(isEmailAvailable);
+	}
+
+	private void validateDuplicateEmail(String email) {
+		if (userRepository.findByEmail(email).isPresent()) {
+			throw new ValidationException(UserErrorCode.DUPLICATED_EMAIL);
+		}
 	}
 }
