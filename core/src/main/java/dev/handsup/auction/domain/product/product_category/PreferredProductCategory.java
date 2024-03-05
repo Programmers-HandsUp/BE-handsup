@@ -21,10 +21,10 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class ProductCategoryLike extends TimeBaseEntity {
+public class PreferredProductCategory extends TimeBaseEntity {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "product_category_like_id")
+	@Column(name = "preferred_product_category_id")
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
@@ -40,8 +40,15 @@ public class ProductCategoryLike extends TimeBaseEntity {
 	private ProductCategory productCategory;
 
 	@Builder
-	public ProductCategoryLike(User user, ProductCategory productCategory) {
+	private PreferredProductCategory(User user, ProductCategory productCategory) {
 		this.user = user;
 		this.productCategory = productCategory;
+	}
+
+	public static PreferredProductCategory of(User user, ProductCategory productCategory) {
+		return PreferredProductCategory.builder()
+			.user(user)
+			.productCategory(productCategory)
+			.build();
 	}
 }

@@ -106,7 +106,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	}
 
 	private BooleanExpression categoryEq(String productCategory) {
-		return hasText(productCategory) ? product.productCategory.categoryValue.eq(productCategory) : null;
+		return hasText(productCategory) ? product.productCategory.value.eq(productCategory) : null;
 	}
 
 	private BooleanExpression tradeMethodEq(String tradeMethod) {

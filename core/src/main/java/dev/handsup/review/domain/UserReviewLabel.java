@@ -60,4 +60,8 @@ public class UserReviewLabel extends TimeBaseEntity {
 			.user(user)
 			.build();
 	}
+
+	public void increaseCount() {
+		this.count++;
+	}
 }

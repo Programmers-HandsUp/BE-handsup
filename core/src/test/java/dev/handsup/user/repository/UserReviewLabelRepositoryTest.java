@@ -2,8 +2,6 @@ package dev.handsup.user.repository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +47,9 @@ class UserReviewLabelRepositoryTest extends DataJpaTestSupport {
 		entityManager.refresh(userReviewLabel);
 
 		// then
-		Optional<UserReviewLabel> updatedUserReviewLabel = userReviewLabelRepository.findById(userReviewLabel.getId());
-		assertThat(updatedUserReviewLabel.get().getCount()).isEqualTo(afterUpdateCount);
+		UserReviewLabel updatedUserReviewLabel = userReviewLabelRepository.findById(
+			userReviewLabel.getId()).orElseThrow();
+
+		assertThat(updatedUserReviewLabel.getCount()).isEqualTo(afterUpdateCount);
 	}
 }

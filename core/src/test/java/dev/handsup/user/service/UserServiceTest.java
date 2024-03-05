@@ -4,6 +4,7 @@ import static dev.handsup.user.exception.UserErrorCode.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -12,10 +13,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
+import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
+import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
+import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.common.service.EntityManagementService;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
@@ -29,18 +38,26 @@ class UserServiceTest {
 	private UserRepository userRepository;
 	@Mock
 	private EncryptHelper encryptHelper;
+	@Mock
+	private EntityManagementService entityManagementService;
+	@Mock
+	private ProductCategoryRepository productCategoryRepository;
+	@Mock
+	private PreferredProductCategoryRepository preferredProductCategoryRepository;
+
 	@InjectMocks
 	private UserService userService;
 
-	private User user = UserFixture.user();
-	private JoinUserRequest request = JoinUserRequest.of(
+	private final User user = UserFixture.user();
+	private final JoinUserRequest request = JoinUserRequest.of(
 		user.getEmail(),
 		user.getPassword(),
 		user.getNickname(),
 		user.getAddress().getSi(),
 		user.getAddress().getGu(),
 		user.getAddress().getDong(),
-		user.getProfileImageUrl()
+		user.getProfileImageUrl(),
+		List.of(1L)
 	);
 
 	@Test
@@ -73,6 +90,7 @@ class UserServiceTest {
 	}
 
 	@Test
+	@MockitoSettings(strictness = Strictness.LENIENT)
 	@DisplayName("[회원가입을 성공한다]")
 	void joinSuccessTest() {
 		// given
@@ -84,6 +102,12 @@ class UserServiceTest {
 		User savedUser = UserFixture.user(1L);
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
+
+		ProductCategory productCategory = ProductCategory.of(ProductCategoryValue.SPORTS_LEISURE.getLabel());
+		given(entityManagementService.getEntity(productCategoryRepository, 1L))
+			.willReturn(productCategory);
+		given(preferredProductCategoryRepository.save(PreferredProductCategory.of(savedUser, productCategory)))
+			.willReturn(PreferredProductCategory.of(savedUser, productCategory));
 
 		// when
 		Long userId = userService.join(request);

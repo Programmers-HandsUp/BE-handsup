@@ -13,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 public enum ProductStatus {
 
 	NEW("미개봉"),
-	CLEAN("깨끗함"),
-	DIRTY("더러움");
+	CLEAN("깨끗해요"),
+	DIRTY("사용감 있음");
 
 	private final String label;
 

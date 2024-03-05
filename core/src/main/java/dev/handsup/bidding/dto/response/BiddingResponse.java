@@ -9,19 +9,25 @@ public record BiddingResponse(
 	int biddingPrice,
 	Long auctionId,
 	Long bidderId,
-	String bidderNickname
+	String bidderNickname,
+	String imgUrl,
+	String createdAt
 ) {
 	public static BiddingResponse of(
 		int biddingPrice,
 		Long auctionId,
 		Long bidderId,
-		String bidderNickname
+		String bidderNickname,
+		String imgUrl,
+		String createdAt
 	) {
 		return BiddingResponse.builder()
 			.biddingPrice(biddingPrice)
 			.auctionId(auctionId)
 			.bidderId(bidderId)
 			.bidderNickname(bidderNickname)
+			.imgUrl(imgUrl)
+			.createdAt(createdAt)
 			.build();
 	}
 }
