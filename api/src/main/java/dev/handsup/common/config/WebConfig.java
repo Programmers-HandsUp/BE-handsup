@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,5 +28,14 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(jwtInterceptor)
 			.addPathPatterns("/api/**");
+	}
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**")
+			.allowedOrigins("http://localhost:3000") // 허용할 출처 : 배포할 때는 특정 출처로 변경
+			.allowedMethods("*")
+			.allowCredentials(true) // 쿠키 인증 요청 허용
+			.maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
 	}
 }

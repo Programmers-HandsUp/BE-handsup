@@ -2,22 +2,15 @@ package dev.handsup.bidding.dto;
 
 import static lombok.AccessLevel.*;
 
-import org.springframework.data.domain.Slice;
-
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
-import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class BiddingMapper {
-
-	public static <T> PageResponse<T> toBiddingPageResponse(Slice<T> page) {
-		return PageResponse.of(page);
-	}
 
 	public static BiddingResponse toBiddingResponse(Bidding bidding) {
 		return BiddingResponse.of(

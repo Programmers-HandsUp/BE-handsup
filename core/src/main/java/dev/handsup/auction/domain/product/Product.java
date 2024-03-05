@@ -33,6 +33,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Product extends TimeBaseEntity {
+
 	private static final String PRODUCT_STRING = "product";
 
 	@Id

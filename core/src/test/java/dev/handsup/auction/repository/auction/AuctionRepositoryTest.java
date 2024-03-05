@@ -27,6 +27,7 @@ import dev.handsup.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
 
+@DisplayName("[AuctionRepository 테스트]")
 class AuctionRepositoryTest extends DataJpaTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
