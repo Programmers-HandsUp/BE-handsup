@@ -41,7 +41,7 @@ public class UserReviewLabel extends TimeBaseEntity {
 	private User user;
 
 	@Column(name = "count", nullable = false)
-	private int count = 0;
+	private int count = 1;
 
 	@Builder
 	private UserReviewLabel(ReviewLabel reviewLabel, User user) {
