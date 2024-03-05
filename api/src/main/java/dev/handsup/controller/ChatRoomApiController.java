@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/api/auctions/chatrooms")
 public class ChatRoomApiController {
+
 	private final ChatRoomService chatRoomService;
 
 	@Operation(summary = "채팅방 등록 API", description = "채팅방을 등록한다")

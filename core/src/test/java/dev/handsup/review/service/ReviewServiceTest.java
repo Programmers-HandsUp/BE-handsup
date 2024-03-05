@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,6 @@ import org.mockito.quality.Strictness;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.auction.AuctionRepository;
-import dev.handsup.common.service.EntityManagementService;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ReviewFixture;
 import dev.handsup.fixture.ReviewLabelFixture;
@@ -64,8 +64,6 @@ class ReviewServiceTest {
 	private UserReviewLabelRepository userReviewLabelRepository;
 	@Mock
 	private AuctionRepository auctionRepository;
-	@Mock
-	private EntityManagementService entityManagementService;
 	@InjectMocks
 	private ReviewService reviewService;
 
@@ -85,22 +83,19 @@ class ReviewServiceTest {
 			reviewLabelIds
 		);
 		Long auctionId = auction.getId();
-		given(entityManagementService.getEntity(auctionRepository, auctionId)).willReturn(auction);
+		given(auctionRepository.findById(auctionId)).willReturn(Optional.of(auction));
 		given(reviewRepository.save(any(Review.class))).willReturn(review);
 
-		given(entityManagementService.getEntity(reviewLabelRepository, reviewLabelManner.getId())).willReturn(
-			reviewLabelManner);
-		given(entityManagementService.getEntity(reviewLabelRepository, reviewLabelCheap.getId())).willReturn(
-			reviewLabelCheap);
+		given(reviewLabelRepository.findById(reviewLabelManner.getId())).willReturn(Optional.of(reviewLabelManner));
+		given(reviewLabelRepository.findById(reviewLabelCheap.getId())).willReturn(Optional.of(reviewLabelCheap));
 		given(reviewInterReviewLabelRepository.save(any())).willReturn(null);
 		given(userReviewLabelRepository.save(any(UserReviewLabel.class)))
 			.willReturn(userReviewLabelManner, userReviewLabelCheap);
-		given(entityManagementService.getEntity(userReviewLabelRepository, userReviewLabelManner.getId())).willReturn(
-			userReviewLabelManner
-		);
-		given(entityManagementService.getEntity(userReviewLabelRepository, userReviewLabelCheap.getId())).willReturn(
-			userReviewLabelCheap
-		);
+
+		given(userReviewLabelRepository.findById(userReviewLabelManner.getId())).willReturn(
+			Optional.of(userReviewLabelManner));
+		given(userReviewLabelRepository.findById(userReviewLabelCheap.getId())).willReturn(
+			Optional.of(userReviewLabelCheap));
 
 		// when
 		ReviewResponse response = reviewService.registerReview(request, auctionId, writer);
