@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders;
 
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
-import dev.handsup.auth.exception.AuthException;
 import dev.handsup.common.exception.NotFoundException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +27,7 @@ public class AuthMapper {
 			if (bearerAccessToken.startsWith("Bearer ")) {
 				return bearerAccessToken.substring(7);
 			}
-			throw new AuthException(AuthErrorCode.NOT_FOUND_BEARER_IN_REQUEST_ACCESS_TOKEN);
+			throw new NotFoundException(AuthErrorCode.NOT_FOUND_BEARER_IN_REQUEST_ACCESS_TOKEN);
 		}
 		throw new NotFoundException(AuthErrorCode.NOT_FOUND_ACCESS_TOKEN_IN_REQUEST);
 	}

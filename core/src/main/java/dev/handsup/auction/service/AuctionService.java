@@ -17,6 +17,7 @@ import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.user.domain.User;
@@ -53,7 +54,7 @@ public class AuctionService {
 		Slice<RecommendAuctionResponse> auctionResponsePage = auctionQueryRepository
 			.sortAuctionByCriteria(si, gu, dong, pageable)
 			.map(AuctionMapper::toRecommendAuctionResponse);
-		return AuctionMapper.toPageResponse(auctionResponsePage);
+		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 
 	private ProductCategory getProductCategoryEntity(RegisterAuctionRequest request) {

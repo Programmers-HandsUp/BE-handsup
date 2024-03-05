@@ -25,7 +25,7 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 
-@DisplayName("[JwtAuthorizationArgumentResolver 테스트]")
+@DisplayName("[JwtAuthorization ArgumentResolver 통합 테스트]")
 @ExtendWith(MockitoExtension.class)
 class JwtAuthorizationArgumentResolverTest {
 
