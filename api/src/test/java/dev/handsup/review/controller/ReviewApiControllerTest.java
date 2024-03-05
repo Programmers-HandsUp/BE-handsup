@@ -27,13 +27,10 @@ import dev.handsup.review.dto.request.RegisterReviewRequest;
 import dev.handsup.review.dto.response.ReviewResponse;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
-import jakarta.persistence.EntityManager;
 
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
-
-	@Autowired
-	private EntityManager entityManager;
+	
 	@Autowired
 	private ReviewRepository reviewRepository;
 	@Autowired
