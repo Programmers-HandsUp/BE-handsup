@@ -32,11 +32,11 @@ public class ChatRoomService {
 	private final UserRepository userRepository;
 	private final AuctionRepository auctionRepository;
 
-	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long buyerId, User seller) {
-		User buyer = getUserById(buyerId);
+	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long bidderId, User seller) {
+		User bidder = getUserById(bidderId);
 		validateIfAuctionTrading(auctionId);
-		validateIfChatRoomNotExists(auctionId, buyer);
-		ChatRoom chatRoom = ChatMapper.toChatRoom(auctionId, seller, buyer);
+		validateIfChatRoomNotExists(auctionId, bidder);
+		ChatRoom chatRoom = ChatMapper.toChatRoom(auctionId, seller, bidder);
 
 		return ChatMapper.toRegisterChatRoomResponse(chatRoomRepository.save(chatRoom));
 	}
@@ -45,7 +45,7 @@ public class ChatRoomService {
 	public PageResponse<ChatRoomSimpleResponse> getUserChatRooms(User user, Pageable pageable) {
 		Slice<ChatRoomSimpleResponse> chatRoomResponses = chatRoomRepository.findChatRoomsByUser(user, pageable)
 			.map(chatRoom -> {
-				User receiver = chatRoom.getBuyer().equals(user) ? chatRoom.getSeller() : chatRoom.getBuyer();
+				User receiver = chatRoom.getBidder().equals(user) ? chatRoom.getSeller() : chatRoom.getBidder();
 				return ChatMapper.toChatRoomSimpleResponse(chatRoom, receiver);
 			});
 		return CommonMapper.toPageResponse(chatRoomResponses);
@@ -58,8 +58,8 @@ public class ChatRoomService {
 		}
 	}
 
-	private void validateIfChatRoomNotExists(Long auctionId, User buyer) {
-		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBuyer(auctionId, buyer))) {
+	private void validateIfChatRoomNotExists(Long auctionId, User bidder) {
+		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBidder(auctionId, bidder))) {
 			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS);
 		}
 	}

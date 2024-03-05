@@ -33,7 +33,7 @@ import dev.handsup.user.repository.UserRepository;
 class ChatRoomServiceTest {
 
 	private final User seller = UserFixture.user(1L);
-	private final User buyer = UserFixture.user(2L);
+	private final User bidder = UserFixture.user(2L);
 	private PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
@@ -52,15 +52,15 @@ class ChatRoomServiceTest {
 	void registerChatRoom() {
 		//given
 		Auction auction = mock(Auction.class);
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, buyer);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
 
-		given(userRepository.findById(buyer.getId())).willReturn(Optional.of(buyer));
+		given(userRepository.findById(bidder.getId())).willReturn(Optional.of(bidder));
 		given(auctionRepository.findById(1L)).willReturn(Optional.of(auction));
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
 		given(chatRoomRepository.save(any(ChatRoom.class))).willReturn(chatRoom);
 
 		//when
-		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(1L, buyer.getId(), seller);
+		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(1L, bidder.getId(), seller);
 
 		//then
 		assertThat(response).isNotNull();
@@ -70,7 +70,7 @@ class ChatRoomServiceTest {
 	@Test
 	void getUserChatRooms() {
 		//given
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, buyer);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
 		given(chatRoomRepository.findChatRoomsByUser(seller, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(chatRoom), pageRequest, false));
 		//when

@@ -35,7 +35,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 
 	private final User loginUser = UserFixture.user();
 	private final User seller = UserFixture.user("seller@gmail.com");
-	private final User buyer = UserFixture.user("buyer@gmail.com");
+	private final User bidder = UserFixture.user("bidder@gmail.com");
 	private ProductCategory productCategory;
 	private Auction auction;
 
@@ -58,11 +58,11 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[채팅방을 생성할 수 있다.]")
 	@Test
 	void registerChatRoom() throws Exception {
-		userRepository.saveAll(List.of(buyer, seller));
+		userRepository.saveAll(List.of(bidder, seller));
 		//when then
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
-				.param("buyerId", buyer.getId().toString())
+				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
@@ -74,12 +74,12 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[경매가 거래 상태가 아니면 채팅방을 생성할 수 없다.]")
 	@Test
 	void registerChatRoom_fails() throws Exception {
-		userRepository.saveAll(List.of(buyer, seller));
+		userRepository.saveAll(List.of(bidder, seller));
 		//when then
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.BIDDING);
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
-				.param("buyerId", buyer.getId().toString())
+				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
@@ -91,13 +91,13 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void registerChatRoom_fails2() throws Exception {
 		//given
-		userRepository.saveAll(List.of(buyer, seller));
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, buyer);
+		userRepository.saveAll(List.of(bidder, seller));
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
 		chatRoomRepository.save(chatRoom);
 		//when then
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
-				.param("buyerId", buyer.getId().toString())
+				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())

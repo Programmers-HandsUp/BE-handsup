@@ -9,8 +9,8 @@ import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.user.domain.User;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-	@Query("SELECT cr FROM ChatRoom cr WHERE cr.seller = :user OR cr.buyer = :user")
+	@Query("SELECT cr FROM ChatRoom cr WHERE cr.seller = :user OR cr.bidder = :user")
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
 
-	Boolean existsByAuctionIdAndBuyer(Long auctionId, User buyer);
+	Boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
 }
