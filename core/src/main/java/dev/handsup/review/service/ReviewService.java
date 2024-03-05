@@ -42,12 +42,12 @@ public class ReviewService {
 		Long auctionId,
 		User writer
 	) {
-		Auction auction = getAuction(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		Review review = reviewRepository.save(
 			ReviewMapper.toReview(request, auction, writer)
 		);
 		request.reviewLabelIds().forEach(reviewLabelId -> {
-			ReviewLabel reviewLabel = getReviewLabel(reviewLabelId);
+			ReviewLabel reviewLabel = getReviewById(reviewLabelId);
 			reviewInterReviewLabelRepository.save(
 				ReviewInterReviewLabel.of(review, reviewLabel)
 			);
@@ -61,12 +61,12 @@ public class ReviewService {
 		return ReviewMapper.toReviewResponse(review);
 	}
 
-	private ReviewLabel getReviewLabel(Long reviewLabelId) {
+	private ReviewLabel getReviewById(Long reviewLabelId) {
 		return reviewLabelRepository.findById(reviewLabelId)
 			.orElseThrow(() -> new NotFoundException(ReviewErrorCode.NOT_FOUND_REVIEW_LABEL));
 	}
 
-	public Auction getAuction(Long auctionId) {
+	public Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId).
 			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}

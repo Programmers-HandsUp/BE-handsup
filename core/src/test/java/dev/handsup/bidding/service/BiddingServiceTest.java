@@ -53,7 +53,7 @@ class BiddingServiceTest {
 
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(9000);
 		Long auctionId = auction.getId();
-		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
+		given(auctionService.getAuctionById(auctionId)).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
@@ -70,7 +70,7 @@ class BiddingServiceTest {
 
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(15500);
 		Long auctionId = auction.getId();
-		given(auctionService.getAuctionEntity(auctionId)).willReturn(auction);
+		given(auctionService.getAuctionById(auctionId)).willReturn(auction);
 
 		// when & then
 		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
@@ -84,7 +84,7 @@ class BiddingServiceTest {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(20000);
 
-		given(auctionService.getAuctionEntity(auction.getId())).willReturn(auction);
+		given(auctionService.getAuctionById(auction.getId())).willReturn(auction);
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
 			auction,

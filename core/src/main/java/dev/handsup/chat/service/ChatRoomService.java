@@ -33,7 +33,7 @@ public class ChatRoomService {
 	private final AuctionRepository auctionRepository;
 
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long buyerId, User seller) {
-		User buyer = getUserEntity(buyerId);
+		User buyer = getUserById(buyerId);
 		validateIfAuctionTrading(auctionId);
 		validateIfChatRoomNotExists(auctionId, buyer);
 		ChatRoom chatRoom = ChatMapper.toChatRoom(auctionId, seller, buyer);
@@ -52,7 +52,7 @@ public class ChatRoomService {
 	}
 
 	private void validateIfAuctionTrading(Long auctionId) {
-		Auction auction = getAuctionEntity(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		if (auction.getStatus() != AuctionStatus.TRADING) {
 			throw new ValidationException(ChatErrorCode.NOT_TRADING_AUCTION);
 		}
@@ -64,12 +64,12 @@ public class ChatRoomService {
 		}
 	}
 
-	public Auction getAuctionEntity(Long auctionId) {
+	public Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
-	public User getUserEntity(Long userId) {
+	public User getUserById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 	}
