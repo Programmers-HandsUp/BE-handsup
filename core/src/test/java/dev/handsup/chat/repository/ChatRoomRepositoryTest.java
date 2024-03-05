@@ -41,7 +41,7 @@ class ChatRoomRepositoryTest extends DataJpaTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		ProductCategory category= ProductFixture.productCategory("디지털 기기");
+		ProductCategory category = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(category);
 
 		user1 = UserFixture.user("user1@gmail.com");

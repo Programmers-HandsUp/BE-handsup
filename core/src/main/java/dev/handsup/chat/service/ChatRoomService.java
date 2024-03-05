@@ -32,7 +32,7 @@ public class ChatRoomService {
 	private final UserRepository userRepository;
 	private final AuctionRepository auctionRepository;
 
-	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long buyerId, User seller){
+	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long buyerId, User seller) {
 		User buyer = getUserEntity(buyerId);
 		validateIfAuctionTrading(auctionId);
 		validateIfChatRoomNotExists(auctionId, buyer);
@@ -53,24 +53,24 @@ public class ChatRoomService {
 
 	private void validateIfAuctionTrading(Long auctionId) {
 		Auction auction = getAuctionEntity(auctionId);
-		if (auction.getStatus()!=AuctionStatus.TRADING){
+		if (auction.getStatus() != AuctionStatus.TRADING) {
 			throw new ValidationException(ChatErrorCode.NOT_TRADING_AUCTION);
 		}
 	}
 
-	private void validateIfChatRoomNotExists(Long auctionId, User buyer){
-		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBuyer(auctionId, buyer))){
+	private void validateIfChatRoomNotExists(Long auctionId, User buyer) {
+		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBuyer(auctionId, buyer))) {
 			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS);
 		}
 	}
 
 	public Auction getAuctionEntity(Long auctionId) {
 		return auctionRepository.findById(auctionId)
-				.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
+			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
 	public User getUserEntity(Long userId) {
 		return userRepository.findById(userId)
-				.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
+			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 	}
 }

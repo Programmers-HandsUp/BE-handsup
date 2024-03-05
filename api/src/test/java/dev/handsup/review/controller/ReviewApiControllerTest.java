@@ -32,6 +32,14 @@ import jakarta.persistence.EntityManager;
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
 
+	private final Review review = ReviewFixture.review();
+	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
+		1L, ReviewLabelValue.MANNER.getDescription()
+	);
+	private final ReviewLabel reviewLabelCheap = ReviewLabelFixture.reviewLabel(
+		2L, ReviewLabelValue.CHEAP.getDescription()
+	);
+	private final List<Long> reviewLabelIds = List.of(1L, 2L);
 	@Autowired
 	private EntityManager entityManager;
 	@Autowired
@@ -40,17 +48,8 @@ class ReviewApiControllerTest extends ApiTestSupport {
 	private ReviewLabelRepository reviewLabelRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-
 	private ProductCategory productCategory;
-	private final Review review = ReviewFixture.review();
 	private Auction auction;
-	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
-		1L, ReviewLabelValue.MANNER.getDescription()
-	);
-	private final ReviewLabel reviewLabelCheap = ReviewLabelFixture.reviewLabel(
-		2L, ReviewLabelValue.CHEAP.getDescription()
-	);
-	private final List<Long> reviewLabelIds = List.of(1L, 2L);
 
 	@BeforeEach
 	void setUp() {

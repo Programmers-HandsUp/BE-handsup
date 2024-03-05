@@ -38,22 +38,6 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 @DisplayName("[ReviewService 테스트]")
 class ReviewServiceTest {
 
-	@Mock
-	private ReviewRepository reviewRepository;
-	@Mock
-	private ReviewLabelRepository reviewLabelRepository;
-	@Mock
-	private ReviewInterReviewLabelRepository reviewInterReviewLabelRepository;
-	@Mock
-	private UserReviewLabelRepository userReviewLabelRepository;
-	@Mock
-	private AuctionRepository auctionRepository;
-	@Mock
-	private EntityManagementService entityManagementService;
-
-	@InjectMocks
-	private ReviewService reviewService;
-
 	private final Auction auction = AuctionFixture.auction();
 	private final User writer = UserFixture.user();
 	private final Review review = ReviewFixture.review();
@@ -70,6 +54,20 @@ class ReviewServiceTest {
 	private final UserReviewLabel userReviewLabelCheap = UserReviewLabelFixture.userReviewLabel(
 		2L, reviewLabelCheap
 	);
+	@Mock
+	private ReviewRepository reviewRepository;
+	@Mock
+	private ReviewLabelRepository reviewLabelRepository;
+	@Mock
+	private ReviewInterReviewLabelRepository reviewInterReviewLabelRepository;
+	@Mock
+	private UserReviewLabelRepository userReviewLabelRepository;
+	@Mock
+	private AuctionRepository auctionRepository;
+	@Mock
+	private EntityManagementService entityManagementService;
+	@InjectMocks
+	private ReviewService reviewService;
 
 	@Test
 	@MockitoSettings(strictness = Strictness.LENIENT)

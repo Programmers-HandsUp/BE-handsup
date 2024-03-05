@@ -50,7 +50,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		productCategory = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(productCategory);
 		auction = AuctionFixture.auction(productCategory);
-		ReflectionTestUtils.setField(auction,"status", AuctionStatus.TRADING);
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 		auctionRepository.save(auction);
 	}
 
@@ -75,7 +75,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	void registerChatRoom_fails() throws Exception {
 		userRepository.saveAll(List.of(buyer, seller));
 		//when then
-		ReflectionTestUtils.setField(auction,"status", AuctionStatus.BIDDING);
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.BIDDING);
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
 				.param("buyerId", buyer.getId().toString())
@@ -107,7 +107,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[유저가 속한 채팅방을 모두 조회할 수 있다.]")
 	@Test
 	void getUserChatRooms() throws Exception {
-	    //given
+		//given
 		User user1 = UserFixture.user("user1@gmail.com");
 		User user2 = UserFixture.user("user2@gmail.com");
 		userRepository.saveAll(List.of(loginUser, user1, user2));
@@ -115,10 +115,10 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		Auction auction2 = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction2);
 
-	    ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), user1, loginUser);
-	    ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user1, user2);
-	    ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), user2, loginUser);
-	    chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
+		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), user1, loginUser);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user1, user2);
+		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), user2, loginUser);
+		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
 
 		mockMvc.perform(get("/api/auctions/chatrooms")
 				.header(AUTHORIZATION, "Bearer " + accessToken)

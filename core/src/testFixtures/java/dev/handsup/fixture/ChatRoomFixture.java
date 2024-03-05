@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class ChatRoomFixture {
-	public static ChatRoom chatRoom(Long auctionId, User seller, User buyer){
+	public static ChatRoom chatRoom(Long auctionId, User seller, User buyer) {
 		return ChatRoom.of(
 			auctionId,
 			seller,

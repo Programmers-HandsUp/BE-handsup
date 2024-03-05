@@ -4,7 +4,6 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 
-import dev.handsup.common.exception.CommonValidationError;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

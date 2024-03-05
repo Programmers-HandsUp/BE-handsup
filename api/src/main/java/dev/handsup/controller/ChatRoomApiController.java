@@ -39,7 +39,6 @@ public class ChatRoomApiController {
 		return ResponseEntity.ok(response);
 	}
 
-
 	@Operation(summary = "유저 채팅방 모두 조회 API", description = "유저 아이디로 채팅방 목록을 모두 조회한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping

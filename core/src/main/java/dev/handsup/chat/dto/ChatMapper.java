@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class ChatMapper {
-	public static ChatRoom toChatRoom(Long auctionId, User seller, User buyer){
+	public static ChatRoom toChatRoom(Long auctionId, User seller, User buyer) {
 		return ChatRoom.of(auctionId, seller, buyer);
 	}
 
-	public static RegisterChatRoomResponse toRegisterChatRoomResponse(ChatRoom chatRoom){
+	public static RegisterChatRoomResponse toRegisterChatRoomResponse(ChatRoom chatRoom) {
 		return RegisterChatRoomResponse.of(chatRoom.getId());
 	}
 

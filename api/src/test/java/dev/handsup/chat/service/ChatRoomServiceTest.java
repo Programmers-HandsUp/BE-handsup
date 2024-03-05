@@ -32,10 +32,9 @@ import dev.handsup.user.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 class ChatRoomServiceTest {
 
-	private PageRequest pageRequest = PageRequest.of(0, 5);
 	private final User seller = UserFixture.user(1L);
 	private final User buyer = UserFixture.user(2L);
-
+	private PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
 
