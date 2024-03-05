@@ -11,4 +11,7 @@ import dev.handsup.user.domain.User;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 	@Query("SELECT cr FROM ChatRoom cr WHERE cr.seller = :user OR cr.buyer = :user")
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
+
+	Boolean existsByAuctionIdAndBuyer(Long auctionId, User buyer);
+	Boolean existsByAuctionId(Long auctionId);
 }
