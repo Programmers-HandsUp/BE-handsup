@@ -1,6 +1,7 @@
 package dev.handsup.user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,7 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.user.dto.JoinUserApiRequest;
 import dev.handsup.user.dto.UserApiMapper;
+import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
+import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,6 +37,16 @@ public class UserApiController {
 		JoinUserRequest joinUserRequest = UserApiMapper.toJoinUserRequest(request);
 		Long userId = userService.join(joinUserRequest);
 		JoinUserResponse response = JoinUserResponse.from(userId);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@GetMapping("/api/users/check-email")
+	@Operation(summary = "이메일 중복 체크 API", description = "이메일이 이미 사용중인지 체크한다")
+	public ResponseEntity<EmailAvailabilityResponse> checkEmailAvailability(
+		@Valid @RequestBody EmailAvailibilityRequest request
+	) {
+		EmailAvailabilityResponse response = userService.isEmailAvailable(request);
 		return ResponseEntity.ok(response);
 	}
 }
