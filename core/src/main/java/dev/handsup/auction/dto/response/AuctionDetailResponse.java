@@ -8,6 +8,7 @@ public record AuctionDetailResponse(
 	Long sellerId,
 	String title,
 	String productCategory,
+	String auctionStatus,
 	int initPrice,
 	int currentBiddingPrice,
 	String endDate,
@@ -19,7 +20,6 @@ public record AuctionDetailResponse(
 	String si,
 	String gu,
 	String dong,
-
 	int bookmarkCount,
 	String createdAt
 
@@ -29,6 +29,7 @@ public record AuctionDetailResponse(
 		Long sellerId,
 		// TODO: 2/25/24 낙찰 로직 구현 후 buyerId 포함 
 		String title,
+		String auctionStatus,
 		String productCategory,
 		int initPrice,
 		int currentBiddingPrice,
@@ -45,7 +46,8 @@ public record AuctionDetailResponse(
 		String createdAt
 	) {
 		return new AuctionDetailResponse(
-			auctionId, sellerId, title, productCategory, initPrice, currentBiddingPrice, endDate, productStatus,
+			auctionId, sellerId, title, auctionStatus, productCategory, initPrice, currentBiddingPrice, endDate,
+			productStatus,
 			purchaseTime, description,
 			tradeMethod, imageUrls, si, gu, dong, bookmarkCount, createdAt);
 	}

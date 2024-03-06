@@ -46,6 +46,7 @@ public class AuctionMapper {
 			auction.getSeller().getId(),
 			auction.getTitle(),
 			auction.getProduct().getProductCategory().getValue(),
+			auction.getStatus().getLabel(),
 			auction.getInitPrice(),
 			auction.getCurrentBiddingPrice(),
 			auction.getEndDate().toString(),
