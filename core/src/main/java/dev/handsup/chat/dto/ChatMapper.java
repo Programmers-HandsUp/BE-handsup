@@ -36,3 +36,4 @@ public class ChatMapper {
 		return ChatRoomExistenceResponse.from(isExist);
 	}
 }
+

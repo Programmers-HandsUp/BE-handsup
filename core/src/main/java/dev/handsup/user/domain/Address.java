@@ -22,9 +22,17 @@ public class Address {
 	private String dong;
 
 	@Builder
-	public Address(String si, String gu, String dong) {
+	private Address(String si, String gu, String dong) {
 		this.si = si;
 		this.gu = gu;
 		this.dong = dong;
+	}
+
+	public static Address of(String si, String gu, String dong) {
+		return Address.builder()
+			.si(si)
+			.gu(gu)
+			.dong(dong)
+			.build();
 	}
 }

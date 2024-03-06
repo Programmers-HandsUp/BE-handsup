@@ -1,5 +1,7 @@
 package dev.handsup.user.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +14,6 @@ public interface UserReviewLabelRepository extends JpaRepository<UserReviewLabel
 	@Modifying
 	@Query("update UserReviewLabel ur SET ur.count = :count where ur.id = :id")
 	void updateCount(@Param("id") Long id, @Param("count") int count);
+
+	Slice<UserReviewLabel> findByUserIdOrderByIdAsc(Long userId, Pageable pageable);
 }

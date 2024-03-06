@@ -16,6 +16,7 @@ import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.ChatMapper;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
+
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.exception.ChatErrorCode;
@@ -151,3 +152,4 @@ public class ChatRoomService {
 		return chatRoom.getBidder().equals(user) ? chatRoom.getSeller() : chatRoom.getBidder();
 	}
 }
+

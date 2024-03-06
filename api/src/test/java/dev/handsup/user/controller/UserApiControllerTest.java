@@ -14,12 +14,23 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.common.support.ApiTestSupport;
+
+import dev.handsup.review.domain.ReviewLabel;
+import dev.handsup.review.domain.ReviewLabelValue;
+import dev.handsup.review.domain.UserReviewLabel;
+import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
+import dev.handsup.user.repository.UserReviewLabelRepository;
 
 @DisplayName("[User 통합 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
+
+	@Autowired
+	UserReviewLabelRepository userReviewLabelRepository;
+	@Autowired
+	private ReviewLabelRepository reviewLabelRepository;
 
 	private final JoinUserRequest request = JoinUserRequest.of(
 		"hello12345@naver.com",
@@ -91,5 +102,31 @@ class UserApiControllerTest extends ApiTestSupport {
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isAvailable").value(false));
+	}
+	@Test
+	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
+	void getUserReviewLabelsTest() throws Exception {
+		// given
+		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
+		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP.getDescription());
+		reviewLabelRepository.saveAll(
+			List.of(reviewLabel1, reviewLabel2)
+		);
+		userReviewLabelRepository.save(UserReviewLabel.of(reviewLabel1, user));
+		userReviewLabelRepository.save(UserReviewLabel.of(reviewLabel2, user));
+
+		// when & then
+		mockMvc.perform(get("/api/users/{userId}/reviews/labels", user.getId())
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(2))
+			.andExpect(jsonPath("$.content[0].userReviewLabelId").value(1L))
+			.andExpect(jsonPath("$.content[0].reviewLabelId").value(reviewLabel1.getId()))
+			.andExpect(jsonPath("$.content[0].userId").value(user.getId()))
+			.andExpect(jsonPath("$.content[0].count").value(1))
+			.andExpect(jsonPath("$.content[1].userReviewLabelId").value(2L))
+			.andExpect(jsonPath("$.content[1].reviewLabelId").value(reviewLabel2.getId()))
+			.andExpect(jsonPath("$.content[1].userId").value(user.getId()))
+			.andExpect(jsonPath("$.content[1].count").value(1));
 	}
 }

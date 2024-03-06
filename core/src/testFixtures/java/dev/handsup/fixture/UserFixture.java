@@ -14,11 +14,7 @@ public final class UserFixture {
 	static final String NICKNAME = "nickname123";
 	static final String PROFILE_IMAGE_URL =
 		"https://lh3.googleusercontent.com/a/ACg8ocI5mIsHlnobowJ34VO9ZN8G31hlB4OBBRo_JoWItp5Vyg=s288-c-no";
-	static final Address address = Address.builder()
-		.si("서울시")
-		.gu("구로구")
-		.dong("가리봉동")
-		.build();
+	static final Address address = Address.of("서울시", "구로구", "가리봉동");
 
 	public static User user() {
 		return User.getTestUser(1L, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);

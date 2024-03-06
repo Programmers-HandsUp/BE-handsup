@@ -1,6 +1,5 @@
 package dev.handsup.controller;
 
-
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
