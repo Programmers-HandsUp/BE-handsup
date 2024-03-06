@@ -118,7 +118,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 
 		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), user1, loginUser);
 		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user1, user2);
-		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), user2, loginUser);
+		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction2.getId(), user2, loginUser);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
 
 		mockMvc.perform(get("/api/auctions/chat-rooms")
