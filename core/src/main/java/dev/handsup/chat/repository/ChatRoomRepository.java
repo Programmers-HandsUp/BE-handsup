@@ -1,7 +1,7 @@
 package dev.handsup.chat.repository;
 
-import java.util.Optional;
 
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,10 +12,9 @@ import dev.handsup.user.domain.User;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
-	@Query("SELECT cr FROM ChatRoom cr WHERE cr.seller = :user OR cr.bidder = :user")
+	@Query("SELECT cr FROM ChatRoom cr "
+		+ "WHERE cr.seller = :user OR cr.bidder = :user ORDER BY cr.createdAt DESC")
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
-
 	Optional<ChatRoom> findChatRoomByAuctionIdAndBidder(Long auctionId, User bidder);
-
-	Boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
+	boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
 }

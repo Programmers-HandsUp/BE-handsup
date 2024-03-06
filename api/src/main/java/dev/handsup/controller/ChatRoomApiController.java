@@ -3,15 +3,19 @@ package dev.handsup.controller;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
+
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.service.ChatRoomService;
@@ -26,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "채팅방 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auctions/chatrooms")
+@RequestMapping("/api/auctions/chat-rooms")
 public class ChatRoomApiController {
 
 	private final ChatRoomService chatRoomService;

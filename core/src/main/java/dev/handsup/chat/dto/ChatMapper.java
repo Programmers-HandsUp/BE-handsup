@@ -6,6 +6,7 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
+
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.user.domain.User;
