@@ -100,12 +100,12 @@ class ChatRoomServiceTest {
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
 
 		//when
-		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithId(seller, chatRoom.getId());
+		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithId(chatRoom.getId(), seller);
 
 		//then
 		assertAll(
 			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
-			() -> assertThat(response.receiverNickName()).isEqualTo(chatRoom.getSeller().getNickname())
+			() -> assertThat(response.receiverId()).isEqualTo(chatRoom.getBidder().getId())
 		);
 	}
 
@@ -122,12 +122,12 @@ class ChatRoomServiceTest {
 			.willReturn(Optional.of(chatRoom));
 
 		//when
-		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithBiddingId(seller, bidding.getId());
+		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithBiddingId(bidding.getId(), seller);
 
 		//then
 		assertAll(
 			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
-			() -> assertThat(response.receiverNickName()).isEqualTo(chatRoom.getSeller().getNickname())
+			() -> assertThat(response.receiverId()).isEqualTo(chatRoom.getBidder().getId())
 		);
 	}
 
@@ -142,7 +142,7 @@ class ChatRoomServiceTest {
 		given(chatRoomRepository.existsByAuctionIdAndBidder(bidding.getAuction().getId(), bidding.getBidder())).willReturn(true);
 
 		//when
-		ChatRoomExistenceResponse response = chatRoomService.getChatRoomExistence(seller, bidding.getId());
+		ChatRoomExistenceResponse response = chatRoomService.getChatRoomExistence(bidding.getId(), seller);
 
 		//then
 		assertThat(response.isExist()).isTrue();
