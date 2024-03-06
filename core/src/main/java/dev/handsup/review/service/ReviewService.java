@@ -6,10 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.common.service.EntityManagementService;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.ReviewInterReviewLabel;
 import dev.handsup.review.domain.ReviewLabel;
@@ -17,6 +18,7 @@ import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.dto.ReviewMapper;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
 import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.exception.ReviewErrorCode;
 import dev.handsup.review.repository.ReviewInterReviewLabelRepository;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
@@ -33,7 +35,6 @@ public class ReviewService {
 	private final ReviewInterReviewLabelRepository reviewInterReviewLabelRepository;
 	private final UserReviewLabelRepository userReviewLabelRepository;
 	private final AuctionRepository auctionRepository;
-	private final EntityManagementService entityManagementService;
 
 	@Transactional
 	public ReviewResponse registerReview(
@@ -41,12 +42,12 @@ public class ReviewService {
 		Long auctionId,
 		User writer
 	) {
-		Auction auction = getAuction(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		Review review = reviewRepository.save(
 			ReviewMapper.toReview(request, auction, writer)
 		);
 		request.reviewLabelIds().forEach(reviewLabelId -> {
-			ReviewLabel reviewLabel = getReviewLabel(reviewLabelId);
+			ReviewLabel reviewLabel = getReviewById(reviewLabelId);
 			reviewInterReviewLabelRepository.save(
 				ReviewInterReviewLabel.of(review, reviewLabel)
 			);
@@ -60,12 +61,14 @@ public class ReviewService {
 		return ReviewMapper.toReviewResponse(review);
 	}
 
-	private ReviewLabel getReviewLabel(Long reviewLabelId) {
-		return entityManagementService.getEntity(reviewLabelRepository, reviewLabelId);
+	private ReviewLabel getReviewById(Long reviewLabelId) {
+		return reviewLabelRepository.findById(reviewLabelId)
+			.orElseThrow(() -> new NotFoundException(ReviewErrorCode.NOT_FOUND_REVIEW_LABEL));
 	}
 
-	private Auction getAuction(Long auctionId) {
-		return entityManagementService.getEntity(auctionRepository, auctionId);
+	public Auction getAuctionById(Long auctionId) {
+		return auctionRepository.findById(auctionId).
+			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
 	@Transactional(readOnly = true)

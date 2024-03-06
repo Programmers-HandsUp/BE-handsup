@@ -44,7 +44,7 @@ public class BiddingService {
 	}
 
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
-		Auction auction = auctionService.getAuctionEntity(auctionId);
+		Auction auction = auctionService.getAuctionById(auctionId);
 		validateBiddingPrice(request.biddingPrice(), auction);
 
 		Bidding savedBidding = biddingRepository.save(

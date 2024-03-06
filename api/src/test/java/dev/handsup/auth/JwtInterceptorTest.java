@@ -18,7 +18,6 @@ import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.jwt.JwtInterceptor;
 import dev.handsup.auth.service.JwtProvider;
-import dev.handsup.common.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 
 @DisplayName("[JwtInterceptor 통합 테스트]")

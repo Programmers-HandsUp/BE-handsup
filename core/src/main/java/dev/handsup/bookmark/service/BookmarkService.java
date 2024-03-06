@@ -30,7 +30,7 @@ public class BookmarkService {
 
 	@Transactional
 	public EditBookmarkResponse addBookmark(User user, Long auctionId) {
-		Auction auction = getAuctionEntity(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		validateIfBookmarkExists(user, auction);
 		auction.increaseBookmarkCount();
 		Bookmark bookmark = BookmarkMapper.toBookmark(user, auction);
@@ -42,8 +42,8 @@ public class BookmarkService {
 
 	@Transactional
 	public EditBookmarkResponse cancelBookmark(User user, Long auctionId) {
-		Auction auction = getAuctionEntity(auctionId);
-		deleteBookmark(getBookmarkEntity(user, auction));
+		Auction auction = getAuctionById(auctionId);
+		deleteBookmark(getBookmarkByUserAndAuction(user, auction));
 		auction.decreaseBookmarkCount();
 
 		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
@@ -51,7 +51,7 @@ public class BookmarkService {
 
 	@Transactional(readOnly = true)
 	public GetBookmarkStatusResponse getBookmarkStatus(User user, Long auctionId) {
-		Auction auction = getAuctionEntity(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		boolean isBookmarked = bookmarkRepository.existsByUserAndAuction(user, auction);
 
 		return BookmarkMapper.toGetBookmarkStatusResponse(isBookmarked);
@@ -66,7 +66,7 @@ public class BookmarkService {
 		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 
-	private Auction getAuctionEntity(Long auctionId) {
+	private Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId).
 			orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
@@ -77,7 +77,7 @@ public class BookmarkService {
 		});
 	}
 
-	private Bookmark getBookmarkEntity(User user, Auction auction) {
+	private Bookmark getBookmarkByUserAndAuction(User user, Auction auction) {
 		return bookmarkRepository.findByUserAndAuction(user, auction)
 			.orElseThrow(() -> new ValidationException(BookmarkErrorCode.NOT_FOUND_BOOKMARK));
 	}
