@@ -76,7 +76,7 @@ public class ChatRoomApiController {
 		return ResponseEntity.ok(response);
 	}
 
-	@Operation(summary = "입찰 아이디로 채팅방 상세 조회", description = "입찰 아이디로 경매 아이디, 입찰자를 얻어 채팅방을 상세 조회한다.")
+	@Operation(summary = "입찰 아이디로 채팅방 존재 여부 조회", description = "입찰 아이디로 경매 아이디, 입찰자를 얻어 채팅방 존재 여부를 확인한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("biddings/{biddingId}/existence")
 	public ResponseEntity<ChatRoomExistenceResponse> getChatRoomExistence(
