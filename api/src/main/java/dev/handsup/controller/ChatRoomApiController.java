@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name = "채팅방 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auctions/chatrooms")
+@RequestMapping("/api/auctions/chat-rooms")
 public class ChatRoomApiController {
 
 	private final ChatRoomService chatRoomService;

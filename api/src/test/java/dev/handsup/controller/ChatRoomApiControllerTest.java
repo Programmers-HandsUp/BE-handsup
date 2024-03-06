@@ -60,7 +60,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	void registerChatRoom() throws Exception {
 		userRepository.saveAll(List.of(bidder, seller));
 		//when then
-		mockMvc.perform(post("/api/auctions/chatrooms")
+		mockMvc.perform(post("/api/auctions/chat-rooms")
 				.param("auctionId", auction.getId().toString())
 				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
@@ -77,7 +77,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		userRepository.saveAll(List.of(bidder, seller));
 		//when then
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.BIDDING);
-		mockMvc.perform(post("/api/auctions/chatrooms")
+		mockMvc.perform(post("/api/auctions/chat-rooms")
 				.param("auctionId", auction.getId().toString())
 				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
@@ -95,7 +95,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
 		chatRoomRepository.save(chatRoom);
 		//when then
-		mockMvc.perform(post("/api/auctions/chatrooms")
+		mockMvc.perform(post("/api/auctions/chat-rooms")
 				.param("auctionId", auction.getId().toString())
 				.param("bidderId", bidder.getId().toString())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
@@ -121,7 +121,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), user2, loginUser);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
 
-		mockMvc.perform(get("/api/auctions/chatrooms")
+		mockMvc.perform(get("/api/auctions/chat-rooms")
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
