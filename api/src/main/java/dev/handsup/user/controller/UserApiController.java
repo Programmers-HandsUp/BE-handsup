@@ -2,6 +2,7 @@ package dev.handsup.user.controller;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
+import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
@@ -17,6 +20,7 @@ import dev.handsup.user.dto.response.JoinUserResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -61,5 +65,14 @@ public class UserApiController {
 	) {
 		PageResponse<UserReviewLabelResponse> response = userService.getUserReviewLabels(userId, pageable);
 		return ResponseEntity.ok(response);
+	}
+
+	@DeleteMapping("/api/users")
+	@Operation(summary = "사용자 정보 삭제 API", description = "특정 사용자의 정보를 삭제한다")
+	public ResponseEntity<Void> deleteUser(
+		@Parameter(hidden = true) @JwtAuthorization User user
+	) {
+		userService.deleteUser(user);
+		return ResponseEntity.noContent().build();
 	}
 }

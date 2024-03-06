@@ -85,4 +85,12 @@ public class UserService {
 		return productCategoryRepository.findById(productCategoryId)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
+
+	@Transactional
+	public void deleteUser(User user) {
+		if (!userRepository.existsById(user.getId())) {
+			throw new NotFoundException(UserErrorCode.NOT_FOUND_USER);
+		}
+		userRepository.deleteById(user.getId());
+	}
 }
