@@ -1,4 +1,4 @@
-package dev.handsup.controller;
+package dev.handsup.chat.controller;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
@@ -22,7 +22,7 @@ import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
-import dev.handsup.chat.exception.ChatErrorCode;
+import dev.handsup.chat.exception.ChatRoomErrorCode;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
@@ -87,8 +87,8 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value(ChatErrorCode.NOT_TRADING_AUCTION.getMessage()))
-			.andExpect(jsonPath("$.code").value(ChatErrorCode.NOT_TRADING_AUCTION.getCode()));
+			.andExpect(jsonPath("$.message").value(ChatRoomErrorCode.NOT_TRADING_AUCTION.getMessage()))
+			.andExpect(jsonPath("$.code").value(ChatRoomErrorCode.NOT_TRADING_AUCTION.getCode()));
 	}
 
 	@DisplayName("[동일한 경매 아이디, 구매자의 채팅방이 있을 경우 채팅방을 생성할 수 없다.]")
@@ -104,8 +104,8 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS.getMessage()))
-			.andExpect(jsonPath("$.code").value(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS.getCode()));
+			.andExpect(jsonPath("$.message").value(ChatRoomErrorCode.CHAT_ROOM_ALREADY_EXISTS.getMessage()))
+			.andExpect(jsonPath("$.code").value(ChatRoomErrorCode.CHAT_ROOM_ALREADY_EXISTS.getCode()));
 	}
 
 	@DisplayName("[유저가 속한 채팅방을 모두 조회할 수 있다.]")
@@ -166,9 +166,9 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.code")
-				.value(ChatErrorCode.NOT_FOUND_CHAT_ROOM.getCode()))
+				.value(ChatRoomErrorCode.NOT_FOUND_CHAT_ROOM.getCode()))
 			.andExpect(jsonPath("$.message")
-				.value(ChatErrorCode.NOT_FOUND_CHAT_ROOM.getMessage()));
+				.value(ChatRoomErrorCode.NOT_FOUND_CHAT_ROOM.getMessage()));
 	}
 
 	@DisplayName("[입찰 아이디로 채팅방을 상세 조회할 수 있다.]")

@@ -13,7 +13,7 @@ import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
-public class ChatMapper {
+public class ChatRoomMapper {
 
 	public static ChatRoom toChatRoom(Long auctionId, User seller, User bidder) {
 		return ChatRoom.of(auctionId, seller, bidder);

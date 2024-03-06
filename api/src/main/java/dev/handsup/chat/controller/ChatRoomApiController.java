@@ -1,4 +1,4 @@
-package dev.handsup.controller;
+package dev.handsup.chat.controller;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
