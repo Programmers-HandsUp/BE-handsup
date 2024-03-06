@@ -10,6 +10,7 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -28,6 +29,25 @@ public class AuctionFixture {
 		return Auction.of(
 			1L,
 			UserFixture.user(),
+			TITLE,
+			ProductCategory.of(DIGITAL_DEVICE),
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			List.of("image.jpg"),
+			SI,
+			GU,
+			DONG
+		);
+	}
+
+	public static Auction auction(User seller) {
+		return Auction.of(
+			1L,
+			seller,
 			TITLE,
 			ProductCategory.of(DIGITAL_DEVICE),
 			10000,
