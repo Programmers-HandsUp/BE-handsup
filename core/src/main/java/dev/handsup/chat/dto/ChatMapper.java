@@ -31,7 +31,7 @@ public class ChatMapper {
 			bidder.getNickname(), bidder.getScore(), bidder.getProfileImageUrl());
 	}
 
-	public static ChatRoomExistenceResponse toChatRoomExistenceResponse(Boolean isExist){
+	public static ChatRoomExistenceResponse toChatRoomExistenceResponse(Boolean isExist) {
 		return ChatRoomExistenceResponse.from(isExist);
 	}
 }

@@ -17,7 +17,7 @@ public record ChatRoomDetailResponse(
 		String receiverNickName,
 		int receiverScore,
 		String receiverProfileImageUrl
-	){
+	) {
 		return new ChatRoomDetailResponse(
 			chatRoomId,
 			auctionId,

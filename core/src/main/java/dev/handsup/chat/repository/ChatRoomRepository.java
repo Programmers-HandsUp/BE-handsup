@@ -16,5 +16,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
 
 	Optional<ChatRoom> findChatRoomByAuctionIdAndBidder(Long auctionId, User bidder);
+
 	Boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
 }

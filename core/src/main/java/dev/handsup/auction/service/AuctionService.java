@@ -59,11 +59,11 @@ public class AuctionService {
 
 	private ProductCategory getProductCategoryByValue(String productCategoryValue) {
 		return productCategoryRepository.findByValue(productCategoryValue)
-				.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
+			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
 
 	public Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId)
-				.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
+			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 }

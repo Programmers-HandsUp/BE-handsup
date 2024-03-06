@@ -140,7 +140,8 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder);
 
 		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
-		given(chatRoomRepository.existsByAuctionIdAndBidder(bidding.getAuction().getId(), bidding.getBidder())).willReturn(true);
+		given(chatRoomRepository.existsByAuctionIdAndBidder(bidding.getAuction().getId(),
+			bidding.getBidder())).willReturn(true);
 
 		//when
 		ChatRoomExistenceResponse response = chatRoomService.getChatRoomExistence(bidding.getId(), seller);

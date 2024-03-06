@@ -51,20 +51,20 @@ public class Bidding extends TimeBaseEntity {
 		this.bidder = bidder;
 	}
 
-	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
-		return Bidding.builder()
-			.biddingPrice(biddingPrice)
-			.auction(auction)
-			.bidder(bidder)
-			.build();
-	}
-
 	//테스트용
 	private Bidding(Long id, int biddingPrice, Auction auction, User bidder) {
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
+	}
+
+	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
+		return Bidding.builder()
+			.biddingPrice(biddingPrice)
+			.auction(auction)
+			.bidder(bidder)
+			.build();
 	}
 
 	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder) {
