@@ -67,4 +67,3 @@ public class AuctionService {
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 }
-
