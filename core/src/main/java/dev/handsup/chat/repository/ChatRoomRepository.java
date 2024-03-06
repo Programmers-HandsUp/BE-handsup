@@ -12,5 +12,5 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 	@Query("SELECT cr FROM ChatRoom cr WHERE cr.seller = :user OR cr.bidder = :user")
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
 
-	Boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
+	boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
 }

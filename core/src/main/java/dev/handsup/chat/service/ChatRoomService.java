@@ -59,7 +59,7 @@ public class ChatRoomService {
 	}
 
 	private void validateIfChatRoomNotExists(Long auctionId, User bidder) {
-		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBidder(auctionId, bidder))) {
+		if (chatRoomRepository.existsByAuctionIdAndBidder(auctionId, bidder)) {
 			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS);
 		}
 	}
