@@ -18,6 +18,7 @@ import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
+import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;
@@ -37,8 +38,10 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getAddress().getSi(),
 		user.getAddress().getGu(),
 		user.getAddress().getDong(),
-		user.getProfileImageUrl()
+		user.getProfileImageUrl(),
+		List.of(1L)
 	);
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -60,6 +63,45 @@ class UserApiControllerTest extends ApiTestSupport {
 		assertThat(userRepository.findByEmail(user.getEmail())).isPresent();
 	}
 
+	@Test
+	@DisplayName("[[이메일 중복 체크 API] 이메일 사용 가능 여부를 응답한다 - 성공]")
+	void checkEmailAvailabilitySuccessTest() throws Exception {
+		// given
+		String existedEmail = user.getEmail();
+		String requestEmail = "hello" + existedEmail;
+		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			get("/api/users/check-email")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(request))
+		);
+
+		// then
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isAvailable").value(true));
+	}
+
+	@Test
+	@DisplayName("[[이메일 중복 체크 API] 이메일 사용 가능 여부를 응답한다 - 실패]")
+	void checkEmailAvailabilityFailTest() throws Exception {
+		// given
+		String existedEmail = user.getEmail();
+		String requestEmail = existedEmail;
+		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			get("/api/users/check-email")
+				.contentType(APPLICATION_JSON)
+				.content(toJson(request))
+		);
+
+		// then
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isAvailable").value(false));
+	}
 	@Test
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {

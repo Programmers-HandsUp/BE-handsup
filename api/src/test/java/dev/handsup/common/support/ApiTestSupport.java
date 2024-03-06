@@ -3,6 +3,7 @@ package dev.handsup.common.support;
 import static org.springframework.http.MediaType.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
+import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
@@ -54,6 +58,8 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected AuctionRepository auctionRepository;
 	@Autowired
 	protected AuthService authService;
+	@Autowired
+	protected ProductCategoryRepository productCategoryRepository;
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
@@ -73,8 +79,11 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			user.getAddress().getSi(),
 			user.getAddress().getGu(),
 			user.getAddress().getDong(),
-			user.getProfileImageUrl()
+			user.getProfileImageUrl(),
+			List.of(1L)        // 선호 카테고리 id
 		);
+
+		productCategoryRepository.save(ProductCategory.of(ProductCategoryValue.BEAUTY_COSMETICS.getLabel()));
 
 		mockMvc.perform(
 			MockMvcRequestBuilders
