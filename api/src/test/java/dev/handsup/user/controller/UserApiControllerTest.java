@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.common.support.ApiTestSupport;
-
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
@@ -27,11 +26,6 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 @DisplayName("[User 통합 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
-	@Autowired
-	UserReviewLabelRepository userReviewLabelRepository;
-	@Autowired
-	private ReviewLabelRepository reviewLabelRepository;
-
 	private final JoinUserRequest request = JoinUserRequest.of(
 		"hello12345@naver.com",
 		user.getPassword(),
@@ -42,7 +36,10 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getProfileImageUrl(),
 		List.of(1L)
 	);
-
+	@Autowired
+	UserReviewLabelRepository userReviewLabelRepository;
+	@Autowired
+	private ReviewLabelRepository reviewLabelRepository;
 	@Autowired
 	private UserRepository userRepository;
 
@@ -103,6 +100,7 @@ class UserApiControllerTest extends ApiTestSupport {
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isAvailable").value(false));
 	}
+
 	@Test
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {

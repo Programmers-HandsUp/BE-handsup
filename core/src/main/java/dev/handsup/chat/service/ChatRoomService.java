@@ -16,7 +16,6 @@ import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.ChatRoomMapper;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
-
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.exception.ChatRoomErrorCode;
