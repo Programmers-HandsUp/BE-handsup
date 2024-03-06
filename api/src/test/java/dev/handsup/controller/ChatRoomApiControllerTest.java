@@ -19,11 +19,14 @@ import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.exception.ChatErrorCode;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.ChatRoomFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
@@ -42,6 +45,8 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Autowired
 	private AuctionRepository auctionRepository;
 	@Autowired
+	private BiddingRepository biddingRepository;
+	@Autowired
 	private ChatRoomRepository chatRoomRepository;
 
 	@BeforeEach
@@ -57,7 +62,6 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[채팅방을 생성할 수 있다.]")
 	@Test
 	void registerChatRoom() throws Exception {
-
 		//when then
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
@@ -108,15 +112,15 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getUserChatRooms() throws Exception {
 		//given
-		User user = UserFixture.user("user@gmail.com");
-		userRepository.save(user);
+		User unrelatedUser = UserFixture.user("user@gmail.com");
+		userRepository.save(unrelatedUser);
 
 		Auction auction2 = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction2);
 
 		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
-		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user, bidder);
-		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), seller, user);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), unrelatedUser, bidder);
+		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), seller, unrelatedUser);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
 
 		mockMvc.perform(get("/api/auctions/chatrooms")
@@ -132,4 +136,98 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 			.andDo(MockMvcResultHandlers.print());
 	}
 
+	@DisplayName("[채팅방 아이디로 채팅방을 상세 조회할 수 있다.]")
+	@Test
+	void getChatRoomWithId() throws Exception {
+		//given
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
+		chatRoomRepository.save(chatRoom);
+
+		//when, then
+		mockMvc.perform(get("/api/auctions/chatrooms/{chatRoomId}", chatRoom.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.chatRoomId").value(chatRoom.getId()))
+			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.auctionTitle").value(auction.getTitle()))
+			.andExpect(jsonPath("$.receiverId").value(bidder.getId()))
+			.andExpect(jsonPath("$.receiverNickName").value(bidder.getNickname()))
+			.andExpect(jsonPath("$.receiverScore").value(bidder.getScore()))
+			.andExpect(jsonPath("$.receiverProfileImageUrl").value(bidder.getProfileImageUrl()));
+	}
+
+	@DisplayName("[채팅방 아이디에 해당하는 채팅방이 없으면 예외를 반환한다.]")
+	@Test
+	void getChatRoomWithId_fails() throws Exception {
+		//when, then
+		mockMvc.perform(get("/api/auctions/chatrooms/{chatRoomId}", 1L)
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.code")
+				.value(ChatErrorCode.NOT_FOUND_CHAT_ROOM.getCode()))
+			.andExpect(jsonPath("$.message")
+				.value(ChatErrorCode.NOT_FOUND_CHAT_ROOM.getMessage()));
+	}
+
+	@DisplayName("[입찰 아이디로 채팅방을 상세 조회할 수 있다.]")
+	@Test
+	void getChatRoomWithBiddingId() throws Exception {
+		//given
+		Bidding bidding = BiddingFixture.bidding(auction, bidder);
+		biddingRepository.save(bidding);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
+		chatRoomRepository.save(chatRoom);
+		//when, then
+		mockMvc.perform(get("/api/auctions/chatrooms/biddings/{biddingId}", bidding.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.chatRoomId").value(chatRoom.getId()))
+			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.auctionTitle").value(auction.getTitle()))
+			.andExpect(jsonPath("$.receiverId").value(bidder.getId()))
+			.andExpect(jsonPath("$.receiverNickName").value(bidder.getNickname()))
+			.andExpect(jsonPath("$.receiverScore").value(bidder.getScore()))
+			.andExpect(jsonPath("$.receiverProfileImageUrl").value(bidder.getProfileImageUrl()));
+	}
+
+	@DisplayName("[해당 경매의 판매자가 아니면 입찰 아이디로 채팅방을 조회할 수 없다.]")
+	@Test
+	void getChatRoomWithBiddingId_fails() throws Exception {
+		//given
+		User unrelatedUser = UserFixture.user("user@gmail.com");
+		userRepository.save(unrelatedUser);
+		Auction unrelatedUserAuction = auctionRepository.save(AuctionFixture.auction(unrelatedUser, productCategory));
+		auctionRepository.save(unrelatedUserAuction);
+
+		Bidding bidding = BiddingFixture.bidding(unrelatedUserAuction, bidder);
+		biddingRepository.save(bidding);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(unrelatedUserAuction.getId(), user, bidder);
+		chatRoomRepository.save(chatRoom);
+
+		//when, then
+		mockMvc.perform(get("/api/auctions/chatrooms/biddings/{biddingId}", bidding.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andDo(MockMvcResultHandlers.print());
+	}
+
+	@DisplayName("[입찰 아이디로 채팅방 존재여부를 확인할 수 있다.]")
+	@Test
+	void getChatRoomExistence() throws Exception {
+		//given
+		Bidding bidding = BiddingFixture.bidding(auction, bidder);
+		biddingRepository.save(bidding);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
+		chatRoomRepository.save(chatRoom);
+		//when, then
+		mockMvc.perform(get("/api/auctions/chatrooms/biddings/{biddingId}/existence", bidding.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.isExist").value(true));
+	}
 }
