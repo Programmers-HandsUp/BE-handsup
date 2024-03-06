@@ -120,22 +120,22 @@ public class ChatRoomService {
 		}
 	}
 
-	public Auction getAuctionById(Long auctionId) {
+	private Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
-	public Bidding getBiddingById(Long biddingId) {
+	private Bidding getBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
 
-	public User getUserById(Long userId) {
+	private User getUserById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 	}
 
-	public ChatRoom getChatRoomById(Long chatRoomId) {
+	private ChatRoom getChatRoomById(Long chatRoomId) {
 		return chatRoomRepository.findById(chatRoomId)
 			.orElseThrow(() -> new NotFoundException(ChatErrorCode.NOT_FOUND_CHAT_ROOM));
 	}
