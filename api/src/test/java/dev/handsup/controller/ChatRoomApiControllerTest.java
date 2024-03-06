@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
@@ -33,8 +32,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[ChatRoom 통합 테스트]")
 class ChatRoomApiControllerTest extends ApiTestSupport {
 
-	private final User loginUser = UserFixture.user();
-	private final User seller = UserFixture.user("seller@gmail.com");
+	private final User seller = UserFixture.user(); // loginUser
 	private final User bidder = UserFixture.user("bidder@gmail.com");
 	private ProductCategory productCategory;
 	private Auction auction;
@@ -48,9 +46,10 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
+		userRepository.saveAll(List.of(bidder, seller));
 		productCategory = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(productCategory);
-		auction = AuctionFixture.auction(productCategory);
+		auction = AuctionFixture.auction(seller, productCategory);
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 		auctionRepository.save(auction);
 	}
@@ -58,7 +57,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[채팅방을 생성할 수 있다.]")
 	@Test
 	void registerChatRoom() throws Exception {
-		userRepository.saveAll(List.of(bidder, seller));
+
 		//when then
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
@@ -70,13 +69,14 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 			.andDo(MockMvcResultHandlers.print());
 	}
 
-	@Transactional
 	@DisplayName("[경매가 거래 상태가 아니면 채팅방을 생성할 수 없다.]")
 	@Test
 	void registerChatRoom_fails() throws Exception {
 		userRepository.saveAll(List.of(bidder, seller));
-		//when then
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.BIDDING);
+		auctionRepository.save(auction);
+
+		//when then
 		mockMvc.perform(post("/api/auctions/chatrooms")
 				.param("auctionId", auction.getId().toString())
 				.param("bidderId", bidder.getId().toString())
@@ -91,7 +91,6 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void registerChatRoom_fails2() throws Exception {
 		//given
-		userRepository.saveAll(List.of(bidder, seller));
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
 		chatRoomRepository.save(chatRoom);
 		//when then
@@ -109,16 +108,15 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getUserChatRooms() throws Exception {
 		//given
-		User user1 = UserFixture.user("user1@gmail.com");
-		User user2 = UserFixture.user("user2@gmail.com");
-		userRepository.saveAll(List.of(loginUser, user1, user2));
+		User user = UserFixture.user("user@gmail.com");
+		userRepository.save(user);
 
 		Auction auction2 = AuctionFixture.auction(productCategory);
 		auctionRepository.save(auction2);
 
-		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), user1, loginUser);
-		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user1, user2);
-		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), user2, loginUser);
+		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(auction.getId(), seller, bidder);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(auction.getId(), user, bidder);
+		ChatRoom chatRoom3 = ChatRoomFixture.chatRoom(auction.getId(), seller, user);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2, chatRoom3));
 
 		mockMvc.perform(get("/api/auctions/chatrooms")
@@ -126,11 +124,12 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatRoom1.getId()))
-			.andExpect(jsonPath("$.content[0].receiverNickName").value(user1.getNickname()))
-			.andExpect(jsonPath("$.content[0].receiverImageUrl").value(user1.getProfileImageUrl()))
+			.andExpect(jsonPath("$.content[0].receiverNickName").value(bidder.getNickname()))
+			.andExpect(jsonPath("$.content[0].receiverImageUrl").value(bidder.getProfileImageUrl()))
 			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatRoom3.getId()))
-			.andExpect(jsonPath("$.content[1].receiverNickName").value(user2.getNickname()))
-			.andExpect(jsonPath("$.content[1].receiverImageUrl").value(user2.getProfileImageUrl()))
+			.andExpect(jsonPath("$.content[1].receiverNickName").value(seller.getNickname()))
+			.andExpect(jsonPath("$.content[1].receiverImageUrl").value(seller.getProfileImageUrl()))
 			.andDo(MockMvcResultHandlers.print());
 	}
+
 }
