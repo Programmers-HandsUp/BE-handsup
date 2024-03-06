@@ -90,6 +90,25 @@ class ChatRoomServiceTest {
 		assertThat(response.content().get(0)).isNotNull();
 	}
 
+	@DisplayName("[채팅방 아이디로 채팅방을 조회할 수 있다.]")
+	@Test
+	void getChatRoomWithId() {
+		//given
+		Auction auction = AuctionFixture.auction(seller);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
+		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
+		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
+
+		//when
+		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithId(seller, chatRoom.getId());
+
+		//then
+		assertAll(
+			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
+			() -> assertThat(response.receiverNickName()).isEqualTo(chatRoom.getSeller().getNickname())
+		);
+	}
+
 	@DisplayName("[입찰 아이디로 채팅방을 조회할 수 있다.]")
 	@Test
 	void getChatRoomWithBiddingId() {
@@ -104,25 +123,6 @@ class ChatRoomServiceTest {
 
 		//when
 		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithBiddingId(seller, bidding.getId());
-
-		//then
-		assertAll(
-			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
-			() -> assertThat(response.receiverNickName()).isEqualTo(chatRoom.getSeller().getNickname())
-		);
-	}
-
-	@DisplayName("[채팅방 아이디로 채팅방을 조회할 수 있다.]")
-	@Test
-	void getChatRoomWithId() {
-		//given
-		Auction auction = AuctionFixture.auction(seller);
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
-		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
-		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
-
-		//when
-		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithId(seller, chatRoom.getId());
 
 		//then
 		assertAll(

@@ -58,6 +58,16 @@ public class ChatRoomService {
 		return CommonMapper.toPageResponse(chatRoomResponses);
 	}
 
+	// 채팅 목록에서 조회
+	@Transactional(readOnly = true)
+	public ChatRoomDetailResponse getChatRoomWithId(User user, Long chatRoomId) {
+		ChatRoom chatRoom = getChatRoomById(chatRoomId);
+		Auction auction = getAuctionById(chatRoom.getAuctionId());
+		User receiver = getReceiver(user, chatRoom);
+
+		return ChatMapper.toChatRoomDetailResponse(chatRoom, auction, receiver);
+	}
+
 	// 입찰자 목록에서 조회
 	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithBiddingId(User seller, Long biddingId) {
@@ -68,16 +78,6 @@ public class ChatRoomService {
 		ChatRoom chatRoom = getChatRoomByAuctionIdAndBidder(auction.getId(), bidder);
 
 		return ChatMapper.toChatRoomDetailResponse(chatRoom, auction, bidder);
-	}
-
-	// 채팅 목록에서 조회
-	@Transactional(readOnly = true)
-	public ChatRoomDetailResponse getChatRoomWithId(User user, Long chatRoomId) {
-		ChatRoom chatRoom = getChatRoomById(chatRoomId);
-		Auction auction = getAuctionById(chatRoom.getAuctionId());
-		User receiver = getReceiver(user, chatRoom);
-
-		return ChatMapper.toChatRoomDetailResponse(chatRoom, auction, receiver);
 	}
 
 	// 입찰자 목록에서 채팅방 존재 여부 조회
