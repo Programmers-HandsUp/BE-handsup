@@ -1,6 +1,7 @@
 package dev.handsup.user.controller;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -14,10 +15,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.common.support.ApiTestSupport;
+import dev.handsup.fixture.UserFixture;
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
@@ -102,6 +105,7 @@ class UserApiControllerTest extends ApiTestSupport {
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isAvailable").value(false));
 	}
+
 	@Test
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {
@@ -127,5 +131,18 @@ class UserApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[1].reviewLabelId").value(reviewLabel2.getId()))
 			.andExpect(jsonPath("$.content[1].userId").value(user.getId()))
 			.andExpect(jsonPath("$.content[1].count").value(1));
+	}
+
+	@Test
+	@DisplayName("[[사용자 정보 삭제 API] 특정 사용자의 정보를 삭제한다]")
+	void deleteUserTest() throws Exception {
+		//given
+		User forDeleteUser = UserFixture.user("hello223@naver.com");
+		userRepository.save(forDeleteUser);
+
+		//when & then
+		mockMvc.perform(delete("/api/users")
+				.header(AUTHORIZATION, "Bearer " + accessToken))
+			.andExpect(status().isNoContent());
 	}
 }
