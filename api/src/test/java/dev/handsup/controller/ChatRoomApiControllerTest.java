@@ -125,12 +125,12 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatRoom1.getId()))
-			.andExpect(jsonPath("$.content[0].receiverNickName").value(user1.getNickname()))
-			.andExpect(jsonPath("$.content[0].receiverImageUrl").value(user1.getProfileImageUrl()))
-			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatRoom3.getId()))
-			.andExpect(jsonPath("$.content[1].receiverNickName").value(user2.getNickname()))
-			.andExpect(jsonPath("$.content[1].receiverImageUrl").value(user2.getProfileImageUrl()))
+			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatRoom3.getId()))
+			.andExpect(jsonPath("$.content[0].receiverNickName").value(user2.getNickname()))
+			.andExpect(jsonPath("$.content[0].receiverImageUrl").value(user2.getProfileImageUrl()))
+			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatRoom1.getId()))
+			.andExpect(jsonPath("$.content[1].receiverNickName").value(user1.getNickname()))
+			.andExpect(jsonPath("$.content[1].receiverImageUrl").value(user1.getProfileImageUrl()))
 			.andDo(MockMvcResultHandlers.print());
 	}
 }
