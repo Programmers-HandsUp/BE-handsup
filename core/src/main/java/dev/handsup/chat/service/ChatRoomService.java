@@ -7,10 +7,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
+import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.exception.BiddingErrorCode;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.ChatMapper;
+import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.exception.ChatErrorCode;
@@ -31,9 +36,11 @@ public class ChatRoomService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final UserRepository userRepository;
 	private final AuctionRepository auctionRepository;
+	private final BiddingRepository biddingRepository;
 
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long bidderId, User seller) {
 		User bidder = getUserById(bidderId);
+		validateAuthorization(seller, getBiddingById(bidderId));
 		validateIfAuctionTrading(auctionId);
 		validateIfChatRoomNotExists(auctionId, bidder);
 		ChatRoom chatRoom = ChatMapper.toChatRoom(auctionId, seller, bidder);
@@ -45,12 +52,61 @@ public class ChatRoomService {
 	public PageResponse<ChatRoomSimpleResponse> getUserChatRooms(User user, Pageable pageable) {
 		Slice<ChatRoomSimpleResponse> chatRoomResponses = chatRoomRepository.findChatRoomsByUser(user, pageable)
 			.map(chatRoom -> {
-				User receiver = chatRoom.getBidder().equals(user) ? chatRoom.getSeller() : chatRoom.getBidder();
+				User receiver = getReceiver(user, chatRoom);
 				return ChatMapper.toChatRoomSimpleResponse(chatRoom, receiver);
 			});
 		return CommonMapper.toPageResponse(chatRoomResponses);
 	}
 
+	// 입찰자 목록에서 조회
+	@Transactional(readOnly = true)
+	public ChatRoomDetailResponse getChatRoomWithBiddingId(User seller, Long biddingId) {
+		Bidding bidding = getBiddingById(biddingId);
+		validateAuthorization(seller, bidding);
+		Auction auction = bidding.getAuction();
+		User bidder = bidding.getBidder();
+		ChatRoom chatRoom = getChatRoomByAuctionIdAndBidder(auction.getId(), bidder);
+
+		return ChatMapper.toChatRoomDetailResponse(chatRoom, auction, bidder);
+	}
+
+	// 채팅 목록에서 조회
+	@Transactional(readOnly = true)
+	public ChatRoomDetailResponse getChatRoomWithId(User user, Long chatRoomId) {
+		ChatRoom chatRoom = getChatRoomById(chatRoomId);
+		Auction auction = getAuctionById(chatRoom.getAuctionId());
+		User receiver = getReceiver(user, chatRoom);
+
+		return ChatMapper.toChatRoomDetailResponse(chatRoom, auction, receiver);
+	}
+
+	// 입찰자 목록에서 채팅방 존재 여부 조회
+	@Transactional(readOnly = true)
+	public ChatRoomExistenceResponse getChatRoomExistence(User seller, Long biddingId) {
+		Bidding bidding = getBiddingById(biddingId);
+		validateAuthorization(seller, bidding);
+		return ChatMapper.toChatRoomExistenceResponse(
+			isChatRoomExistsByAuctionIdAndBidder(bidding)
+		);
+	}
+
+	private Boolean isChatRoomExistsByAuctionIdAndBidder(Bidding bidding) {
+		return chatRoomRepository.existsByAuctionIdAndBidder(bidding.getAuction().getId(), bidding.getBidder());
+	}
+
+	private ChatRoom getChatRoomByAuctionIdAndBidder(Long auctionId, User bidder) {
+		return chatRoomRepository.findChatRoomByAuctionIdAndBidder(auctionId, bidder)
+			.orElseThrow(() -> new NotFoundException(ChatErrorCode.NOT_FOUND_CHAT_ROOM));
+	}
+
+	// 채팅방 조회, 생성은 판매자만 가능하도록
+	private void validateAuthorization(User seller, Bidding bidding) {
+		if (seller != bidding.getAuction().getSeller()) { // 조회자와 경매 판매자가 같은지
+			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ACCESS_DENIED);
+		}
+	}
+
+	// 경매가 거래상태인지
 	private void validateIfAuctionTrading(Long auctionId) {
 		Auction auction = getAuctionById(auctionId);
 		if (auction.getStatus() != AuctionStatus.TRADING) {
@@ -69,8 +125,22 @@ public class ChatRoomService {
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
+	public Bidding getBiddingById(Long biddingId) {
+		return biddingRepository.findById(biddingId)
+			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
+	}
+
 	public User getUserById(Long userId) {
 		return userRepository.findById(userId)
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
+	}
+
+	public ChatRoom getChatRoomById(Long chatRoomId) {
+		return chatRoomRepository.findById(chatRoomId)
+			.orElseThrow(() -> new NotFoundException(ChatErrorCode.NOT_FOUND_CHAT_ROOM));
+	}
+
+	private User getReceiver(User user, ChatRoom chatRoom) {
+		return chatRoom.getBidder().equals(user) ? chatRoom.getSeller() : chatRoom.getBidder();
 	}
 }
