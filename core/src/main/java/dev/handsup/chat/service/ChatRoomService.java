@@ -40,9 +40,9 @@ public class ChatRoomService {
 
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long bidderId, User seller) {
 		User bidder = getUserById(bidderId);
-		validateAuthorization(seller, getBiddingById(bidderId));
-		validateIfAuctionTrading(auctionId);
-		validateIfChatRoomNotExists(auctionId, bidder);
+		validateAuthorization(seller, auctionId);
+		validateAuctionTrading(auctionId);
+		validateChatRoomNotExists(auctionId, bidder);
 		ChatRoom chatRoom = ChatMapper.toChatRoom(auctionId, seller, bidder);
 
 		return ChatMapper.toRegisterChatRoomResponse(chatRoomRepository.save(chatRoom));
@@ -106,15 +106,22 @@ public class ChatRoomService {
 		}
 	}
 
+	private void validateAuthorization(User seller, Long auctionId) {
+		Auction auction = getAuctionById(auctionId);
+		if (seller != auction.getSeller()) { // 조회자와 경매 판매자가 같은지
+			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ACCESS_DENIED);
+		}
+	}
+
 	// 경매가 거래상태인지
-	private void validateIfAuctionTrading(Long auctionId) {
+	private void validateAuctionTrading(Long auctionId) {
 		Auction auction = getAuctionById(auctionId);
 		if (auction.getStatus() != AuctionStatus.TRADING) {
 			throw new ValidationException(ChatErrorCode.NOT_TRADING_AUCTION);
 		}
 	}
 
-	private void validateIfChatRoomNotExists(Long auctionId, User bidder) {
+	private void validateChatRoomNotExists(Long auctionId, User bidder) {
 		if (Boolean.TRUE.equals(chatRoomRepository.existsByAuctionIdAndBidder(auctionId, bidder))) {
 			throw new ValidationException(ChatErrorCode.CHAT_ROOM_ALREADY_EXISTS);
 		}

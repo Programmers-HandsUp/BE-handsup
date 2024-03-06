@@ -66,6 +66,7 @@ class ChatRoomServiceTest {
 
 		given(userRepository.findById(bidder.getId())).willReturn(Optional.of(bidder));
 		given(auctionRepository.findById(1L)).willReturn(Optional.of(auction));
+		given(auction.getSeller()).willReturn(seller);
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
 		given(chatRoomRepository.save(any(ChatRoom.class))).willReturn(chatRoom);
 
