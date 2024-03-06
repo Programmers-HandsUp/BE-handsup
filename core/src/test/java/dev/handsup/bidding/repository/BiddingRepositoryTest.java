@@ -19,11 +19,10 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingRepository 테스트]")
 class BiddingRepositoryTest extends DataJpaTestSupport {
 
-	@Autowired
-	private BiddingRepository biddingRepository;
-
 	private final Auction auction = AuctionFixture.auction();
 	private final User bidder = UserFixture.user();
+	@Autowired
+	private BiddingRepository biddingRepository;
 
 	@BeforeEach
 	void setUp() {

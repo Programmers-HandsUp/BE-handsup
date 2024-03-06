@@ -30,17 +30,8 @@ import dev.handsup.review.repository.ReviewRepository;
 
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
-	
-	@Autowired
-	private ReviewRepository reviewRepository;
-	@Autowired
-	private ReviewLabelRepository reviewLabelRepository;
-	@Autowired
-	private ProductCategoryRepository productCategoryRepository;
 
-	private ProductCategory productCategory;
 	private final Review review = ReviewFixture.review();
-	private Auction auction;
 	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
 		1L, ReviewLabelValue.MANNER.getDescription()
 	);
@@ -48,6 +39,15 @@ class ReviewApiControllerTest extends ApiTestSupport {
 		2L, ReviewLabelValue.CHEAP.getDescription()
 	);
 	private final List<Long> reviewLabelIds = List.of(1L, 2L);
+
+	@Autowired
+	private ReviewRepository reviewRepository;
+	@Autowired
+	private ReviewLabelRepository reviewLabelRepository;
+	@Autowired
+	private ProductCategoryRepository productCategoryRepository;
+	private ProductCategory productCategory;
+	private Auction auction;
 
 	@BeforeEach
 	void setUp() {

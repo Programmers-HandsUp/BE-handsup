@@ -51,20 +51,20 @@ public class Comment extends TimeBaseEntity {
 		this.writer = writer;
 	}
 
-	public static Comment of(String content, Auction auction, User writer) {
-		return Comment.builder()
-			.content(content)
-			.auction(auction)
-			.writer(writer)
-			.build();
-	}
-
 	// 테스트용 생성자
 	private Comment(Long id, String content, Auction auction, User writer) {
 		this.id = id;
 		this.content = content;
 		this.auction = auction;
 		this.writer = writer;
+	}
+
+	public static Comment of(String content, Auction auction, User writer) {
+		return Comment.builder()
+			.content(content)
+			.auction(auction)
+			.writer(writer)
+			.build();
 	}
 
 	public static Comment getTestComment(

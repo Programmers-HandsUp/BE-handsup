@@ -29,16 +29,16 @@ public class ReviewLabel {
 		this.value = value;
 	}
 
-	public static ReviewLabel from(String value) {
-		return ReviewLabel.builder()
-			.value(value)
-			.build();
-	}
-
 	//==테스트용 생성자==//
 	public ReviewLabel(Long id, String value) {
 		this.id = id;
 		this.value = value;
+	}
+
+	public static ReviewLabel from(String value) {
+		return ReviewLabel.builder()
+			.value(value)
+			.build();
 	}
 
 }

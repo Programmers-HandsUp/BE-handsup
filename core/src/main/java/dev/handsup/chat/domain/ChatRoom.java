@@ -28,6 +28,9 @@ public class ChatRoom extends TimeBaseEntity {
 	@Column(name = "chat_room_id")
 	private Long id;
 
+	@Column(name = "auction_id")
+	private Long auctionId;
+
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "seller_id",
 		nullable = false,
@@ -35,14 +38,23 @@ public class ChatRoom extends TimeBaseEntity {
 	private User seller;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "buyer_id",
+	@JoinColumn(name = "bidder_id",
 		nullable = false,
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private User buyer;
+	private User bidder;
 
 	@Builder
-	public ChatRoom(User seller, User buyer) {
+	private ChatRoom(Long auctionId, User seller, User bidder) {
+		this.auctionId = auctionId;
 		this.seller = seller;
-		this.buyer = buyer;
+		this.bidder = bidder;
+	}
+
+	public static ChatRoom of(Long auctionId, User seller, User bidder) {
+		return ChatRoom.builder()
+			.auctionId(auctionId)
+			.seller(seller)
+			.bidder(bidder)
+			.build();
 	}
 }

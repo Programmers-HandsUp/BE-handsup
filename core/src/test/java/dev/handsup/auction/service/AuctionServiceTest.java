@@ -118,7 +118,7 @@ class AuctionServiceTest {
 		given(auctionRepository.findById(auctionId)).willReturn(Optional.empty());
 
 		//when, then
-		assertThatThrownBy(() -> auctionService.getAuctionEntity(auctionId))
+		assertThatThrownBy(() -> auctionService.getAuctionById(auctionId))
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
 	}

@@ -49,16 +49,16 @@ public class UserReviewLabel extends TimeBaseEntity {
 		this.user = user;
 	}
 
+	public UserReviewLabel(Long id, ReviewLabel reviewLabel) {
+		this.id = id;
+		this.reviewLabel = reviewLabel;
+	}
+
 	public static UserReviewLabel of(ReviewLabel reviewLabel, User user) {
 		return UserReviewLabel.builder()
 			.reviewLabel(reviewLabel)
 			.user(user)
 			.build();
-	}
-
-	public UserReviewLabel(Long id, ReviewLabel reviewLabel) {
-		this.id = id;
-		this.reviewLabel = reviewLabel;
 	}
 
 	public void increaseCount() {

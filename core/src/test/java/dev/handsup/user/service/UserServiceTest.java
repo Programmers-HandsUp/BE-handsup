@@ -17,14 +17,13 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
-import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
-import dev.handsup.common.service.EntityManagementService;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
@@ -33,20 +32,6 @@ import dev.handsup.user.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("[UserService 테스트]")
 class UserServiceTest {
-
-	@Mock
-	private UserRepository userRepository;
-	@Mock
-	private EncryptHelper encryptHelper;
-	@Mock
-	private EntityManagementService entityManagementService;
-	@Mock
-	private ProductCategoryRepository productCategoryRepository;
-	@Mock
-	private PreferredProductCategoryRepository preferredProductCategoryRepository;
-
-	@InjectMocks
-	private UserService userService;
 
 	private final User user = UserFixture.user();
 	private final JoinUserRequest request = JoinUserRequest.of(
@@ -59,6 +44,16 @@ class UserServiceTest {
 		user.getProfileImageUrl(),
 		List.of(1L)
 	);
+	@Mock
+	private UserRepository userRepository;
+	@Mock
+	private EncryptHelper encryptHelper;
+	@Mock
+	private ProductCategoryRepository productCategoryRepository;
+	@Mock
+	private PreferredProductCategoryRepository preferredProductCategoryRepository;
+	@InjectMocks
+	private UserService userService;
 
 	@Test
 	@DisplayName("[사용자 ID로 사용자를 성공적으로 조회한다]")
@@ -104,8 +99,7 @@ class UserServiceTest {
 			.willReturn(savedUser);
 
 		ProductCategory productCategory = ProductCategory.of(ProductCategoryValue.SPORTS_LEISURE.getLabel());
-		given(entityManagementService.getEntity(productCategoryRepository, 1L))
-			.willReturn(productCategory);
+		given(productCategoryRepository.findById(1L)).willReturn(Optional.of(productCategory));
 		given(preferredProductCategoryRepository.save(PreferredProductCategory.of(savedUser, productCategory)))
 			.willReturn(PreferredProductCategory.of(savedUser, productCategory));
 

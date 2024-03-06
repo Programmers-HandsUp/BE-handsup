@@ -23,4 +23,8 @@ public final class UserFixture {
 	public static User user(Long id) {
 		return User.getTestUser(id, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
 	}
+
+	public static User user(String email) {
+		return User.of(email, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
+	}
 }

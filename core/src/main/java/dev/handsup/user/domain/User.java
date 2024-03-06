@@ -67,24 +67,6 @@ public class User extends TimeBaseEntity {
 		this.profileImageUrl = profileImageUrl;
 	}
 
-	public static User of(
-		String email,
-		String password,
-		String nickname,
-		Address address,
-		String profileImageUrl
-	) {
-		return User.builder()
-			.email(email)
-			.password(password)
-			.nickname(nickname)
-			.address(address)
-			.profileImageUrl(profileImageUrl)
-			.build();
-	}
-
-	//==테스트용 생성자==//
-
 	private User(
 		Long id,
 		String email,
@@ -100,6 +82,24 @@ public class User extends TimeBaseEntity {
 		this.nickname = nickname;
 		this.address = address;
 		this.profileImageUrl = profileImageUrl;
+	}
+
+	//==테스트용 생성자==//
+
+	public static User of(
+		String email,
+		String password,
+		String nickname,
+		Address address,
+		String profileImageUrl
+	) {
+		return User.builder()
+			.email(email)
+			.password(password)
+			.nickname(nickname)
+			.address(address)
+			.profileImageUrl(profileImageUrl)
+			.build();
 	}
 
 	public static User getTestUser(

@@ -7,15 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.common.exception.CommonErrorCode;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
-import dev.handsup.common.service.EntityManagementService;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
@@ -35,7 +34,6 @@ public class UserService {
 	private final EncryptHelper encryptHelper;
 	private final PreferredProductCategoryRepository preferredProductCategoryRepository;
 	private final ProductCategoryRepository productCategoryRepository;
-	private final EntityManagementService entityManagementService;
 	private final UserReviewLabelRepository userReviewLabelRepository;
 
 	private void validateDuplicateEmail(String email) {
@@ -46,7 +44,7 @@ public class UserService {
 
 	public User getUserById(Long userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(() -> new NotFoundException(CommonErrorCode.NOT_FOUND_BY_ID));
+			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 	}
 
 	public User getUserByEmail(String email) {
@@ -61,9 +59,7 @@ public class UserService {
 		User savedUser = userRepository.save(user);    // 저장된 유저 확인
 
 		request.productCategoryIds().forEach(productCategoryId -> {
-			ProductCategory productCategory = entityManagementService.getEntity(
-				productCategoryRepository, productCategoryId
-			);
+			ProductCategory productCategory = getProductCategoryById(productCategoryId);
 			preferredProductCategoryRepository.save(
 				PreferredProductCategory.of(savedUser, productCategory)
 			);
@@ -83,5 +79,10 @@ public class UserService {
 			.findByUserIdOrderByIdAsc(userId, pageable)
 			.map(UserMapper::toUserReviewLabelResponse);
 		return CommonMapper.toPageResponse(userReviewLabelResponsePage);
+	}
+
+	public ProductCategory getProductCategoryById(Long productCategoryId) {
+		return productCategoryRepository.findById(productCategoryId)
+			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
 }

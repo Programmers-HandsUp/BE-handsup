@@ -39,4 +39,4 @@ out/
 core/src/main/resources/application.yml
 application-core.yml
 /api/src/main/resources/application.yml
-core/src/main/generated/
+/core/src/main/generated/

@@ -70,6 +70,23 @@ public class Review extends TimeBaseEntity {
 		this.writer = writer;
 	}
 
+	//==테스트용 생성자==//
+	public Review(
+		Long id,
+		int evaluationScore,
+		String content,
+		Auction auction,
+		User writer
+	) {
+		validateScore(evaluationScore);
+		validateContent(content);
+		this.id = id;
+		this.evaluationScore = evaluationScore;
+		this.content = content;
+		this.auction = auction;
+		this.writer = writer;
+	}
+
 	public static Review of(
 		int evaluationScore,
 		String content,
@@ -97,23 +114,6 @@ public class Review extends TimeBaseEntity {
 			content.length() >= MIN_LENGTH_CONTENT && content.length() <= MAX_LENGTH_CONTENT,
 			getRangeMessage("Comment", "content 의 글자 수", MIN_LENGTH_CONTENT, MAX_LENGTH_CONTENT)
 		);
-	}
-
-	//==테스트용 생성자==//
-	public Review(
-		Long id,
-		int evaluationScore,
-		String content,
-		Auction auction,
-		User writer
-	) {
-		validateScore(evaluationScore);
-		validateContent(content);
-		this.id = id;
-		this.evaluationScore = evaluationScore;
-		this.content = content;
-		this.auction = auction;
-		this.writer = writer;
 	}
 
 }
