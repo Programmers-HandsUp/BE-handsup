@@ -60,7 +60,7 @@ public class ChatRoomService {
 
 	// 채팅 목록에서 조회
 	@Transactional(readOnly = true)
-	public ChatRoomDetailResponse getChatRoomWithId(User user, Long chatRoomId) {
+	public ChatRoomDetailResponse getChatRoomWithId(Long chatRoomId, User user) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Auction auction = getAuctionById(chatRoom.getAuctionId());
 		User receiver = getReceiver(user, chatRoom);
@@ -70,7 +70,7 @@ public class ChatRoomService {
 
 	// 입찰자 목록에서 조회
 	@Transactional(readOnly = true)
-	public ChatRoomDetailResponse getChatRoomWithBiddingId(User seller, Long biddingId) {
+	public ChatRoomDetailResponse getChatRoomWithBiddingId(Long biddingId, User seller) {
 		Bidding bidding = getBiddingById(biddingId);
 		validateAuthorization(seller, bidding);
 		Auction auction = bidding.getAuction();
@@ -82,7 +82,7 @@ public class ChatRoomService {
 
 	// 입찰자 목록에서 채팅방 존재 여부 조회
 	@Transactional(readOnly = true)
-	public ChatRoomExistenceResponse getChatRoomExistence(User seller, Long biddingId) {
+	public ChatRoomExistenceResponse getChatRoomExistence(Long biddingId, User seller) {
 		Bidding bidding = getBiddingById(biddingId);
 		validateAuthorization(seller, bidding);
 		return ChatMapper.toChatRoomExistenceResponse(
