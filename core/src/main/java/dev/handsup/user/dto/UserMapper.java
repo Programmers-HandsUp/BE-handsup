@@ -40,6 +40,7 @@ public class UserMapper {
 
 	public static UserReviewResponse toUserReviewResponse(Review review) {
 		return UserReviewResponse.of(
+			review.getId(),
 			review.getWriter().getNickname(),
 			review.getWriter().getProfileImageUrl(),
 			review.getContent()
