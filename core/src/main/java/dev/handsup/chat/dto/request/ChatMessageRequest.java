@@ -12,4 +12,7 @@ public record ChatMessageRequest(
 	@Size(max = 300, message = "최대 300자까지 보낼 수 있습니다.")
 	String content
 ) {
+	public static ChatMessageRequest of(Long senderId, String content) {
+		return new ChatMessageRequest(senderId, content);
+	}
 }
