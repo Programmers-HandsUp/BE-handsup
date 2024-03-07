@@ -13,11 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
+import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.common.support.ApiTestSupport;
+import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.ReviewFixture;
+import dev.handsup.fixture.UserFixture;
+import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
+import dev.handsup.review.repository.ReviewRepository;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
@@ -27,9 +35,15 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 class UserApiControllerTest extends ApiTestSupport {
 
 	@Autowired
-	UserReviewLabelRepository userReviewLabelRepository;
+	private UserReviewLabelRepository userReviewLabelRepository;
 	@Autowired
 	private ReviewLabelRepository reviewLabelRepository;
+	@Autowired
+	private ReviewRepository reviewRepository;
+	@Autowired
+	private AuctionRepository auctionRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	private final JoinUserRequest request = JoinUserRequest.of(
 		"hello12345@naver.com",
@@ -41,9 +55,6 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getProfileImageUrl(),
 		List.of(1L)
 	);
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Test
 	@DisplayName("[[회원가입 API] 회원이 등록되고 회원 ID를 응답한다]")
@@ -102,6 +113,7 @@ class UserApiControllerTest extends ApiTestSupport {
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.isAvailable").value(false));
 	}
+
 	@Test
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {
@@ -127,5 +139,33 @@ class UserApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[1].reviewLabelId").value(reviewLabel2.getId()))
 			.andExpect(jsonPath("$.content[1].userId").value(user.getId()))
 			.andExpect(jsonPath("$.content[1].count").value(1));
+	}
+
+	@Test
+	@DisplayName("[[유저 리뷰 조회 API] 유저의 리뷰가 생성된 시간 기준 내림차순으로 반환된다]")
+	void getUserReviewsTest() throws Exception {
+		// given
+		User seller = UserFixture.user();
+		User writer = UserFixture.user("writer@naver.com");
+
+		userRepository.saveAll(List.of(seller, writer));
+		Auction auction = AuctionFixture.auction(seller);
+		productCategoryRepository.save(auction.getProduct().getProductCategory());
+		auctionRepository.save(auction);
+
+		// review2 가 더 최근에 생성
+		Review review1 = ReviewFixture.review("굿입니다 좋아요", auction, writer);
+		Review review2 = ReviewFixture.review("나쁘지 않았어요", auction, writer);
+		reviewRepository.saveAll(List.of(review1, review2));
+
+		// when & then
+		mockMvc.perform(get("/api/users/{userId}/reviews", user.getId())
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(2))
+			.andExpect(jsonPath("$.content[0].writerNickName").value(writer.getNickname()))
+			.andExpect(jsonPath("$.content[0].content").value(review2.getContent()))
+			.andExpect(jsonPath("$.content[1].writerNickName").value(writer.getNickname()))
+			.andExpect(jsonPath("$.content[1].content").value(review1.getContent()));
 	}
 }
