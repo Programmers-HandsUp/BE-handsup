@@ -1,4 +1,4 @@
-package dev.handsup.controller;
+package dev.handsup.chat.controller;
 
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;

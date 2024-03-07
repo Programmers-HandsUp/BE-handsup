@@ -64,6 +64,25 @@ public class AuctionFixture {
 		);
 	}
 
+	public static Auction auction(User seller) {
+		return Auction.of(
+			1L,
+			seller,
+			TITLE,
+			ProductCategory.of(DIGITAL_DEVICE),
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			List.of("image.jpg"),
+			SI,
+			GU,
+			DONG
+		);
+	}
+
 	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
 			UserFixture.user(),
@@ -76,6 +95,25 @@ public class AuctionFixture {
 			DESCRIPTION,
 			TradeMethod.DELIVER,
 			List.of(IMAGE_URL),
+			SI,
+			GU,
+			DONG
+		);
+	}
+
+	public static Auction auction(User seller, ProductCategory productCategory) {
+		return Auction.of(
+			1L,
+			seller,
+			TITLE,
+			productCategory,
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			List.of("image.jpg"),
 			SI,
 			GU,
 			DONG
