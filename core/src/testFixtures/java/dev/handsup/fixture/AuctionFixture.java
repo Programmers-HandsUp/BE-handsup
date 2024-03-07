@@ -10,6 +10,7 @@ import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -22,6 +23,7 @@ public class AuctionFixture {
 	static final String SI = "서울시";
 	static final String GU = "성북구";
 	static final String DONG = "동선동";
+	static final String IMAGE_URL = "image.jpg";
 
 	// 아이디 지정한 기본 auction
 	public static Auction auction() {
@@ -36,7 +38,26 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
+			SI,
+			GU,
+			DONG
+		);
+	}
+
+	public static Auction auction(User seller) {
+		return Auction.of(
+			1L,
+			seller,
+			TITLE,
+			ProductCategory.of(DIGITAL_DEVICE),
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -54,7 +75,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -72,7 +93,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -90,7 +111,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DELIVER,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -108,7 +129,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			tradeMethod,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -126,7 +147,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -144,7 +165,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
@@ -162,7 +183,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			si,
 			gu,
 			dong
@@ -180,7 +201,7 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			si,
 			gu,
 			dong
@@ -198,10 +219,11 @@ public class AuctionFixture {
 			PurchaseTime.UNDER_ONE_MONTH,
 			DESCRIPTION,
 			TradeMethod.DIRECT,
-			List.of("image.jpg"),
+			List.of(IMAGE_URL),
 			SI,
 			GU,
 			DONG
 		);
 	}
+
 }
