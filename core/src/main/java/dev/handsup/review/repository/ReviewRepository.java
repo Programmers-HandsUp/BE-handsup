@@ -8,4 +8,6 @@ import dev.handsup.review.domain.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 	Slice<Review> findByAuctionIdOrderByCreatedAtDesc(Long auctionId, Pageable pageable);
+
+	Slice<Review> findByAuction_Seller_IdOrderByCreatedAtDesc(Long sellerId, Pageable pageable);
 }

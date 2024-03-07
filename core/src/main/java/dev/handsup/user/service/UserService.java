@@ -15,12 +15,14 @@ import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
+import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.exception.UserErrorCode;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;
@@ -35,6 +37,7 @@ public class UserService {
 	private final PreferredProductCategoryRepository preferredProductCategoryRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final UserReviewLabelRepository userReviewLabelRepository;
+	private final ReviewRepository reviewRepository;
 
 	private void validateDuplicateEmail(String email) {
 		if (userRepository.findByEmail(email).isPresent()) {
@@ -84,5 +87,13 @@ public class UserService {
 	public ProductCategory getProductCategoryById(Long productCategoryId) {
 		return productCategoryRepository.findById(productCategoryId)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<UserReviewResponse> getUserReviews(Long userId, Pageable pageable) {
+		Slice<UserReviewResponse> userReviewResponsePage = reviewRepository
+			.findByAuction_Seller_IdOrderByCreatedAtDesc(userId, pageable)
+			.map(UserMapper::toUserReviewResponse);
+		return CommonMapper.toPageResponse(userReviewResponsePage);
 	}
 }
