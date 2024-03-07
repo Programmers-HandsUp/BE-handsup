@@ -3,11 +3,13 @@ package dev.handsup.user.dto;
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auth.domain.EncryptHelper;
+import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.user.domain.Address;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
+import dev.handsup.user.dto.response.UserReviewResponse;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -33,6 +35,14 @@ public class UserMapper {
 			userReviewLabel.getReviewLabel().getId(),
 			userReviewLabel.getUser().getId(),
 			userReviewLabel.getCount()
+		);
+	}
+
+	public static UserReviewResponse toUserReviewResponse(Review review) {
+		return UserReviewResponse.of(
+			review.getWriter().getNickname(),
+			review.getWriter().getProfileImageUrl(),
+			review.getContent()
 		);
 	}
 }
