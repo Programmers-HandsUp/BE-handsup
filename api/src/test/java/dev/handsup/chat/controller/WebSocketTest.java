@@ -53,10 +53,10 @@ import dev.handsup.user.domain.User;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketTest extends ApiTestSupport {
 
-	@LocalServerPort
-	private int port;
 	private final User seller = UserFixture.user(); // loginUser
 	private final User bidder = UserFixture.user("bidder@gmail.com");
+	@LocalServerPort
+	private int port;
 	private BlockingQueue<ChatMessageResponse> chatMessageResponses;
 
 	private StompSession stompSession;
@@ -92,7 +92,6 @@ class WebSocketTest extends ApiTestSupport {
 
 		chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidding.getBidder());
 		chatRoomRepository.save(chatRoom);
-
 
 	}
 
@@ -135,7 +134,8 @@ class WebSocketTest extends ApiTestSupport {
 
 		// 비동기 연결 시도 -> 연결 성공 시 StompSession 객체 반환
 		return webSocketStompClient
-			.connectAsync(url, new StompSessionHandlerAdapter() {})
+			.connectAsync(url, new StompSessionHandlerAdapter() {
+			})
 			.get(2, TimeUnit.SECONDS);
 	}
 

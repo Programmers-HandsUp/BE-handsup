@@ -50,7 +50,7 @@ public class ChatMessage extends TimeBaseEntity {
 		this.isRead = false;
 	}
 
-	public static ChatMessage of (ChatRoom chatRoom, Long senderId, String content){
+	public static ChatMessage of(ChatRoom chatRoom, Long senderId, String content) {
 		return ChatMessage.builder()
 			.chatRoom(chatRoom)
 			.senderId(senderId)

@@ -8,7 +8,7 @@ public record ChatMessageResponse(
 	String content,
 	String createdAt
 ) {
-	public static ChatMessageResponse from(ChatMessage chatMessage){
+	public static ChatMessageResponse from(ChatMessage chatMessage) {
 		return new ChatMessageResponse(
 			chatMessage.getChatRoom().getId(),
 			chatMessage.getSenderId(),
