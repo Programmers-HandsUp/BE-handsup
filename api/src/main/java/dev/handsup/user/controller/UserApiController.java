@@ -15,6 +15,7 @@ import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
+import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,6 +61,18 @@ public class UserApiController {
 		Pageable pageable
 	) {
 		PageResponse<UserReviewLabelResponse> response = userService.getUserReviewLabels(userId, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@GetMapping("/api/users/{userId}/reviews")
+	@Operation(summary = "유저 리뷰 조회 API", description = "특정 유저의 리뷰를 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<PageResponse<UserReviewResponse>> getUserReviews(
+		@PathVariable Long userId,
+		Pageable pageable
+	) {
+		PageResponse<UserReviewResponse> response = userService.getUserReviews(userId, pageable);
 		return ResponseEntity.ok(response);
 	}
 }
