@@ -1,5 +1,7 @@
 package dev.handsup.bidding.service;
 
+import java.util.Objects;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -63,5 +66,25 @@ public class BiddingService {
 			.findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageable)
 			.map(BiddingMapper::toBiddingResponse);
 		return CommonMapper.toPageResponse(biddingResponsePage);
+	}
+
+	@Transactional
+	public BiddingResponse completeBidding(Long biddingId, User seller){
+		Bidding bidding = findBiddingById(biddingId);
+		validateAuthorization(bidding, seller);
+		bidding.completeBidding();
+		bidding.getAuction().updateBuyer(bidding.getBidder());
+		return BiddingMapper.toBiddingResponse(bidding);
+	}
+
+	private void validateAuthorization(Bidding bidding, User seller){
+		if (!Objects.equals(bidding.getAuction().getSeller().getId(), seller.getId())){
+			throw new ValidationException(BiddingErrorCode.NOT_AUTHORIZED_SELLER);
+		}
+	}
+
+	private Bidding findBiddingById(Long biddingId){
+		return biddingRepository.findById(biddingId)
+			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
 }
