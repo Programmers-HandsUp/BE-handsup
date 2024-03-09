@@ -66,6 +66,13 @@ public class Bidding extends TimeBaseEntity {
 		this.status = status;
 	}
 
+	private Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus status) {
+		this.biddingPrice = biddingPrice;
+		this.auction = auction;
+		this.bidder = bidder;
+		this.status = status;
+	}
+
 	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
 		return Bidding.builder()
 			.biddingPrice(biddingPrice)
@@ -76,6 +83,10 @@ public class Bidding extends TimeBaseEntity {
 
 	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus status) {
 		return new Bidding(id, biddingPrice, auction, bidder, status);
+	}
+
+	public static Bidding of(int biddingPrice, Auction auction, User bidder, TradingStatus status) {
+		return new Bidding(biddingPrice, auction, bidder, status);
 	}
 
 	// 비즈니스 메서드
