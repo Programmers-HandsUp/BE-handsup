@@ -1,7 +1,5 @@
 package dev.handsup.bidding.service;
 
-import static dev.handsup.bidding.exception.BiddingErrorCode.*;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -13,6 +11,7 @@ import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
+import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
@@ -26,19 +25,22 @@ public class BiddingService {
 
 	private final BiddingRepository biddingRepository;
 	private final AuctionService auctionService;
+	private boolean isFirstBidding;
 
 	private void validateBiddingPrice(int biddingPrice, Auction auction) {
+		isFirstBidding = false;
 		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
 
 		if (maxBiddingPrice == null) {
 			// 입찰 내역이 없는 경우, 최소 입찰가부터 입찰 가능
+			isFirstBidding = true;
 			if (biddingPrice < auction.getInitPrice()) {
-				throw new ValidationException(BIDDING_PRICE_LESS_THAN_INIT_PRICE);
+				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_LESS_THAN_INIT_PRICE);
 			}
 		} else {
 			// 최고 입찰가보다 1000원 이상일 때만 입찰 가능
 			if (biddingPrice < (maxBiddingPrice + 1000)) {
-				throw new ValidationException(BIDDING_PRICE_NOT_HIGH_ENOUGH);
+				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_NOT_HIGH_ENOUGH);
 			}
 		}
 	}
@@ -50,6 +52,7 @@ public class BiddingService {
 		Bidding savedBidding = biddingRepository.save(
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
+		if (isFirstBidding) savedBidding.prepareBidding(); // 첫 입찰일 경우 준비중 상태로 변경
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
 		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
