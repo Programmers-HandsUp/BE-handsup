@@ -18,6 +18,7 @@ public class BiddingMapper {
 			bidding.getAuction().getId(),
 			bidding.getBidder().getId(),
 			bidding.getBidder().getNickname(),
+			bidding.getStatus().getLabel(),
 			bidding.getAuction().getProduct().getImages().get(0).getImageUrl(),
 			bidding.getCreatedAt().toString()
 		);
