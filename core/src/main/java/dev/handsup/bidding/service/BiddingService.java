@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.domain.BiddingStatus;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
@@ -74,6 +75,16 @@ public class BiddingService {
 		validateAuthorization(bidding, seller);
 		bidding.completeBidding();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
+		return BiddingMapper.toBiddingResponse(bidding);
+	}
+
+	@Transactional
+	public BiddingResponse cancelBidding(Long biddingId, User seller){
+		Bidding bidding = findBiddingById(biddingId);
+		validateAuthorization(bidding, seller);
+		bidding.cancelBidding();
+		biddingRepository.findFirstByStatus(BiddingStatus.CANCELED) // 다음 입찰 준비중 상태로 변경
+			.ifPresent(Bidding::prepareBidding);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
