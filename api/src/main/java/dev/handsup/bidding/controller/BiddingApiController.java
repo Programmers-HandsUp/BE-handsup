@@ -70,24 +70,24 @@ public class BiddingApiController {
 	}
 
 	@PatchMapping("/bids/{biddingId}/complete")
-	@Operation(summary = "판매자 거래 완료 API", description = "한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다")
+	@Operation(summary = "판매자 거래 완료 API", description = "판매자는 거래 중인 입찰자와 거래를 완료 한다.")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<BiddingResponse> completeBidding(
+	public ResponseEntity<BiddingResponse> completeTrading(
 		@PathVariable("biddingId") Long biddingId,
 		@JwtAuthorization User seller
 	) {
-		BiddingResponse response = biddingService.completeBidding(biddingId, seller);
+		BiddingResponse response = biddingService.completeTrading(biddingId, seller);
 		return ResponseEntity.ok(response);
 	}
 
 	@PatchMapping("/bids/{biddingId}/cancel")
-	@Operation(summary = "판매자 거래 취소 API", description = "한 경매의 입찰 목록 중에서 입찰가 기준 내림차순으로 3개를 조회한다")
+	@Operation(summary = "판매자 거래 취소 API", description = "판매자는 거래 중인 입찰자와 거래를 취소한다.")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<BiddingResponse> cancelBidding(
+	public ResponseEntity<BiddingResponse> cancelTrading(
 		@PathVariable("biddingId") Long biddingId,
 		@JwtAuthorization User seller
 	) {
-		BiddingResponse response = biddingService.cancelBidding(biddingId, seller);
+		BiddingResponse response = biddingService.cancelTrading(biddingId, seller);
 		return ResponseEntity.ok(response);
 	}
 }

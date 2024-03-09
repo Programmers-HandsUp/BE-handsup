@@ -28,7 +28,7 @@ public record BiddingResponse(
 			.auctionId(auctionId)
 			.bidderId(bidderId)
 			.bidderNickname(bidderNickname)
-			.biddingStatus(tradingStatus)
+			.tradingStatus(tradingStatus)
 			.imgUrl(imgUrl)
 			.createdAt(createdAt)
 			.build();
