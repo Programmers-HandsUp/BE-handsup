@@ -10,7 +10,7 @@ public record BiddingResponse(
 	Long auctionId,
 	Long bidderId,
 	String bidderNickname,
-	String biddingStatus,
+	String tradingStatus,
 	String imgUrl,
 	String createdAt
 ) {
@@ -19,7 +19,7 @@ public record BiddingResponse(
 		Long auctionId,
 		Long bidderId,
 		String bidderNickname,
-		String biddingStatus,
+		String tradingStatus,
 		String imgUrl,
 		String createdAt
 	) {
@@ -28,7 +28,7 @@ public record BiddingResponse(
 			.auctionId(auctionId)
 			.bidderId(bidderId)
 			.bidderNickname(bidderNickname)
-			.biddingStatus(biddingStatus)
+			.biddingStatus(tradingStatus)
 			.imgUrl(imgUrl)
 			.createdAt(createdAt)
 			.build();

@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum BiddingStatus {
+public enum TradingStatus {
 	WAITING("대기중"),
 	PREPARING("준비중"),
 	CHATTING("채팅중"),

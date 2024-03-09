@@ -18,7 +18,7 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
-import dev.handsup.bidding.domain.BiddingStatus;
+import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.support.ApiTestSupport;
@@ -68,7 +68,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.auctionId").value(auction.getId()),
 			jsonPath("$.bidderId").value(user.getId()),
 			jsonPath("$.bidderNickname").value(user.getNickname()),
-			jsonPath("$.biddingStatus").value(BiddingStatus.PREPARING.getLabel()),
+			jsonPath("$.biddingStatus").value(TradingStatus.PREPARING.getLabel()),
 			jsonPath("$.imgUrl").value(auction.getProduct().getImages().get(0).getImageUrl())
 		);
 	}

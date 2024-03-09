@@ -46,19 +46,19 @@ public class Bidding extends TimeBaseEntity {
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User bidder;
 
-	@Column(name = "bidding_status", nullable = false)
-	private BiddingStatus status;
+	@Column(name = "trading_status", nullable = false)
+	private TradingStatus status;
 
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
-		this.status = BiddingStatus.WAITING;
+		this.status = TradingStatus.WAITING;
 	}
 
 	//테스트용
-	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, BiddingStatus status) {
+	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus status) {
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
@@ -74,29 +74,29 @@ public class Bidding extends TimeBaseEntity {
 			.build();
 	}
 
-	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, BiddingStatus status) {
+	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus status) {
 		return new Bidding(id, biddingPrice, auction, bidder, status);
 	}
 
 	// 비즈니스 메서드
 	public void completeBidding() {
-		if (status != BiddingStatus.CHATTING) {
-			throw new ValidationException(BiddingErrorCode.CAN_NOT_COMPLETE_BIDDING);
+		if (status != TradingStatus.CHATTING) {
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_COMPLETE_TRADING);
 		}
-		status = BiddingStatus.COMPLETED;
+		status = TradingStatus.COMPLETED;
 	}
 
 	public void cancelBidding() {
-		if (status != BiddingStatus.CHATTING){
-			throw new ValidationException(BiddingErrorCode.CAN_NOT_CANCEL_BIDDING);
+		if (status != TradingStatus.CHATTING){
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_CANCEL_TRADING);
 		}
-		status = BiddingStatus.CANCELED;
+		status = TradingStatus.CANCELED;
 	}
 
 	public void prepareBidding() {
-		if (status != BiddingStatus.WAITING){
-			throw new ValidationException(BiddingErrorCode.CAN_NOT_PREPARE_BIDDING);
+		if (status != TradingStatus.WAITING){
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_PREPARE_TRADING);
 		}
-		status = BiddingStatus.PREPARING;
+		status = TradingStatus.PREPARING;
 	}
 }
