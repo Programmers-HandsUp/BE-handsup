@@ -44,19 +44,24 @@ public class Bidding extends TimeBaseEntity {
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User bidder;
 
+	@Column(name = "bidding_status", nullable = false)
+	private BiddingStatus status;
+
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
+		this.status = BiddingStatus.WAITING;
 	}
 
 	//테스트용
-	private Bidding(Long id, int biddingPrice, Auction auction, User bidder) {
+	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, BiddingStatus status) {
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
+		this.status = status;
 	}
 
 	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
@@ -67,7 +72,7 @@ public class Bidding extends TimeBaseEntity {
 			.build();
 	}
 
-	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder) {
-		return new Bidding(id, biddingPrice, auction, bidder);
+	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, BiddingStatus status) {
+		return new Bidding(id, biddingPrice, auction, bidder, status);
 	}
 }
