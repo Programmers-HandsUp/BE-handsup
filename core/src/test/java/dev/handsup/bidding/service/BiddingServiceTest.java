@@ -145,7 +145,7 @@ class BiddingServiceTest {
 	@DisplayName("[판매자는 진행 중인 거래를 완료 상태로 변경할 수 있다.]")
 	@Test
 	void completeTrading() {
-	    //given
+		//given
 		User bidder = UserFixture.user("bidder@gmail.com");
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
 		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
@@ -163,7 +163,7 @@ class BiddingServiceTest {
 	@DisplayName("[판매자는 진행 중인 거래를 취소 상태로 변경할 수 있다.]")
 	@Test
 	void cancelTrading() {
-	    //given
+		//given
 		User bidder = UserFixture.user("bidder@gmail.com");
 		Bidding bidding1 = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
 		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());

@@ -35,14 +35,13 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
+	private final User bidder = UserFixture.user("bidder@gmail.com");
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
 	private BiddingRepository biddingRepository;
-
 	private Auction auction;
 	private ProductCategory productCategory;
-	private final User bidder = UserFixture.user("bidder@gmail.com");
 
 	@BeforeEach
 	void setUp() {
@@ -185,12 +184,12 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		biddingRepository.saveAll(List.of(bidding1, bidding2));
 		//when, then
 		mockMvc.perform(patch("/api/auctions/bids/{biddingId}/cancel", bidding1.getId())
-			.contentType(APPLICATION_JSON)
-			.header(AUTHORIZATION, "Bearer " + accessToken))
+				.contentType(APPLICATION_JSON)
+				.header(AUTHORIZATION, "Bearer " + accessToken))
 			.andExpect(status().isOk())
-		.andExpect(jsonPath("$.tradingStatus").value(TradingStatus.CANCELED.getLabel()))
-		.andExpect(jsonPath("$.auctionId").value(auction.getId()))
-		.andExpect(jsonPath("$.bidderId").value(bidder.getId()));
+			.andExpect(jsonPath("$.tradingStatus").value(TradingStatus.CANCELED.getLabel()))
+			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
+			.andExpect(jsonPath("$.bidderId").value(bidder.getId()));
 
 		assertThat(bidding2.getStatus()).isEqualTo(TradingStatus.PREPARING); // 변경 감지 위해 @Transactional 필요
 	}

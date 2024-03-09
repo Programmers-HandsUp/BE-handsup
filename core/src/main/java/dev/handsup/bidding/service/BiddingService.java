@@ -56,7 +56,8 @@ public class BiddingService {
 		Bidding savedBidding = biddingRepository.save(
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
-		if (isFirstBidding) savedBidding.prepareTrading(); // 첫 입찰일 경우 준비중 상태로 변경
+		if (isFirstBidding)
+			savedBidding.prepareTrading(); // 첫 입찰일 경우 준비중 상태로 변경
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
 		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
@@ -70,7 +71,7 @@ public class BiddingService {
 	}
 
 	@Transactional
-	public BiddingResponse completeTrading(Long biddingId, User seller){
+	public BiddingResponse completeTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 		bidding.completeTrading();
@@ -79,7 +80,7 @@ public class BiddingService {
 	}
 
 	@Transactional
-	public BiddingResponse cancelTrading(Long biddingId, User seller){
+	public BiddingResponse cancelTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 		bidding.cancelTrading();
@@ -88,13 +89,13 @@ public class BiddingService {
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
-	private void validateAuthorization(Bidding bidding, User seller){
-		if (!Objects.equals(bidding.getAuction().getSeller().getId(), seller.getId())){
+	private void validateAuthorization(Bidding bidding, User seller) {
+		if (!Objects.equals(bidding.getAuction().getSeller().getId(), seller.getId())) {
 			throw new ValidationException(BiddingErrorCode.NOT_AUTHORIZED_SELLER);
 		}
 	}
 
-	private Bidding findBiddingById(Long biddingId){
+	private Bidding findBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}

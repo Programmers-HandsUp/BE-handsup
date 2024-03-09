@@ -98,14 +98,14 @@ public class Bidding extends TimeBaseEntity {
 	}
 
 	public void cancelTrading() {
-		if (status != TradingStatus.PROGRESSING){
+		if (status != TradingStatus.PROGRESSING) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_CANCEL_TRADING);
 		}
 		status = TradingStatus.CANCELED;
 	}
 
 	public void prepareTrading() {
-		if (status != TradingStatus.WAITING){
+		if (status != TradingStatus.WAITING) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_PREPARE_TRADING);
 		}
 		status = TradingStatus.PREPARING;

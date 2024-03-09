@@ -171,7 +171,7 @@ public class Auction extends TimeBaseEntity {
 		this.currentBiddingPrice = currentBiddingPrice;
 	}
 
-	public void updateBuyer(User bidder){
+	public void updateBuyer(User bidder) {
 		this.buyer = bidder;
 	}
 }
