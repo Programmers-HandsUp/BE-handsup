@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum TradingStatus {
 	WAITING("대기중"),
 	PREPARING("준비중"),
-	CHATTING("채팅중"),
+	PROGRESSING("진행중"),
 	CANCELED("취소됨"),
 	COMPLETED("완료됨");
 
