@@ -6,7 +6,9 @@ import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
+import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -74,5 +76,27 @@ public class Bidding extends TimeBaseEntity {
 
 	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, BiddingStatus status) {
 		return new Bidding(id, biddingPrice, auction, bidder, status);
+	}
+
+	// 비즈니스 메서드
+	public void completeBidding() {
+		if (status != BiddingStatus.CHATTING) {
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_COMPLETE_BIDDING);
+		}
+		status = BiddingStatus.COMPLETED;
+	}
+
+	public void cancelBidding() {
+		if (status != BiddingStatus.CHATTING){
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_CANCEL_BIDDING);
+		}
+		status = BiddingStatus.CANCELED;
+	}
+
+	public void prepareBidding() {
+		if (status != BiddingStatus.WAITING){
+			throw new ValidationException(BiddingErrorCode.CAN_NOT_PREPARE_BIDDING);
+		}
+		status = BiddingStatus.PREPARING;
 	}
 }
