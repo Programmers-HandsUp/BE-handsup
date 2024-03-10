@@ -34,17 +34,6 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 @DisplayName("[User 통합 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
-	@Autowired
-	private UserReviewLabelRepository userReviewLabelRepository;
-	@Autowired
-	private ReviewLabelRepository reviewLabelRepository;
-	@Autowired
-	private ReviewRepository reviewRepository;
-	@Autowired
-	private AuctionRepository auctionRepository;
-	@Autowired
-	private UserRepository userRepository;
-
 	private final JoinUserRequest request = JoinUserRequest.of(
 		"hello12345@naver.com",
 		user.getPassword(),
@@ -55,6 +44,16 @@ class UserApiControllerTest extends ApiTestSupport {
 		user.getProfileImageUrl(),
 		List.of(1L)
 	);
+	@Autowired
+	private UserReviewLabelRepository userReviewLabelRepository;
+	@Autowired
+	private ReviewLabelRepository reviewLabelRepository;
+	@Autowired
+	private ReviewRepository reviewRepository;
+	@Autowired
+	private AuctionRepository auctionRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@Test
 	@DisplayName("[[회원가입 API] 회원이 등록되고 회원 ID를 응답한다]")

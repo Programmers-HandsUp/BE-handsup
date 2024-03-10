@@ -17,11 +17,11 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.chat.domain.ChatRoom;
+import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ChatRoomFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
 

@@ -52,9 +52,6 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected final User user = UserFixture.user();
 	protected String accessToken;
 	protected String refreshToken;
-
-	@MockBean
-	FirebaseMessaging firebaseMessaging;
 	@Autowired
 	protected MockMvc mockMvc;
 	@Autowired
@@ -67,6 +64,8 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected AuthService authService;
 	@Autowired
 	protected ProductCategoryRepository productCategoryRepository;
+	@MockBean
+	FirebaseMessaging firebaseMessaging;
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);

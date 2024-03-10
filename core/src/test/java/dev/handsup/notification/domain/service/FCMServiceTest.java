@@ -27,16 +27,13 @@ import dev.handsup.user.domain.User;
 @ExtendWith(MockitoExtension.class)
 class FCMServiceTest {
 
+	private final User subscriber = UserFixture.user();
 	@Mock
 	private FCMTokenRepository fcmTokenRepository;
-
 	@Mock
 	private FirebaseMessaging firebaseMessaging;
-
 	@InjectMocks
 	private FCMService fcmService;
-
-	private final User subscriber = UserFixture.user();
 
 	@Test
 	@DisplayName("[북마크 메시지를 성공적으로 보낸다]")

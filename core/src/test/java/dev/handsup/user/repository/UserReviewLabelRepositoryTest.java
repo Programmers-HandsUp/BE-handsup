@@ -9,12 +9,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
-import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[UserReviewLabelRepository 테스트]")
