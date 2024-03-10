@@ -13,7 +13,7 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.support.DataJpaTestSupport;
+import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[BiddingRepository 테스트]")

@@ -14,7 +14,7 @@ import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
-import dev.handsup.support.DataJpaTestSupport;
+import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[UserReviewLabelRepository 테스트]")

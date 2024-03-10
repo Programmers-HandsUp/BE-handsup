@@ -22,7 +22,7 @@ import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
-import dev.handsup.support.DataJpaTestSupport;
+import dev.handsup.common.support.DataJpaTestSupport;
 
 @DisplayName("[AuctionQueryRepositoryImpl 테스트]")
 class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
