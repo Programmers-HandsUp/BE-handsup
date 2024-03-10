@@ -53,7 +53,7 @@ import dev.handsup.user.domain.User;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketTest extends ApiTestSupport {
 
-	private final User seller = UserFixture.user(); // loginUser
+	private final User seller = user; // loginUser
 	private final User bidder = UserFixture.user("bidder@gmail.com");
 	@LocalServerPort
 	private int port;
