@@ -13,13 +13,15 @@ import dev.handsup.image.dto.UploadImagesResponse;
 import dev.handsup.image.service.S3Service;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "이미지 업로드 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/images")
-public class ImageController {
+public class ImageApiController {
 	private final S3Service s3Service;
 
 	@Operation(summary = "이미지 파일 리스트 전송 API", description = "이미지 파일을 전송하고 URL을 반환받는다.")

@@ -1,5 +1,7 @@
 package dev.handsup.chat.service;
 
+import java.util.Objects;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -96,19 +98,19 @@ public class ChatRoomService {
 
 	private ChatRoom getChatRoomByAuctionIdAndBidder(Long auctionId, User bidder) {
 		return chatRoomRepository.findChatRoomByAuctionIdAndBidder(auctionId, bidder)
-			.orElseThrow(() -> new NotFoundException(ChatRoomErrorCode.NOT_FOUND_CHAT_ROOM));
+			.orElseThrow(() -> new NotFoundException(ChatRoomErrorCode.NOT_FOUND_CHAT_ROOM_BY_BIDDING_ID));
 	}
 
 	// 채팅방 조회, 생성은 판매자만 가능하도록
 	private void validateAuthorization(User seller, Bidding bidding) {
-		if (seller != bidding.getAuction().getSeller()) { // 조회자와 경매 판매자가 같은지
+		if (!Objects.equals(seller.getId(), bidding.getAuction().getSeller().getId())) { // 조회자와 경매 판매자가 같은지
 			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
 		}
 	}
 
 	private void validateAuthorization(User seller, Long auctionId) {
 		Auction auction = getAuctionById(auctionId);
-		if (seller != auction.getSeller()) { // 조회자와 경매 판매자가 같은지
+		if (!Objects.equals(seller.getId(), auction.getSeller().getId())) { // 조회자와 경매 판매자가 같은지
 			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
 		}
 	}

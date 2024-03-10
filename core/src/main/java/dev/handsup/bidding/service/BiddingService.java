@@ -49,6 +49,7 @@ public class BiddingService {
 		}
 	}
 
+	@Transactional
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
 		Auction auction = auctionService.getAuctionById(auctionId);
 		validateBiddingPrice(request.biddingPrice(), auction);
