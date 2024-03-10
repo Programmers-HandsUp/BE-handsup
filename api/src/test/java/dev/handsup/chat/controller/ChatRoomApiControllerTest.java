@@ -35,7 +35,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[ChatRoom 통합 테스트]")
 class ChatRoomApiControllerTest extends ApiTestSupport {
 
-	private final User seller = UserFixture.user(); // loginUser
+	private final User seller = user; // loginUser
 	private final User bidder = UserFixture.user("bidder@gmail.com");
 	private ProductCategory productCategory;
 	private Auction auction;

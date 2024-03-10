@@ -43,10 +43,18 @@ public class ChatMessage extends TimeBaseEntity {
 	private Boolean isRead;
 
 	@Builder
-	public ChatMessage(ChatRoom chatRoom, Long senderId, String content) {
+	private ChatMessage(ChatRoom chatRoom, Long senderId, String content) {
 		this.chatRoom = chatRoom;
 		this.senderId = senderId;
 		this.content = content;
 		this.isRead = false;
+	}
+
+	public static ChatMessage of(ChatRoom chatRoom, Long senderId, String content) {
+		return ChatMessage.builder()
+			.chatRoom(chatRoom)
+			.senderId(senderId)
+			.content(content)
+			.build();
 	}
 }
