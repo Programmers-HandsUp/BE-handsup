@@ -1,6 +1,7 @@
 package dev.handsup.chat.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.chat.domain.ChatMessage;
 import dev.handsup.chat.domain.ChatRoom;
@@ -19,6 +20,7 @@ public class ChatMessageService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
 
+	@Transactional
 	public ChatMessageResponse registerChatMessage(Long chatRoomId, ChatMessageRequest request) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 
