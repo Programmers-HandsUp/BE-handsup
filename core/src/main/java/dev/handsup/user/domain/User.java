@@ -51,6 +51,9 @@ public class User extends TimeBaseEntity {
 	@Column(name = "report_count", nullable = false)
 	private int reportCount = 0;
 
+	@Column(name = "read_message_count", nullable = false)
+	private int readMessageCount = 0;
+
 	@Builder
 	private User(
 		String email,
