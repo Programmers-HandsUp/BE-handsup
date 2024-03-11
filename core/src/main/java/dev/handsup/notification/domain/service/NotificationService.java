@@ -1,14 +1,32 @@
 package dev.handsup.notification.domain.service;
 
-public interface NotificationService {
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-	void sendChatMessage(String subscriberEmail, String publisherNickname);
+import dev.handsup.notification.domain.Notification;
+import dev.handsup.notification.domain.NotificationType;
+import dev.handsup.notification.domain.repository.NotificationRepository;
+import lombok.RequiredArgsConstructor;
 
-	void sendCommentMessage(String subscriberEmail, String publisherNickname);
+@RequiredArgsConstructor
+@Service
+public class NotificationService {
 
-	void sendBookmarkMessage(String subscriberEmail, String publisherNickname);
+	private final NotificationRepository notificationRepository;
 
-	void sendPurchaseWinningMessage(String subscriberEmail);
+	public long countNotificationsByUserEmail(String userEmail) {
+		return notificationRepository.countByReceiverEmail(userEmail);
+	}
 
-	void sendCanceledPurchaseWinningMessage(String subscriberEmail);
+	@Transactional
+	public void saveNotification(
+		String senderEmail,
+		String receiverEmail,
+		String content,
+		NotificationType notificationType
+	) {
+		Notification notification = Notification.of(
+			senderEmail, receiverEmail, content, notificationType);
+		notificationRepository.save(notification);
+	}
 }
