@@ -1,7 +1,5 @@
 package dev.handsup.notification.domain.service;
 
-import static dev.handsup.notification.domain.NotificationType.*;
-
 import java.util.concurrent.ExecutionException;
 
 import org.springframework.stereotype.Service;
@@ -22,10 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class FCMService implements NotificationService {
+public class FCMService {
 
 	private final FCMTokenRepository fcmTokenRepository;
 	private final FirebaseMessaging firebaseMessaging;
+	private final NotificationService notificationService;
 
 	private void send(Message message) {
 		try {
@@ -47,8 +46,8 @@ public class FCMService implements NotificationService {
 		}
 	}
 
-	private String getFcmToken(String subscriberEmail) {
-		String fcmToken = fcmTokenRepository.getFcmToken(subscriberEmail);
+	private String getFcmToken(String receiverEmail) {
+		String fcmToken = fcmTokenRepository.getFcmToken(receiverEmail);
 
 		if (fcmToken == null || fcmToken.isEmpty()) {
 			throw new NotificationException(NotificationErrorCode.INVALID_NOTIFICATION_TARGET);
@@ -56,51 +55,40 @@ public class FCMService implements NotificationService {
 		return fcmToken;
 	}
 
-	@Override
-	public void sendChatMessage(String subscriberEmail, String publisherNickname) {
-		sendMessage(subscriberEmail, CHAT, publisherNickname);
-	}
-
-	@Override
-	public void sendCommentMessage(String subscriberEmail, String publisherNickname) {
-		sendMessage(subscriberEmail, COMMENT, publisherNickname);
-	}
-
-	@Override
-	public void sendBookmarkMessage(String subscriberEmail, String publisherNickname) {
-		sendMessage(subscriberEmail, BOOKMARK, publisherNickname);
-	}
-
-	@Override
-	public void sendPurchaseWinningMessage(String subscriberEmail) {
-		sendMessage(subscriberEmail, PURCHASE_WINNING, "");
-	}
-
-	@Override
-	public void sendCanceledPurchaseWinningMessage(String subscriberEmail) {
-		sendMessage(subscriberEmail, CANCELED_PURCHASE_WINNING, "");
-	}
-
-	private void sendMessage(String subscriberEmail, NotificationType notificationType, String publisherNickname) {
-		if (fcmTokenRepository.doNotHasKey(subscriberEmail)) {
+	public void sendMessage(
+		String senderEmail,
+		String senderNickname,
+		String receiverEmail,
+		NotificationType notificationType
+	) {
+		if (fcmTokenRepository.doNotHasKey(receiverEmail)) {
 			throw new NotificationException(NotificationErrorCode.INVALID_NOTIFICATION_TARGET);
 		}
 
-		String token = getFcmToken(subscriberEmail);
+		if (notificationType.equals(NotificationType.CANCELED_PURCHASE_WINNING) ||
+			notificationType.equals(NotificationType.PURCHASE_WINNING)) {
+			senderNickname = "";
+		}
+
+		String fcmToken = getFcmToken(receiverEmail);
 		Message message = Message.builder()
 			.putData("title", notificationType.getTitle())
-			.putData("content", publisherNickname + notificationType.getContent())
-			.setToken(token)
+			.putData("content", senderNickname + notificationType.getContent())
+			.setToken(fcmToken)
 			.build();
 
 		send(message);
+
+		notificationService.saveNotification(
+			senderEmail, receiverEmail, notificationType.getContent(), notificationType
+		);
 	}
 
 	public void saveFcmToken(LoginRequest loginRequest) {
 		fcmTokenRepository.saveFcmToken(loginRequest);
 	}
 
-	public void deleteFcmToken(String subscriberEmail) {
-		fcmTokenRepository.deleteFcmToken(subscriberEmail);
+	public void deleteFcmToken(String email) {
+		fcmTokenRepository.deleteFcmToken(email);
 	}
 }
