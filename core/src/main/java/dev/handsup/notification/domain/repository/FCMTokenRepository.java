@@ -25,7 +25,7 @@ public class FCMTokenRepository {
 		tokenRedisTemplate.delete(email);
 	}
 
-	public boolean doNothasKey(String email) {
+	public boolean doNotHasKey(String email) {
 		return Boolean.FALSE.equals(tokenRedisTemplate.hasKey(email));
 	}
 }

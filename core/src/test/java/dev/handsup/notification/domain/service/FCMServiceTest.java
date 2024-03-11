@@ -45,7 +45,7 @@ class FCMServiceTest {
 		given(mockApiFuture.get()).willReturn("mockResponse");
 
 		given(firebaseMessaging.sendAsync(any(Message.class))).willReturn(mockApiFuture);
-		given(fcmTokenRepository.doNothasKey(subscriberEmail)).willReturn(false);
+		given(fcmTokenRepository.doNotHasKey(subscriberEmail)).willReturn(false);
 		given(fcmTokenRepository.getFcmToken(subscriberEmail)).willReturn(fcmToken);
 
 		// when
@@ -60,7 +60,7 @@ class FCMServiceTest {
 	void sendBookmarkMessageFailTest() {
 		// given
 		String subscriberEmail = subscriber.getEmail();
-		given(fcmTokenRepository.doNothasKey(subscriberEmail)).willReturn(true);
+		given(fcmTokenRepository.doNotHasKey(subscriberEmail)).willReturn(true);
 
 		// when, then
 		assertThatThrownBy(() ->

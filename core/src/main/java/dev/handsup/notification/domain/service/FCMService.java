@@ -82,7 +82,7 @@ public class FCMService implements NotificationService {
 	}
 
 	private void sendMessage(String subscriberEmail, NotificationType notificationType, String publisherNickname) {
-		if (fcmTokenRepository.doNothasKey(subscriberEmail)) {
+		if (fcmTokenRepository.doNotHasKey(subscriberEmail)) {
 			throw new NotificationException(NotificationErrorCode.INVALID_NOTIFICATION_TARGET);
 		}
 
