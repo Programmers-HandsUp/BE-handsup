@@ -8,7 +8,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     //swagger
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
-    // FMC 알림
+    // FCM 알림
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
     tasks.named('bootJar') {

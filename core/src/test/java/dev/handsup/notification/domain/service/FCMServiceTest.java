@@ -56,7 +56,7 @@ class FCMServiceTest {
 	}
 
 	@Test
-	@DisplayName("[북마크 메시지를 보내는데 실패한다 - 메시지 구독자의 FMC 토큰이 없을 때]")
+	@DisplayName("[북마크 메시지를 보내는데 실패한다 - 메시지 구독자의 FCM 토큰이 없을 때]")
 	void sendBookmarkMessageFailTest() {
 		// given
 		String subscriberEmail = subscriber.getEmail();
