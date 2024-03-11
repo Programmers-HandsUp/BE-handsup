@@ -18,6 +18,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 
 import dev.handsup.fixture.UserFixture;
+import dev.handsup.notification.domain.NotificationType;
 import dev.handsup.notification.domain.exception.NotificationErrorCode;
 import dev.handsup.notification.domain.exception.NotificationException;
 import dev.handsup.notification.domain.repository.FCMTokenRepository;
@@ -27,44 +28,51 @@ import dev.handsup.user.domain.User;
 @ExtendWith(MockitoExtension.class)
 class FCMServiceTest {
 
-	private final User subscriber = UserFixture.user();
+	private final User receiver = UserFixture.user();
 	@Mock
 	private FCMTokenRepository fcmTokenRepository;
 	@Mock
 	private FirebaseMessaging firebaseMessaging;
+	@Mock
+	private NotificationService notificationService;
 	@InjectMocks
 	private FCMService fcmService;
 
 	@Test
-	@DisplayName("[북마크 메시지를 성공적으로 보낸다]")
-	void sendBookmarkMessageSuccessTest() throws ExecutionException, InterruptedException {
+	@DisplayName("메시지를 성공적으로 보낸다]")
+	void sendMessageSuccessTest() throws ExecutionException, InterruptedException {
 		// given
-		String subscriberEmail = subscriber.getEmail();
+		String receiverEmail = receiver.getEmail();
 		String fcmToken = "fcmToken123";
 		ApiFuture<String> mockApiFuture = mock(ApiFuture.class);
 		given(mockApiFuture.get()).willReturn("mockResponse");
 
 		given(firebaseMessaging.sendAsync(any(Message.class))).willReturn(mockApiFuture);
-		given(fcmTokenRepository.doNotHasKey(subscriberEmail)).willReturn(false);
-		given(fcmTokenRepository.getFcmToken(subscriberEmail)).willReturn(fcmToken);
+		given(fcmTokenRepository.doNotHasKey(receiverEmail)).willReturn(false);
+		given(fcmTokenRepository.getFcmToken(receiverEmail)).willReturn(fcmToken);
 
 		// when
-		fcmService.sendChatMessage(subscriberEmail, "publisherNickname");
+		fcmService.sendMessage(
+			"senderEmail", "senderNickname", receiverEmail, NotificationType.BOOKMARK
+		);
 
 		// then
 		verify(firebaseMessaging, times(1)).sendAsync(any());
 	}
 
 	@Test
-	@DisplayName("[북마크 메시지를 보내는데 실패한다 - 메시지 구독자의 FCM 토큰이 없을 때]")
-	void sendBookmarkMessageFailTest() {
+	@DisplayName("[메시지를 보내는데 실패한다 - 메시지 구독자의 FCM 토큰이 없을 때]")
+	void sendMessageFailTest() {
 		// given
-		String subscriberEmail = subscriber.getEmail();
-		given(fcmTokenRepository.doNotHasKey(subscriberEmail)).willReturn(true);
+		String receiverEmail = receiver.getEmail();
+		given(fcmTokenRepository.doNotHasKey(receiverEmail)).willReturn(true);
 
 		// when, then
 		assertThatThrownBy(() ->
-			fcmService.sendChatMessage(subscriberEmail, "publisherNickname"))
+			fcmService.sendMessage(
+				"senderEmail", "senderNickname",
+				receiverEmail, NotificationType.BOOKMARK
+			))
 			.isInstanceOf(NotificationException.class)
 			.hasMessageContaining(NotificationErrorCode.INVALID_NOTIFICATION_TARGET.getMessage());
 
