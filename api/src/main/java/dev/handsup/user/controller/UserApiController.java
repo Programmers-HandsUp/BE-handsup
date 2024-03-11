@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
+import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
+import dev.handsup.notification.domain.service.NotificationService;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
@@ -18,17 +21,19 @@ import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Tag(name = "회원 API")
+@Tag(name = "사용자 API")
 @RestController
 @RequiredArgsConstructor
 public class UserApiController {
 
 	private final UserService userService;
+	private final NotificationService notificationService;
 
 	@NoAuth
 	@PostMapping("/api/users")
@@ -54,7 +59,7 @@ public class UserApiController {
 
 	@NoAuth
 	@GetMapping("/api/users/{userId}/reviews/labels")
-	@Operation(summary = "유저 리뷰 라벨 조회 API", description = "특정 유저의 리뷰 라벨을 조회한다")
+	@Operation(summary = "사용자 리뷰 라벨 조회 API", description = "특정 사용자의 리뷰 라벨을 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<PageResponse<UserReviewLabelResponse>> getUserReviewLabels(
 		@PathVariable Long userId,
@@ -66,7 +71,7 @@ public class UserApiController {
 
 	@NoAuth
 	@GetMapping("/api/users/{userId}/reviews")
-	@Operation(summary = "유저 리뷰 조회 API", description = "특정 유저의 리뷰를 조회한다")
+	@Operation(summary = "사용자 리뷰 조회 API", description = "특정 사용자의 리뷰를 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<PageResponse<UserReviewResponse>> getUserReviews(
 		@PathVariable Long userId,
@@ -74,5 +79,15 @@ public class UserApiController {
 	) {
 		PageResponse<UserReviewResponse> response = userService.getUserReviews(userId, pageable);
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/api/users/notifications/count")
+	@Operation(summary = "사용자 알림 수 조회 API", description = "특정 사용자가 받은 알림 수를 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<Long> countUserNotifications(
+		@Parameter(hidden = true) @JwtAuthorization User user
+	) {
+		long notificationsCount = notificationService.countNotificationsByUserEmail(user.getEmail());
+		return ResponseEntity.ok(notificationsCount);
 	}
 }
