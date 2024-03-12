@@ -32,7 +32,9 @@ import dev.handsup.user.service.UserService;
 class AuthServiceTest {
 
 	private final User user = UserFixture.user(1L);
-	private final LoginRequest loginRequest = LoginRequest.of(user.getEmail(), user.getPassword());
+	private final LoginRequest loginRequest = LoginRequest.of(
+		user.getEmail(), user.getPassword(), "fcmToken123"
+	);
 	@InjectMocks
 	private AuthService authService;
 	@Mock

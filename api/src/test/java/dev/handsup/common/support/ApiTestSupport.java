@@ -1,5 +1,6 @@
 package dev.handsup.common.support;
 
+import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.*;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -16,6 +18,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.core.ApiFuture;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
 
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
@@ -47,7 +52,6 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected final User user = UserFixture.user();
 	protected String accessToken;
 	protected String refreshToken;
-
 	@Autowired
 	protected MockMvc mockMvc;
 	@Autowired
@@ -60,6 +64,8 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 	protected AuthService authService;
 	@Autowired
 	protected ProductCategoryRepository productCategoryRepository;
+	@MockBean
+	FirebaseMessaging firebaseMessaging;
 
 	protected String toJson(Object object) throws JsonProcessingException {
 		return objectMapper.writeValueAsString(object);
@@ -94,8 +100,13 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 
 		LoginRequest loginRequest = LoginRequest.of(
 			user.getEmail(),
-			user.getPassword()
+			user.getPassword(),
+			"fcmToken123"
 		);
+
+		ApiFuture<String> mockApiFuture = mock(ApiFuture.class);
+		given(mockApiFuture.get()).willReturn("mockResponse");
+		given(firebaseMessaging.sendAsync(any(Message.class))).willReturn(mockApiFuture);
 
 		MvcResult loginResult = mockMvc.perform(
 			MockMvcRequestBuilders
