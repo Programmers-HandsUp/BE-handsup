@@ -168,7 +168,8 @@ class BiddingServiceTest {
 		Bidding bidding1 = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING, 40000);
 		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());
 
-		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING, bidding1.getBiddingPrice()+1000);
+		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING,
+			bidding1.getBiddingPrice() + 1000);
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding1));
 		given(biddingRepository.findFirstByStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
 

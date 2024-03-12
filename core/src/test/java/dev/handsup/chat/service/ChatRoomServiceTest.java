@@ -102,7 +102,6 @@ class ChatRoomServiceTest {
 		assertThat(response).isNotNull();
 	}
 
-
 	@DisplayName("[유저로 채팅방을 모두 조회할 수 있다.]")
 	@Test
 	void getUserChatRooms() {

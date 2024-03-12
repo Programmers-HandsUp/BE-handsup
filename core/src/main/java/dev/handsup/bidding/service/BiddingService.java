@@ -57,7 +57,7 @@ public class BiddingService {
 		Bidding savedBidding = biddingRepository.save(
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
-		if (isFirstBidding){
+		if (isFirstBidding) {
 			savedBidding.updateTradingStatusPreparing(); // 첫 입찰일 경우 준비중 상태로 변경
 		}
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
