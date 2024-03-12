@@ -43,18 +43,23 @@ public class ChatRoom extends TimeBaseEntity {
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User bidder;
 
+	@Column(name = "current_bidding_id")
+	private Long currentBiddingId;
+
 	@Builder
-	private ChatRoom(Long auctionId, User seller, User bidder) {
+	private ChatRoom(Long auctionId, User seller, User bidder, Long currentBiddingId) {
 		this.auctionId = auctionId;
 		this.seller = seller;
 		this.bidder = bidder;
+		this.currentBiddingId = currentBiddingId;
 	}
 
-	public static ChatRoom of(Long auctionId, User seller, User bidder) {
+	public static ChatRoom of(Long auctionId, User seller, User bidder, Long currentBiddingId) {
 		return ChatRoom.builder()
 			.auctionId(auctionId)
 			.seller(seller)
 			.bidder(bidder)
+			.currentBiddingId(currentBiddingId)
 			.build();
 	}
 }

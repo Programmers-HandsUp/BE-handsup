@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
+import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
@@ -14,8 +15,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class ChatRoomMapper {
 
-	public static ChatRoom toChatRoom(Long auctionId, User seller, User bidder) {
-		return ChatRoom.of(auctionId, seller, bidder);
+	// public static ChatRoom toChatRoom(Long auctionId, User seller, User bidder) {
+	// 	return ChatRoom.of(auctionId, seller, bidder);
+	// }
+
+	public static ChatRoom toChatRoom(Bidding bidding) {
+		return ChatRoom.of(
+			bidding.getAuction().getId(),
+			bidding.getAuction().getSeller(),
+			bidding.getBidder(),
+			bidding.getId()
+		);
 	}
 
 	public static RegisterChatRoomResponse toRegisterChatRoomResponse(ChatRoom chatRoom) {

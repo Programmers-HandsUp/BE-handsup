@@ -40,12 +40,22 @@ public class ChatRoomService {
 	private final AuctionRepository auctionRepository;
 	private final BiddingRepository biddingRepository;
 
-	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long bidderId, User seller) {
-		User bidder = getUserById(bidderId);
-		validateAuthorization(seller, auctionId);
-		validateAuctionTrading(auctionId);
-		validateChatRoomNotExists(auctionId, bidder);
-		ChatRoom chatRoom = ChatRoomMapper.toChatRoom(auctionId, seller, bidder);
+	// public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long bidderId, User seller) {
+	// 	User bidder = getUserById(bidderId);
+	// 	validateAuthorization(seller, auctionId);
+	// 	validateAuctionTrading(auctionId);
+	// 	validateChatRoomNotExists(auctionId, bidder);
+	// 	ChatRoom chatRoom = ChatRoomMapper.toChatRoom(auctionId, seller, bidder);
+	//
+	// 	return ChatRoomMapper.toRegisterChatRoomResponse(chatRoomRepository.save(chatRoom));
+	// }
+
+	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
+		Bidding bidding = getBiddingById(biddingId);
+		validateAuthorization(user, bidding);
+		validateAuctionTrading(bidding.getAuction());
+		validateChatRoomNotExists(auctionId, bidding.getBidder());
+		ChatRoom chatRoom = ChatRoomMapper.toChatRoom(bidding);
 
 		return ChatRoomMapper.toRegisterChatRoomResponse(chatRoomRepository.save(chatRoom));
 	}
@@ -102,22 +112,15 @@ public class ChatRoomService {
 	}
 
 	// 채팅방 조회, 생성은 판매자만 가능하도록
-	private void validateAuthorization(User seller, Bidding bidding) {
-		if (!Objects.equals(seller.getId(), bidding.getAuction().getSeller().getId())) { // 조회자와 경매 판매자가 같은지
-			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
-		}
-	}
-
-	private void validateAuthorization(User seller, Long auctionId) {
-		Auction auction = getAuctionById(auctionId);
-		if (!Objects.equals(seller.getId(), auction.getSeller().getId())) { // 조회자와 경매 판매자가 같은지
+	private void validateAuthorization(User user, Bidding bidding) {
+		User seller = bidding.getAuction().getSeller();
+		if (!Objects.equals(user.getId(), seller.getId())) { // 조회자와 경매 판매자가 같은지
 			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
 		}
 	}
 
 	// 경매가 거래상태인지
-	private void validateAuctionTrading(Long auctionId) {
-		Auction auction = getAuctionById(auctionId);
+	private void validateAuctionTrading(Auction auction) {
 		if (auction.getStatus() != AuctionStatus.TRADING) {
 			throw new ValidationException(ChatRoomErrorCode.NOT_TRADING_AUCTION);
 		}

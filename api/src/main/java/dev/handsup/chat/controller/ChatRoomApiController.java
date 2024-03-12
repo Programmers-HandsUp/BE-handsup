@@ -36,10 +36,10 @@ public class ChatRoomApiController {
 	@PostMapping
 	public ResponseEntity<RegisterChatRoomResponse> registerChatRoom(
 		@RequestParam("auctionId") Long auctionId,
-		@RequestParam("bidderId") Long bidderId,
+		@RequestParam("biddingId") Long biddingId,
 		@Parameter(hidden = true) @JwtAuthorization User seller
 	) {
-		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(auctionId, bidderId, seller);
+		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(auctionId, biddingId, seller);
 		return ResponseEntity.ok(response);
 	}
 
