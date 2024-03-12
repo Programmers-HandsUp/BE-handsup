@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class BiddingFixture {
+
 	public static Bidding bidding(Auction auction, User user) {
 		return Bidding.of(
 			1L,
@@ -24,6 +25,16 @@ public class BiddingFixture {
 		return Bidding.of(
 			1L,
 			40000,
+			auction,
+			user,
+			status
+		);
+	}
+
+	public static Bidding bidding(Auction auction, User user, TradingStatus status, int biddingPrice) {
+		return Bidding.of(
+			1L,
+			biddingPrice,
 			auction,
 			user,
 			status
