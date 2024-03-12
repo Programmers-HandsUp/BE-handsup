@@ -17,5 +17,5 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
 
 	Slice<Bidding> findByAuctionIdOrderByBiddingPriceDesc(Long auctionId, Pageable pageable);
 
-	Optional<Bidding> findFirstByStatus(TradingStatus status);
+	Optional<Bidding> findFirstByTradingStatus(TradingStatus tradingStatus);
 }

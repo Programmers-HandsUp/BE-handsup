@@ -29,6 +29,7 @@ import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.UserFixture;
+import dev.handsup.notification.domain.service.FCMService;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[BookmarkService 테스트]")
@@ -41,6 +42,8 @@ class BookmarkServiceTest {
 	private AuctionRepository auctionRepository;
 	@Mock
 	private BookmarkRepository bookmarkRepository;
+	@Mock
+	private FCMService fcmService;
 	@InjectMocks
 	private BookmarkService bookmarkService;
 

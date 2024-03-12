@@ -25,7 +25,7 @@ class AuthApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		loginRequest = new LoginRequest(user.getEmail(), user.getPassword());
+		loginRequest = new LoginRequest(user.getEmail(), user.getPassword(), "fcmToken123");
 	}
 
 	@Test

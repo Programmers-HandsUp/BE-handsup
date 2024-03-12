@@ -86,7 +86,7 @@ public class BiddingService {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 		bidding.updateTradingStatusCanceled();
-		biddingRepository.findFirstByStatus(TradingStatus.WAITING) // 다음 입찰 준비중 상태로 변경
+		biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING) // 다음 입찰 준비중 상태로 변경
 			.ifPresent(Bidding::updateTradingStatusPreparing);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}

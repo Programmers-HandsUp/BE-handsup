@@ -19,11 +19,11 @@ import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bookmark.domain.Bookmark;
 import dev.handsup.bookmark.repository.BookmarkRepository;
+import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.support.DataJpaTestSupport;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
 
@@ -39,7 +39,6 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	private UserRepository userRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 

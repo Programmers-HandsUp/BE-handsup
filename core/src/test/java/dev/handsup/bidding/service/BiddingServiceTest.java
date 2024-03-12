@@ -171,7 +171,7 @@ class BiddingServiceTest {
 		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING,
 			bidding1.getBiddingPrice() + 1000);
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding1));
-		given(biddingRepository.findFirstByStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
+		given(biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
 
 		//when
 		BiddingResponse response = biddingService.cancelTrading(bidding1.getId(), user);
