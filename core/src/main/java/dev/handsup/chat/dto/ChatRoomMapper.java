@@ -2,7 +2,6 @@ package dev.handsup.chat.dto;
 
 import static lombok.AccessLevel.*;
 
-import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.chat.domain.ChatRoom;
@@ -14,10 +13,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class ChatRoomMapper {
-
-	// public static ChatRoom toChatRoom(Long auctionId, User seller, User bidder) {
-	// 	return ChatRoom.of(auctionId, seller, bidder);
-	// }
 
 	public static ChatRoom toChatRoom(Bidding bidding) {
 		return ChatRoom.of(
@@ -36,9 +31,16 @@ public class ChatRoomMapper {
 		return ChatRoomSimpleResponse.of(chatRoom.getId(), receiver.getNickname(), receiver.getProfileImageUrl());
 	}
 
-	public static ChatRoomDetailResponse toChatRoomDetailResponse(ChatRoom chatRoom, Auction auction, User bidder) {
-		return ChatRoomDetailResponse.of(chatRoom.getId(), auction.getId(), auction.getTitle(), bidder.getId(),
-			bidder.getNickname(), bidder.getScore(), bidder.getProfileImageUrl());
+	public static ChatRoomDetailResponse toChatRoomDetailResponse(ChatRoom chatRoom, Bidding bidding, User receiver) {
+		return ChatRoomDetailResponse.of(
+			chatRoom.getId(),
+			bidding.getAuction().getId(),
+			bidding.getId(),
+			bidding.getAuction().getTitle(),
+			receiver.getId(),
+			receiver.getNickname(),
+			receiver.getScore(),
+			receiver.getProfileImageUrl());
 	}
 
 	public static ChatRoomExistenceResponse toChatRoomExistenceResponse(Boolean isExist) {
