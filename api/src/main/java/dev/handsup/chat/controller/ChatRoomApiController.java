@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
@@ -73,17 +72,6 @@ public class ChatRoomApiController {
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
 		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithBiddingId(biddingId, user);
-		return ResponseEntity.ok(response);
-	}
-
-	@Operation(summary = "입찰 아이디로 채팅방 존재 여부 조회", description = "입찰 아이디로 경매 아이디, 입찰자를 얻어 채팅방 존재 여부를 확인한다.")
-	@ApiResponse(useReturnTypeSchema = true)
-	@GetMapping("biddings/{biddingId}/existence")
-	public ResponseEntity<ChatRoomExistenceResponse> getChatRoomExistence(
-		@PathVariable("biddingId") Long biddingId,
-		@Parameter(hidden = true) @JwtAuthorization User user
-	) {
-		ChatRoomExistenceResponse response = chatRoomService.getChatRoomExistence(biddingId, user);
 		return ResponseEntity.ok(response);
 	}
 }

@@ -16,6 +16,7 @@ import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.ChatRoomMapper;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
+import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.exception.ChatRoomErrorCode;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.dto.CommonMapper;
@@ -31,6 +32,25 @@ public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
 	private final BiddingRepository biddingRepository;
+
+	@Transactional
+	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
+		Bidding bidding = getBiddingById(biddingId);
+		validateAuthorization(user, bidding);
+		validateAuctionTrading(bidding.getAuction());
+
+		ChatRoom chatRoom = chatRoomRepository.findByAuctionIdAndBidder(auctionId, bidding.getBidder())
+			.map(existingChatRoom -> { // 한 경매 내 입찰자와 판매자 간의 기존 채팅방 존재 (=중복 입찰자)
+				existingChatRoom.updateCurrentBiddingId(biddingId); // 채팅방 내 입찰 아이디 갱신
+				return existingChatRoom;
+			})
+			.orElseGet(() -> { // 채팅방 존재x
+				ChatRoom newChatRoom = ChatRoomMapper.toChatRoom(bidding);
+				return chatRoomRepository.save(newChatRoom);
+			});
+
+		return ChatRoomMapper.toRegisterChatRoomResponse(chatRoom);
+	}
 
 	@Transactional(readOnly = true)
 	public PageResponse<ChatRoomSimpleResponse> getUserChatRooms(User user, Pageable pageable) {
