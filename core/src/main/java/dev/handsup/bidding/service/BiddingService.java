@@ -58,7 +58,7 @@ public class BiddingService {
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
 		if (isFirstBidding){
-			savedBidding.prepareTrading(); // 첫 입찰일 경우 준비중 상태로 변경
+			savedBidding.updateTradingStatusPreparing(); // 첫 입찰일 경우 준비중 상태로 변경
 		}
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
 		return BiddingMapper.toBiddingResponse(savedBidding);
@@ -76,7 +76,7 @@ public class BiddingService {
 	public BiddingResponse completeTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
-		bidding.completeTrading();
+		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
@@ -85,9 +85,9 @@ public class BiddingService {
 	public BiddingResponse cancelTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
-		bidding.cancelTrading();
+		bidding.updateTradingStatusCanceled();
 		biddingRepository.findFirstByStatus(TradingStatus.WAITING) // 다음 입찰 준비중 상태로 변경
-			.ifPresent(Bidding::prepareTrading);
+			.ifPresent(Bidding::updateTradingStatusPreparing);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 

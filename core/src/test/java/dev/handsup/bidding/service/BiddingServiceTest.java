@@ -177,6 +177,6 @@ class BiddingServiceTest {
 
 		//then
 		assertThat(response.tradingStatus()).isEqualTo(TradingStatus.CANCELED.getLabel());
-		assertThat(bidding2.getStatus()).isEqualTo(TradingStatus.PREPARING);
+		assertThat(bidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING);
 	}
 }

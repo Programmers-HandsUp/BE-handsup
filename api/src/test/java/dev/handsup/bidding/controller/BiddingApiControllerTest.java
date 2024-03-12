@@ -191,7 +191,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
 			.andExpect(jsonPath("$.bidderId").value(bidder.getId()));
 
-		assertThat(bidding2.getStatus()).isEqualTo(TradingStatus.PREPARING); // 변경 감지 위해 @Transactional 필요
+		assertThat(bidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING); // 변경 감지 위해 @Transactional 필요
 	}
 
 	@DisplayName("[거래가 진행중이 아니면 취소할 수 없다.]")

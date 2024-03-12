@@ -1,6 +1,7 @@
 package dev.handsup.bidding.domain;
 
 import static jakarta.persistence.ConstraintMode.*;
+import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -12,6 +13,7 @@ import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -46,31 +48,32 @@ public class Bidding extends TimeBaseEntity {
 		foreignKey = @ForeignKey(NO_CONSTRAINT))
 	private User bidder;
 
+	@Enumerated(STRING)
 	@Column(name = "trading_status", nullable = false)
-	private TradingStatus status;
+	private TradingStatus tradingStatus;
 
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
-		this.status = TradingStatus.WAITING;
+		this.tradingStatus = TradingStatus.WAITING;
 	}
 
 	//테스트용
-	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus status) {
+	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
-		this.status = status;
+		this.tradingStatus = tradingStatus;
 	}
 
-	private Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus status) {
+	private Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
-		this.status = status;
+		this.tradingStatus = tradingStatus;
 	}
 
 	public static Bidding of(int biddingPrice, Auction auction, User bidder) {
@@ -90,24 +93,24 @@ public class Bidding extends TimeBaseEntity {
 	}
 
 	// 비즈니스 메서드
-	public void completeTrading() {
-		if (status != TradingStatus.PROGRESSING) {
+	public void updateTradingStatusComplete() {
+		if (tradingStatus != TradingStatus.PROGRESSING) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_COMPLETE_TRADING);
 		}
-		status = TradingStatus.COMPLETED;
+		tradingStatus = TradingStatus.COMPLETED;
 	}
 
-	public void cancelTrading() {
-		if (status != TradingStatus.PROGRESSING) {
+	public void updateTradingStatusCanceled() {
+		if (tradingStatus != TradingStatus.PROGRESSING) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_CANCEL_TRADING);
 		}
-		status = TradingStatus.CANCELED;
+		tradingStatus = TradingStatus.CANCELED;
 	}
 
-	public void prepareTrading() {
-		if (status != TradingStatus.WAITING) {
+	public void updateTradingStatusPreparing() {
+		if (tradingStatus != TradingStatus.WAITING) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_PREPARE_TRADING);
 		}
-		status = TradingStatus.PREPARING;
+		tradingStatus = TradingStatus.PREPARING;
 	}
 }
