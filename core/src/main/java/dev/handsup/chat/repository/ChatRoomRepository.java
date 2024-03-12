@@ -15,8 +15,6 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 	@Query("SELECT cr FROM ChatRoom cr "
 		+ "WHERE cr.seller = :user OR cr.bidder = :user ORDER BY cr.createdAt DESC")
 	Slice<ChatRoom> findChatRoomsByUser(User user, Pageable pageable);
-
-	Optional<ChatRoom> findChatRoomByAuctionIdAndBidder(Long auctionId, User bidder);
-
-	boolean existsByAuctionIdAndBidder(Long auctionId, User bidder);
+	Optional<ChatRoom> findChatRoomByCurrentBiddingId(Long currentBiddingId);
+	Optional<ChatRoom> findByAuctionIdAndBidder(Long auctionId, User bidder);
 }
