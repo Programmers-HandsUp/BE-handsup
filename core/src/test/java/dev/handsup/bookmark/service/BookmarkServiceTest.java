@@ -29,7 +29,7 @@ import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.notification.domain.service.FCMService;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[BookmarkService 테스트]")

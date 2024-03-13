@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
-import java.util.concurrent.ExecutionException;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,15 +11,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.google.api.core.ApiFuture;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.FirebaseMessagingException;
 
+import dev.handsup.auction.domain.Auction;
+import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.notification.domain.NotificationType;
-import dev.handsup.notification.domain.exception.NotificationErrorCode;
-import dev.handsup.notification.domain.exception.NotificationException;
-import dev.handsup.notification.domain.repository.FCMTokenRepository;
+import dev.handsup.notification.exception.NotificationErrorCode;
+import dev.handsup.notification.exception.NotificationException;
+import dev.handsup.notification.repository.FCMTokenRepository;
+import dev.handsup.notification.service.FCMService;
+import dev.handsup.notification.service.NotificationService;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[FCM 알림 서비스 테스트]")
@@ -29,6 +30,7 @@ import dev.handsup.user.domain.User;
 class FCMServiceTest {
 
 	private final User receiver = UserFixture.user();
+	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private FCMTokenRepository fcmTokenRepository;
 	@Mock
@@ -40,24 +42,25 @@ class FCMServiceTest {
 
 	@Test
 	@DisplayName("메시지를 성공적으로 보낸다]")
-	void sendMessageSuccessTest() throws ExecutionException, InterruptedException {
+	void sendMessageSuccessTest() throws FirebaseMessagingException {
 		// given
 		String receiverEmail = receiver.getEmail();
 		String fcmToken = "fcmToken123";
-		ApiFuture<String> mockApiFuture = mock(ApiFuture.class);
-		given(mockApiFuture.get()).willReturn("mockResponse");
 
-		given(firebaseMessaging.sendAsync(any(Message.class))).willReturn(mockApiFuture);
-		given(fcmTokenRepository.doNotHasKey(receiverEmail)).willReturn(false);
+		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(false);
 		given(fcmTokenRepository.getFcmToken(receiverEmail)).willReturn(fcmToken);
 
 		// when
 		fcmService.sendMessage(
-			"senderEmail", "senderNickname", receiverEmail, NotificationType.BOOKMARK
+			"senderEmail",
+			"senderNickname",
+			receiverEmail,
+			NotificationType.BOOKMARK,
+			auction
 		);
 
 		// then
-		verify(firebaseMessaging, times(1)).sendAsync(any());
+		verify(firebaseMessaging, times(1)).send(any());
 	}
 
 	@Test
@@ -65,13 +68,16 @@ class FCMServiceTest {
 	void sendMessageFailTest() {
 		// given
 		String receiverEmail = receiver.getEmail();
-		given(fcmTokenRepository.doNotHasKey(receiverEmail)).willReturn(true);
+		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(true);
 
 		// when, then
 		assertThatThrownBy(() ->
 			fcmService.sendMessage(
-				"senderEmail", "senderNickname",
-				receiverEmail, NotificationType.BOOKMARK
+				"senderEmail",
+				"senderNickname",
+				receiverEmail,
+				NotificationType.BOOKMARK,
+				auction
 			))
 			.isInstanceOf(NotificationException.class)
 			.hasMessageContaining(NotificationErrorCode.INVALID_NOTIFICATION_TARGET.getMessage());
