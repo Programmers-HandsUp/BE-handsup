@@ -36,10 +36,10 @@ public class ChatRoomService {
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
-		bidding.updateTradingStatusProgressing();
-
 		validateAuthorization(user, bidding);
 		validateAuctionTrading(bidding.getAuction());
+
+		bidding.updateTradingStatusProgressing();
 
 		ChatRoom chatRoom = chatRoomRepository.findByAuctionIdAndBidder(auctionId, bidding.getBidder())
 			.map(existingChatRoom -> { // 한 경매 내 입찰자와 판매자 간의 기존 채팅방 존재 (=중복 입찰자)
