@@ -1,4 +1,4 @@
-package dev.handsup.notification.domain.exception;
+package dev.handsup.notification.exception;
 
 import dev.handsup.common.exception.ErrorCode;
 import lombok.Getter;
@@ -13,8 +13,8 @@ public class NotificationException extends RuntimeException {
 		this.code = errorCode.getCode();
 	}
 
-	public NotificationException(ErrorCode errorCode, Throwable cause) {
-		super(errorCode.getMessage(), cause);
-		this.code = errorCode.getCode();
+	public NotificationException(String message) {
+		super(message);
+		this.code = "NOTIF_000";
 	}
 }
