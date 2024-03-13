@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
+import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
@@ -55,7 +57,7 @@ class AuctionApiControllerTest extends ApiTestSupport {
 				.content(toJson(request))
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.sellerId").value(user.getId()))
+			.andExpect(jsonPath("$.sellerInfo.userId").value(user.getId()))
 			.andExpect(jsonPath("$.title").value(request.title()))
 			.andExpect(jsonPath("$.description").value(request.description()))
 			.andExpect(jsonPath("$.productStatus").value(request.productStatus()))
@@ -65,9 +67,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.purchaseTime").value(request.purchaseTime()))
 			.andExpect(jsonPath("$.productCategory").value(request.productCategory()))
 			.andExpect(jsonPath("$.imageUrls[0]").value(request.imageUrls().get(0)))
-			.andExpect(jsonPath("$.si").isEmpty())
-			.andExpect(jsonPath("$.gu").isEmpty())
-			.andExpect(jsonPath("$.dong").isEmpty());
+			.andExpect(jsonPath("$.tradeSi").isEmpty())
+			.andExpect(jsonPath("$.tradeGu").isEmpty())
+			.andExpect(jsonPath("$.tradeDong").isEmpty());
 	}
 
 	@DisplayName("[경매를 등록 시 상품 카테고리가 DB에 없으면 예외가 발생한다.]")
@@ -90,28 +92,34 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@Test
 	void getAuctionDetail() throws Exception {
 		//given
-		Auction auction = AuctionFixture.auction(productCategory);
-		auctionRepository.save(auction);
+		Auction auction = auctionRepository.save(AuctionFixture.auction(productCategory));
+		Product product = auction.getProduct();
+		TradingLocation tradingLocation = auction.getTradingLocation();
 
 		//when, then
 		mockMvc.perform(get("/api/auctions/{auctionId}", auction.getId()).contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
-			.andExpect(jsonPath("$.sellerId").value(user.getId()))
+			.andExpect(jsonPath("$.sellerInfo.userId").value(user.getId()))
+			.andExpect(jsonPath("$.sellerInfo.nickname").value(user.getNickname()))
+			.andExpect(jsonPath("$.sellerInfo.profileImageUrl").value(user.getProfileImageUrl()))
+			.andExpect(jsonPath("$.sellerInfo.userId").value(user.getId()))
+			.andExpect(jsonPath("$.sellerInfo.score").value(user.getScore()))
+			.andExpect(jsonPath("$.sellerInfo.dong").value(user.getAddress().getDong()))
 			.andExpect(jsonPath("$.title").value(auction.getTitle()))
 			.andExpect(
-				jsonPath("$.productCategory").value(auction.getProduct().getProductCategory().getValue()))
+				jsonPath("$.productCategory").value(product.getProductCategory().getValue()))
 			.andExpect(jsonPath("$.initPrice").value(auction.getInitPrice()))
 			.andExpect(jsonPath("$.currentBiddingPrice").value(auction.getCurrentBiddingPrice()))
 			.andExpect(jsonPath("$.endDate").value(auction.getEndDate().toString()))
-			.andExpect(jsonPath("$.productStatus").value(auction.getProduct().getStatus().getLabel()))
-			.andExpect(jsonPath("$.purchaseTime").value(auction.getProduct().getPurchaseTime().getLabel()))
-			.andExpect(jsonPath("$.description").value(auction.getProduct().getDescription()))
+			.andExpect(jsonPath("$.productStatus").value(product.getStatus().getLabel()))
+			.andExpect(jsonPath("$.purchaseTime").value(product.getPurchaseTime().getLabel()))
+			.andExpect(jsonPath("$.description").value(product.getDescription()))
 			.andExpect(jsonPath("$.tradeMethod").value(auction.getTradeMethod().getLabel()))
-			.andExpect(jsonPath("$.imageUrls[0]").value(auction.getProduct().getImages().get(0).getImageUrl()))
-			.andExpect(jsonPath("$.si").value(auction.getTradingLocation().getSi()))
-			.andExpect(jsonPath("$.gu").value(auction.getTradingLocation().getGu()))
-			.andExpect(jsonPath("$.dong").value(auction.getTradingLocation().getDong()))
+			.andExpect(jsonPath("$.imageUrls[0]").value(product.getImages().get(0).getImageUrl()))
+			.andExpect(jsonPath("$.tradeSi").value(tradingLocation.getSi()))
+			.andExpect(jsonPath("$.tradeGu").value(tradingLocation.getGu()))
+			.andExpect(jsonPath("$.tradeDong").value(tradingLocation.getDong()))
 			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()));
 	}
 
@@ -128,9 +136,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 
 		//when
 		mockMvc.perform(get("/api/auctions/recommend").param("sort", "마감일")
-				.param("si", si)
-				.param("gu", gu)
-				.param("dong", dong1)
+				.param("tradeSi", si)
+				.param("tradeGu", gu)
+				.param("tradeDong", dong1)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(2))
