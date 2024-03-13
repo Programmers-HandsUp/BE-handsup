@@ -115,7 +115,7 @@ public class Bidding extends TimeBaseEntity {
 	}
 
 	public void updateTradingStatusProgressing() {
-		if (tradingStatus != TradingStatus.PREPARING) {
+		if (tradingStatus == TradingStatus.COMPLETED) {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_PROGRESS_TRADING);
 		}
 		tradingStatus = TradingStatus.PROGRESSING;
