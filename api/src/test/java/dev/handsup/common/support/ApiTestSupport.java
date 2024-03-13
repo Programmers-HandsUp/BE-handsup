@@ -100,8 +100,13 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 
 		LoginRequest loginRequest = LoginRequest.of(
 			user.getEmail(),
-			user.getPassword()
+			user.getPassword(),
+			"fcmToken123"
 		);
+
+		ApiFuture<String> mockApiFuture = mock(ApiFuture.class);
+		given(mockApiFuture.get()).willReturn("mockResponse");
+		given(firebaseMessaging.sendAsync(any(Message.class))).willReturn(mockApiFuture);
 
 		MvcResult loginResult = mockMvc.perform(
 			MockMvcRequestBuilders

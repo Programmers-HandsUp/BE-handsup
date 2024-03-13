@@ -21,6 +21,7 @@ import dev.handsup.auction.domain.QAuction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
+import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.common.exception.ValidationException;
@@ -69,6 +70,22 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				dongEq(dong)
 			)
 			.orderBy(recommendAuctionSort(pageable))
+			.limit(pageable.getPageSize() + 1L)
+			.offset(pageable.getOffset())
+			.fetch();
+		boolean hasNext = hasNext(pageable.getPageSize(), content);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	public Slice<Auction> findByProductCategories(List<ProductCategory> productCategories, Pageable pageable) {
+		List<Auction> content = queryFactory.select(QAuction.auction)
+			.from(auction)
+			.join(auction.product, product).fetchJoin()
+			.where(
+				auction.product.productCategory.in(productCategories)
+			)
+			.orderBy(auction.bookmarkCount.desc())
 			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
 			.fetch();

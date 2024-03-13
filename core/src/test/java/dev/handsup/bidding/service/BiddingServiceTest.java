@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,12 +24,14 @@ import org.springframework.test.util.ReflectionTestUtils;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
@@ -137,5 +140,44 @@ class BiddingServiceTest {
 		assertThat(response.content().get(2).biddingPrice()).isEqualTo(20000);
 
 		verify(biddingRepository).findByAuctionIdOrderByBiddingPriceDesc(auctionId, pageRequest);
+	}
+
+	@DisplayName("[판매자는 진행 중인 거래를 완료 상태로 변경할 수 있다.]")
+	@Test
+	void completeTrading() {
+		//given
+		User bidder = UserFixture.user("bidder@gmail.com");
+		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
+		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
+
+		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding));
+
+		//when
+		BiddingResponse response = biddingService.completeTrading(bidding.getId(), user);
+
+		//then
+		assertThat(response.tradingStatus()).isEqualTo(TradingStatus.COMPLETED.getLabel());
+		assertThat(bidding.getAuction().getBuyer()).isEqualTo(bidder);
+	}
+
+	@DisplayName("[판매자는 진행 중인 거래를 취소 상태로 변경할 수 있다.]")
+	@Test
+	void cancelTrading() {
+		//given
+		User bidder = UserFixture.user("bidder@gmail.com");
+		Bidding bidding1 = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING, 40000);
+		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());
+
+		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING,
+			bidding1.getBiddingPrice() + 1000);
+		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding1));
+		given(biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
+
+		//when
+		BiddingResponse response = biddingService.cancelTrading(bidding1.getId(), user);
+
+		//then
+		assertThat(response.tradingStatus()).isEqualTo(TradingStatus.CANCELED.getLabel());
+		assertThat(bidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING);
 	}
 }

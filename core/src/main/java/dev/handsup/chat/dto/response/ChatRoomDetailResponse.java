@@ -3,6 +3,8 @@ package dev.handsup.chat.dto.response;
 public record ChatRoomDetailResponse(
 	Long chatRoomId,
 	Long auctionId,
+	Long currentBiddingId,
+	String tradingStatus,
 	String auctionTitle,
 	Long receiverId,
 	String receiverNickName,
@@ -12,6 +14,8 @@ public record ChatRoomDetailResponse(
 	public static ChatRoomDetailResponse of(
 		Long chatRoomId,
 		Long auctionId,
+		Long currentBiddingId,
+		String tradingStatus,
 		String auctionTitle,
 		Long receiverId,
 		String receiverNickName,
@@ -21,6 +25,8 @@ public record ChatRoomDetailResponse(
 		return new ChatRoomDetailResponse(
 			chatRoomId,
 			auctionId,
+			currentBiddingId,
+			tradingStatus,
 			auctionTitle,
 			receiverId,
 			receiverNickName,
