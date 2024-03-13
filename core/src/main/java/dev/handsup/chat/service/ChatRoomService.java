@@ -39,6 +39,8 @@ public class ChatRoomService {
 		validateAuthorization(user, bidding);
 		validateAuctionTrading(bidding.getAuction());
 
+		bidding.updateTradingStatusProgressing();
+
 		ChatRoom chatRoom = chatRoomRepository.findByAuctionIdAndBidder(auctionId, bidding.getBidder())
 			.map(existingChatRoom -> { // 한 경매 내 입찰자와 판매자 간의 기존 채팅방 존재 (=중복 입찰자)
 				existingChatRoom.updateCurrentBiddingId(biddingId); // 채팅방 내 입찰 아이디 갱신

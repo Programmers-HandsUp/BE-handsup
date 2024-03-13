@@ -67,4 +67,16 @@ public class AuctionApiController {
 		PageResponse<RecommendAuctionResponse> response = auctionService.getRecommendAuctions(si, gu, dong, pageable);
 		return ResponseEntity.ok(response);
 	}
+
+	@Operation(summary = "유저 선호 카테고리 경매 조회 API", description = "유저가 선호하는 카테고리의 경매를 조회한다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	@GetMapping("/recommend/category")
+	public ResponseEntity<PageResponse<RecommendAuctionResponse>> getUserPreferredCategoryAuctions(
+		@Parameter(hidden = true) @JwtAuthorization User user,
+		Pageable pageable
+	) {
+		PageResponse<RecommendAuctionResponse> response = auctionService.getUserPreferredCategoryAuctions(user,
+			pageable);
+		return ResponseEntity.ok(response);
+	}
 }

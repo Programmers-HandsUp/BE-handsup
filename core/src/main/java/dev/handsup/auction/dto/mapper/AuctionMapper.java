@@ -5,6 +5,7 @@ import static lombok.AccessLevel.*;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductImage;
 import dev.handsup.auction.domain.product.ProductStatus;
@@ -44,6 +45,17 @@ public class AuctionMapper {
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
 		User seller = auction.getSeller();
 		Product product = auction.getProduct();
+		TradingLocation tradingLocation = auction.getTradingLocation();
+		String si = null;
+		String gu = null;
+		String dong = null;
+
+		if (tradingLocation != null) {
+			si = tradingLocation.getSi();
+			gu = tradingLocation.getGu();
+			dong = tradingLocation.getDong();
+		}
+
 		return AuctionDetailResponse.of(
 			auction.getId(),
 			seller.getId(),
@@ -63,9 +75,7 @@ public class AuctionMapper {
 			auction.getTradeMethod().getLabel(),
 			product.getImages().stream()
 				.map(ProductImage::getImageUrl).toList(),
-			auction.getTradingLocation().getSi(),
-			auction.getTradingLocation().getGu(),
-			auction.getTradingLocation().getDong(),
+			si, gu, dong,
 			auction.getBookmarkCount(),
 			auction.getCreatedAt().toString()
 		);
