@@ -63,7 +63,7 @@ public class AuctionService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<RecommendAuctionResponse> getUserRecommendAuctions(User user, Pageable pageable) {
+	public PageResponse<RecommendAuctionResponse> getUserPreferredCategoryAuctions(User user, Pageable pageable) {
 		List<ProductCategory> productCategories = preferredProductCategoryRepository.findByUser(user)
 			.stream()
 			.map(PreferredProductCategory::getProductCategory)
