@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.notification.dto.request.SaveFCMTokenRequest;
+import dev.handsup.notification.dto.response.CountUserNotificationsResponse;
 import dev.handsup.notification.dto.response.NotificationResponse;
 import dev.handsup.notification.service.FCMService;
 import dev.handsup.notification.service.NotificationService;
@@ -45,16 +46,19 @@ public class NotificationApiController {
 	@GetMapping("/count")
 	@Operation(summary = "미확인 알림 수 조회 API", description = "특정 사용자의 확인하지 않은 알림 수를 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<Long> countUserNotifications(
+	public ResponseEntity<CountUserNotificationsResponse> countUserNotifications(
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
 		long readNotificationCount = user.getReadNotificationCount();
 		long notificationsCount = notificationService.countNotificationsByUserEmail(user.getEmail());
-		return ResponseEntity.ok(notificationsCount - readNotificationCount);
+		CountUserNotificationsResponse response = CountUserNotificationsResponse.from(
+			notificationsCount - readNotificationCount
+		);
+		return ResponseEntity.ok(response);
 	}
 
 	@GetMapping()
-	@Operation(summary = "알림 전체 조회 API", description = "특정 사용자의 알림을 전체 조회한다")
+	@Operation(summary = "알림 전체 조회 API", description = "특정 사용자가 받은 알림을 최근 생성 순으로 전체 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<PageResponse<NotificationResponse>> getUserReviewLabels(
 		@Parameter(hidden = true) @JwtAuthorization User user,
