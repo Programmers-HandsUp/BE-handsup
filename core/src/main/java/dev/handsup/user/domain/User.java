@@ -51,8 +51,8 @@ public class User extends TimeBaseEntity {
 	@Column(name = "report_count", nullable = false)
 	private int reportCount = 0;
 
-	@Column(name = "read_message_count", nullable = false)
-	private int readMessageCount = 0;
+	@Column(name = "read_notification_count", nullable = false)
+	private long readNotificationCount = 0;
 
 	@Builder
 	private User(
@@ -132,5 +132,10 @@ public class User extends TimeBaseEntity {
 		Pattern pattern = Pattern.compile(emailRegex);
 		Matcher matcher = pattern.matcher(email);
 		Assert.isTrue(matcher.matches(), NON_VALIDATED_EMAIL.getMessage());
+	}
+
+	//== 비즈니스 메서드==//
+	public void setReadNotificationCount(long readNotificationCount) {
+		this.readNotificationCount = readNotificationCount;
 	}
 }
