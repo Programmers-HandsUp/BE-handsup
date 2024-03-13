@@ -18,9 +18,9 @@ import org.springframework.data.domain.SliceImpl;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
@@ -57,18 +57,43 @@ class ChatRoomServiceTest {
 	@InjectMocks
 	private ChatRoomService chatRoomService;
 
-	@DisplayName("[채팅방을 생성할 수 있다.]")
+	@DisplayName("[판매자는 입찰자와 채팅방이 없으면, 채팅방을 생성할 수 있다.]")
 	@Test
-	void registerChatRoom() {
+	void registerChatRoom_notExist() {
 		//given
 		Auction auction = mock(Auction.class);
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
+		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(userRepository.findById(bidder.getId())).willReturn(Optional.of(bidder));
-		given(auctionRepository.findById(1L)).willReturn(Optional.of(auction));
-		given(auction.getSeller()).willReturn(seller);
+		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+
+		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
+		given(chatRoomRepository.findByAuctionIdAndBidder(1L, bidder))
+			.willReturn(Optional.empty());
 		given(chatRoomRepository.save(any(ChatRoom.class))).willReturn(chatRoom);
+
+		//when
+		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(1L, bidder.getId(), seller);
+
+		//then
+		assertThat(response).isNotNull();
+	}
+
+	@DisplayName("[판매자는 입찰자와 채팅방이 있으면, 입찰 아이디를 갱신하고 기존 채팅방 아이디를 반환한다.]")
+	@Test
+	void registerChatRoom_exists() {
+		//given
+		Auction auction = mock(Auction.class);
+		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
+
+		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+
+		given(auction.getSeller()).willReturn(seller); //validateAuthorization
+		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
+		given(chatRoomRepository.findByAuctionIdAndBidder(1L, bidder))
+			.willReturn(Optional.of(chatRoom));
 
 		//when
 		RegisterChatRoomResponse response = chatRoomService.registerChatRoom(1L, bidder.getId(), seller);
@@ -81,7 +106,7 @@ class ChatRoomServiceTest {
 	@Test
 	void getUserChatRooms() {
 		//given
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder, 1L);
 		given(chatRoomRepository.findChatRoomsByUser(seller, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(chatRoom), pageRequest, false));
 		//when
@@ -96,9 +121,11 @@ class ChatRoomServiceTest {
 	void getChatRoomWithId() {
 		//given
 		Auction auction = AuctionFixture.auction(seller);
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
+		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
+
+		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
-		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
 
 		//when
 		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithId(chatRoom.getId(), seller);
@@ -106,7 +133,8 @@ class ChatRoomServiceTest {
 		//then
 		assertAll(
 			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
-			() -> assertThat(response.receiverId()).isEqualTo(chatRoom.getBidder().getId())
+			() -> assertThat(response.receiverId()).isEqualTo(chatRoom.getBidder().getId()),
+			() -> assertThat(response.currentBiddingId()).isEqualTo(chatRoom.getCurrentBiddingId())
 		);
 	}
 
@@ -116,10 +144,10 @@ class ChatRoomServiceTest {
 		//given
 		Auction auction = AuctionFixture.auction(seller);
 		Bidding bidding = BiddingFixture.bidding(auction, bidder);
-		ChatRoom chatRoom = ChatRoomFixture.chatRoom(1L, seller, bidder);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
 		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
-		given(chatRoomRepository.findChatRoomByAuctionIdAndBidder(auction.getId(), bidder))
+		given(chatRoomRepository.findChatRoomByCurrentBiddingId(bidding.getId()))
 			.willReturn(Optional.of(chatRoom));
 
 		//when
@@ -130,24 +158,6 @@ class ChatRoomServiceTest {
 			() -> assertThat(response.auctionTitle()).isEqualTo(auction.getTitle()),
 			() -> assertThat(response.receiverId()).isEqualTo(chatRoom.getBidder().getId())
 		);
-	}
-
-	@DisplayName("[판매자와 입찰자 간의 채팅방이 있는지 확인한다.]")
-	@Test
-	void getChatRoomExistence() {
-		//given
-		Auction auction = AuctionFixture.auction(seller);
-		Bidding bidding = BiddingFixture.bidding(auction, bidder);
-
-		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
-		given(chatRoomRepository.existsByAuctionIdAndBidder(bidding.getAuction().getId(),
-			bidding.getBidder())).willReturn(true);
-
-		//when
-		ChatRoomExistenceResponse response = chatRoomService.getChatRoomExistence(bidding.getId(), seller);
-
-		//then
-		assertThat(response.isExist()).isTrue();
 	}
 
 }

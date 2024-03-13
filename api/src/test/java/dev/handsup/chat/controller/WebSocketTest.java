@@ -90,7 +90,7 @@ class WebSocketTest extends ApiTestSupport {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder);
 		biddingRepository.save(bidding);
 
-		chatRoom = ChatRoomFixture.chatRoom(auction.getId(), seller, bidding.getBidder());
+		chatRoom = ChatRoomFixture.chatRoom(bidding);
 		chatRoomRepository.save(chatRoom);
 
 	}

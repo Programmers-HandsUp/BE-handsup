@@ -14,10 +14,12 @@ public class BiddingMapper {
 
 	public static BiddingResponse toBiddingResponse(Bidding bidding) {
 		return BiddingResponse.of(
+			bidding.getId(),
 			bidding.getBiddingPrice(),
 			bidding.getAuction().getId(),
 			bidding.getBidder().getId(),
 			bidding.getBidder().getNickname(),
+			bidding.getTradingStatus().getLabel(),
 			bidding.getAuction().getProduct().getImages().get(0).getImageUrl(),
 			bidding.getCreatedAt().toString()
 		);

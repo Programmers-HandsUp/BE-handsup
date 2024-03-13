@@ -4,6 +4,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,6 +66,28 @@ public class BiddingApiController {
 	) {
 		Pageable pageable = PageRequest.of(0, 3);
 		PageResponse<BiddingResponse> response = biddingService.getBidsOfAuction(auctionId, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@PatchMapping("/bids/{biddingId}/complete")
+	@Operation(summary = "판매자 거래 완료 API", description = "판매자는 거래 중인 입찰자와 거래를 완료 한다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<BiddingResponse> completeTrading(
+		@PathVariable("biddingId") Long biddingId,
+		@JwtAuthorization User seller
+	) {
+		BiddingResponse response = biddingService.completeTrading(biddingId, seller);
+		return ResponseEntity.ok(response);
+	}
+
+	@PatchMapping("/bids/{biddingId}/cancel")
+	@Operation(summary = "판매자 거래 취소 API", description = "판매자는 거래 중인 입찰자와 거래를 취소한다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<BiddingResponse> cancelTrading(
+		@PathVariable("biddingId") Long biddingId,
+		@JwtAuthorization User seller
+	) {
+		BiddingResponse response = biddingService.cancelTrading(biddingId, seller);
 		return ResponseEntity.ok(response);
 	}
 }
