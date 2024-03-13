@@ -6,6 +6,7 @@ import lombok.Builder;
 
 @Builder(access = PRIVATE)
 public record BiddingResponse(
+	Long biddingId,
 	int biddingPrice,
 	Long auctionId,
 	Long bidderId,
@@ -15,6 +16,7 @@ public record BiddingResponse(
 	String createdAt
 ) {
 	public static BiddingResponse of(
+		Long biddingId,
 		int biddingPrice,
 		Long auctionId,
 		Long bidderId,
@@ -24,6 +26,7 @@ public record BiddingResponse(
 		String createdAt
 	) {
 		return BiddingResponse.builder()
+			.biddingId(biddingId)
 			.biddingPrice(biddingPrice)
 			.auctionId(auctionId)
 			.bidderId(bidderId)

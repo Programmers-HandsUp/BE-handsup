@@ -14,6 +14,7 @@ public class BiddingMapper {
 
 	public static BiddingResponse toBiddingResponse(Bidding bidding) {
 		return BiddingResponse.of(
+			bidding.getId(),
 			bidding.getBiddingPrice(),
 			bidding.getAuction().getId(),
 			bidding.getBidder().getId(),
