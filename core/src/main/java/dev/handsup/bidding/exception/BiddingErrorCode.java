@@ -13,7 +13,9 @@ public enum BiddingErrorCode implements ErrorCode {
 	CAN_NOT_COMPLETE_TRADING("거래를 완료할 수 없는 상태입니다.", "B_003"),
 	CAN_NOT_CANCEL_TRADING("거래를 취소할 수 없는 상태입니다.", "B_004"),
 	CAN_NOT_PREPARE_TRADING("거래를 준비할 수 없는 상태입니다.", "B_005"),
-	NOT_AUTHORIZED_SELLER("거래 상태를 판매자만 변경 가능합니다.", "B_006");
+
+	CAN_NOT_PROGRESS_TRADING("거래를 진행할 수 없는 상태입니다.", "B_006"),
+	NOT_AUTHORIZED_SELLER("거래 상태를 판매자만 변경 가능합니다.", "B_007");
 
 	private final String message;
 	private final String code;

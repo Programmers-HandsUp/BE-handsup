@@ -36,6 +36,8 @@ public class ChatRoomService {
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
+		bidding.updateTradingStatusProgressing();
+
 		validateAuthorization(user, bidding);
 		validateAuctionTrading(bidding.getAuction());
 
