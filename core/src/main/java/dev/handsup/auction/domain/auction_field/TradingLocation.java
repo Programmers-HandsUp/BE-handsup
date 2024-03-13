@@ -14,13 +14,13 @@ import lombok.NoArgsConstructor;
 public class TradingLocation {
 	private static final String TRADING_LOCATION = "TradingLocation";
 
-	@Column(name = "si")
+	@Column(name = "tradeSi")
 	private String si;
 
-	@Column(name = "gu")
+	@Column(name = "tradeGu")
 	private String gu;
 
-	@Column(name = "dong")
+	@Column(name = "tradeDong")
 	private String dong;
 
 	@Builder(access = PRIVATE)

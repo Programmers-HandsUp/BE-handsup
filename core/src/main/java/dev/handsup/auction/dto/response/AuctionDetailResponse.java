@@ -5,7 +5,7 @@ import java.util.List;
 public record AuctionDetailResponse(
 
 	Long auctionId,
-	Long sellerId,
+	UserInfo sellerInfo,
 	String title,
 	String productCategory,
 	String auctionStatus,
@@ -17,9 +17,9 @@ public record AuctionDetailResponse(
 	String description,
 	String tradeMethod,
 	List<String> imageUrls,
-	String si,
-	String gu,
-	String dong,
+	String tradeSi,
+	String tradeGu,
+	String tradeDong,
 	int bookmarkCount,
 	String createdAt
 
@@ -27,6 +27,10 @@ public record AuctionDetailResponse(
 	public static AuctionDetailResponse of(
 		Long auctionId,
 		Long sellerId,
+		String nickname,
+		String profileImageUrl,
+		String dong,
+		int score,
 		String title,
 		String auctionStatus,
 		String productCategory,
@@ -38,16 +42,29 @@ public record AuctionDetailResponse(
 		String description,
 		String tradeMethod,
 		List<String> imageUrls,
-		String si,
-		String gu,
-		String dong,
+		String tradeSi,
+		String tradeGu,
+		String tradeDong,
 		int bookmarkCount,
 		String createdAt
 	) {
 		return new AuctionDetailResponse(
-			auctionId, sellerId, title, auctionStatus, productCategory, initPrice, currentBiddingPrice, endDate,
+			auctionId,
+			UserInfo.of(sellerId, nickname, profileImageUrl, dong, score),
+			title,
+			auctionStatus,
+			productCategory,
+			initPrice,
+			currentBiddingPrice,
+			endDate,
 			productStatus,
-			purchaseTime, description,
-			tradeMethod, imageUrls, si, gu, dong, bookmarkCount, createdAt);
+			purchaseTime,
+			description,
+			tradeMethod,
+			imageUrls,
+			tradeSi, tradeGu, tradeDong,
+			bookmarkCount,
+			createdAt
+		);
 	}
 }

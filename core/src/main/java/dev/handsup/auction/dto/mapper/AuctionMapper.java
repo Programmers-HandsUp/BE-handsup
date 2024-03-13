@@ -5,6 +5,7 @@ import static lombok.AccessLevel.*;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductImage;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
@@ -41,20 +42,26 @@ public class AuctionMapper {
 	}
 
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
+		User seller = auction.getSeller();
+		Product product = auction.getProduct();
 		return AuctionDetailResponse.of(
 			auction.getId(),
-			auction.getSeller().getId(),
+			seller.getId(),
+			seller.getNickname(),
+			seller.getProfileImageUrl(),
+			seller.getAddress().getDong(),
+			seller.getScore(),
 			auction.getTitle(),
-			auction.getProduct().getProductCategory().getValue(),
+			product.getProductCategory().getValue(),
 			auction.getStatus().getLabel(),
 			auction.getInitPrice(),
 			auction.getCurrentBiddingPrice(),
 			auction.getEndDate().toString(),
-			auction.getProduct().getStatus().getLabel(),
-			auction.getProduct().getPurchaseTime().getLabel(),
-			auction.getProduct().getDescription(),
+			product.getStatus().getLabel(),
+			product.getPurchaseTime().getLabel(),
+			product.getDescription(),
 			auction.getTradeMethod().getLabel(),
-			auction.getProduct().getImages().stream()
+			product.getImages().stream()
 				.map(ProductImage::getImageUrl).toList(),
 			auction.getTradingLocation().getSi(),
 			auction.getTradingLocation().getGu(),
