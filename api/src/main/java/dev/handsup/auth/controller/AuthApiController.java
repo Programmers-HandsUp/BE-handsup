@@ -15,7 +15,7 @@ import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.auth.service.AuthService;
-import dev.handsup.notification.domain.service.FCMService;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,8 +50,6 @@ public class AuthApiController {
 		Cookie cookie = AuthMapper.toCookie(loginDetailResponse);
 		httpServletResponse.addCookie(cookie);
 
-		fcmService.saveFcmToken(request);
-
 		return ResponseEntity.ok(loginSimpleResponse);
 	}
 
@@ -61,7 +59,6 @@ public class AuthApiController {
 	public ResponseEntity<HttpStatus> logout(
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
-		authService.logout(user);
 		fcmService.deleteFcmToken(user.getEmail());
 		return ResponseEntity.ok(HttpStatus.OK);
 	}

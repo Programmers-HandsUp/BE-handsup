@@ -14,15 +14,12 @@ public record LoginRequest(
 	String email,
 
 	@NotBlank(message = "password 은 필수입니다.")
-	String password,
-	@NotBlank(message = "fcmToken 은 필수입니다.")
-	String fcmToken
+	String password
 ) {
-	public static LoginRequest of(String email, String password, String fcmToken) {
+	public static LoginRequest of(String email, String password) {
 		return LoginRequest.builder()
 			.email(email)
 			.password(password)
-			.fcmToken(fcmToken)
 			.build();
 	}
 
