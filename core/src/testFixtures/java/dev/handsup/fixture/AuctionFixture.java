@@ -28,7 +28,7 @@ public class AuctionFixture {
 	// 아이디 지정한 기본 auction
 	public static Auction auction() {
 		return Auction.of(
-			1L,
+			3L,
 			UserFixture.user(),
 			TITLE,
 			ProductCategory.of(DIGITAL_DEVICE),
