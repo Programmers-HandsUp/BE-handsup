@@ -1,13 +1,13 @@
-package dev.handsup.notification.domain.repository;
+package dev.handsup.notification.repository;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import dev.handsup.auth.dto.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Repository
+@Component
 public class FCMTokenRepository {
 
 	private final StringRedisTemplate tokenRedisTemplate;
@@ -25,7 +25,7 @@ public class FCMTokenRepository {
 		tokenRedisTemplate.delete(email);
 	}
 
-	public boolean doNotHasKey(String email) {
-		return Boolean.FALSE.equals(tokenRedisTemplate.hasKey(email));
+	public boolean hasKey(String email) {
+		return Boolean.TRUE.equals(tokenRedisTemplate.hasKey(email));
 	}
 }

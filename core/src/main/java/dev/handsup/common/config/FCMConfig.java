@@ -2,6 +2,7 @@ package dev.handsup.common.config;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -28,9 +29,9 @@ public class FCMConfig {
 	public void initialize() throws IOException {
 		ClassPathResource resource = new ClassPathResource(googleApplicationCredentials);
 
-		try (InputStream is = resource.getInputStream()) {
+		try (InputStream inputStream = resource.getInputStream()) {
 			FirebaseOptions options = FirebaseOptions.builder()
-				.setCredentials(GoogleCredentials.fromStream(is))
+				.setCredentials(GoogleCredentials.fromStream(inputStream))
 				.build();
 
 			if (FirebaseApp.getApps().isEmpty()) {
