@@ -2,7 +2,6 @@ package dev.handsup.chat.dto;
 
 import static lombok.AccessLevel.*;
 
-import dev.handsup.auction.dto.response.ChatRoomExistenceResponse;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
@@ -36,14 +35,11 @@ public class ChatRoomMapper {
 			chatRoom.getId(),
 			bidding.getAuction().getId(),
 			bidding.getId(),
+			bidding.getTradingStatus().getLabel(),
 			bidding.getAuction().getTitle(),
 			receiver.getId(),
 			receiver.getNickname(),
 			receiver.getScore(),
 			receiver.getProfileImageUrl());
-	}
-
-	public static ChatRoomExistenceResponse toChatRoomExistenceResponse(Boolean isExist) {
-		return ChatRoomExistenceResponse.from(isExist);
 	}
 }
