@@ -259,4 +259,24 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		assertThat(auctions).containsExactly(auction2, auction1);
 	}
 
+	@DisplayName("[사용자 선호 카테고리에 속하는 해당하는 경매를 북마크순으로 조회할 수 있다.]")
+	@Test
+	void findByProductCategories() {
+		//given
+		ProductCategory notPreferredCategory = productCategoryRepository.save(ProductCategory.of("스포츠/레저"));
+		Auction auction1 = AuctionFixture.auction(category1);
+		ReflectionTestUtils.setField(auction1, "bookmarkCount", 4);
+		Auction auction2 = AuctionFixture.auction(category2);
+		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
+		Auction auction3 = auctionRepository.save(AuctionFixture.auction(notPreferredCategory));
+		ReflectionTestUtils.setField(auction3, "bookmarkCount", 10);
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		//when
+		List<Auction> auctions = auctionQueryRepository.findByProductCategories(
+			List.of(category1, category2), pageRequest).getContent();
+		//then
+		assertThat(auctions).containsExactly(auction2, auction1);
+
+	}
 }
