@@ -75,7 +75,8 @@ public class AuctionApiController {
 		@Parameter(hidden = true) @JwtAuthorization User user,
 		Pageable pageable
 	) {
-		PageResponse<RecommendAuctionResponse> response = auctionService.getUserPreferredCategoryAuctions(user, pageable);
+		PageResponse<RecommendAuctionResponse> response = auctionService.getUserPreferredCategoryAuctions(user,
+			pageable);
 		return ResponseEntity.ok(response);
 	}
 }

@@ -51,7 +51,6 @@ class AuctionServiceTest {
 	private final Auction auction = AuctionFixture.auction();
 	private final PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("북마크수"));
 
-
 	@Mock
 	private AuctionRepository auctionRepository;
 
@@ -149,13 +148,13 @@ class AuctionServiceTest {
 	@DisplayName("[유저 선호 카테고리에 맞는 경매를 북마크 순으로 조회할 수 있다.]")
 	@Test
 	void getUserPreferredCategoryAuctions() {
-	    //given
+		//given
 		PreferredProductCategory preferredProductCategory = PreferredProductCategory.of(user, productCategory);
 		given(preferredProductCategoryRepository.findByUser(user))
 			.willReturn(List.of(preferredProductCategory));
-		given(auctionQueryRepository.findByProductCategories(List.of(productCategory),pageRequest))
+		given(auctionQueryRepository.findByProductCategories(List.of(productCategory), pageRequest))
 			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
-	    //when
+		//when
 		PageResponse<RecommendAuctionResponse> response = auctionService.getUserPreferredCategoryAuctions(
 			user, pageRequest);
 

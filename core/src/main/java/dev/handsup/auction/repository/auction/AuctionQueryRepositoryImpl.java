@@ -78,7 +78,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	}
 
 	@Override
-	public Slice<Auction> findByProductCategories(List<ProductCategory> productCategories, Pageable pageable){
+	public Slice<Auction> findByProductCategories(List<ProductCategory> productCategories, Pageable pageable) {
 		List<Auction> content = queryFactory.select(QAuction.auction)
 			.from(auction)
 			.join(auction.product, product).fetchJoin()

@@ -195,9 +195,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			PreferredProductCategory.of(user, productCategory2)
 		));
 		Auction auction1 = AuctionFixture.auction(productCategory);
-		ReflectionTestUtils.setField(auction1, "bookmarkCount", 3) ;
+		ReflectionTestUtils.setField(auction1, "bookmarkCount", 3);
 		Auction auction2 = AuctionFixture.auction(productCategory2);
-		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5) ;
+		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
 
 		Auction auction3 = AuctionFixture.auction(notPreferredProductCategory);
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
