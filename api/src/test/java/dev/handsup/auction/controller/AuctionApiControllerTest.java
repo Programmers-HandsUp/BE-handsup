@@ -136,9 +136,9 @@ class AuctionApiControllerTest extends ApiTestSupport {
 
 		//when
 		mockMvc.perform(get("/api/auctions/recommend").param("sort", "마감일")
-				.param("tradeSi", si)
-				.param("tradeGu", gu)
-				.param("tradeDong", dong1)
+				.param("si", si)
+				.param("gu", gu)
+				.param("dong", dong1)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(2))
