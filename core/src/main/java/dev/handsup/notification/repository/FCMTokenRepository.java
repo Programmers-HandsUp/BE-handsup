@@ -3,7 +3,6 @@ package dev.handsup.notification.repository;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
-import dev.handsup.auth.dto.request.LoginRequest;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -12,9 +11,9 @@ public class FCMTokenRepository {
 
 	private final StringRedisTemplate tokenRedisTemplate;
 
-	public void saveFcmToken(LoginRequest loginRequest) {
+	public void saveFcmToken(String receiverEmail, String fcmToken) {
 		tokenRedisTemplate.opsForValue()
-			.set(loginRequest.email(), loginRequest.fcmToken());
+			.set(receiverEmail, fcmToken);
 	}
 
 	public String getFcmToken(String email) {

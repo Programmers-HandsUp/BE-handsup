@@ -47,7 +47,7 @@ class FCMServiceTest {
 		String receiverEmail = receiver.getEmail();
 		String fcmToken = "fcmToken123";
 
-		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(false);
+		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(true);
 		given(fcmTokenRepository.getFcmToken(receiverEmail)).willReturn(fcmToken);
 
 		// when

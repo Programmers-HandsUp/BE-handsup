@@ -15,7 +15,6 @@ import dev.handsup.auth.dto.response.LoginSimpleResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.auth.service.AuthService;
-import dev.handsup.notification.domain.service.FCMService;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 public class AuthApiController {
 
 	private final AuthService authService;
-	private final FCMService fcmService;
 
 	@NoAuth
 	@PostMapping("/login")
@@ -50,8 +48,6 @@ public class AuthApiController {
 		Cookie cookie = AuthMapper.toCookie(loginDetailResponse);
 		httpServletResponse.addCookie(cookie);
 
-		fcmService.saveFcmToken(request);
-
 		return ResponseEntity.ok(loginSimpleResponse);
 	}
 
@@ -62,7 +58,6 @@ public class AuthApiController {
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
 		authService.logout(user);
-		fcmService.deleteFcmToken(user.getEmail());
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 

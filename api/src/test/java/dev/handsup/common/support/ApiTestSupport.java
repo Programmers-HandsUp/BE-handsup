@@ -100,8 +100,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 
 		LoginRequest loginRequest = LoginRequest.of(
 			user.getEmail(),
-			user.getPassword(),
-			"fcmToken123"
+			user.getPassword()
 		);
 
 		MvcResult loginResult = mockMvc.perform(

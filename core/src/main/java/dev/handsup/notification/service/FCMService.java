@@ -7,8 +7,8 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.notification.domain.NotificationType;
+import dev.handsup.notification.dto.request.SaveFCMTokenRequest;
 import dev.handsup.notification.exception.NotificationErrorCode;
 import dev.handsup.notification.exception.NotificationException;
 import dev.handsup.notification.repository.FCMTokenRepository;
@@ -71,8 +71,8 @@ public class FCMService {
 		return fcmToken;
 	}
 
-	public void saveFcmToken(LoginRequest loginRequest) {
-		fcmTokenRepository.saveFcmToken(loginRequest);
+	public void saveFcmToken(String userEmail, SaveFCMTokenRequest request) {
+		fcmTokenRepository.saveFcmToken(userEmail, request.fcmToken());
 	}
 
 	public void deleteFcmToken(String email) {
