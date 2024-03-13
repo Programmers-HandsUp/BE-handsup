@@ -44,6 +44,10 @@ public class AuctionMapper {
 	public static AuctionDetailResponse toAuctionDetailResponse(Auction auction) {
 		User seller = auction.getSeller();
 		Product product = auction.getProduct();
+		String si = (auction.getTradingLocation() != null) ? auction.getTradingLocation().getSi() : null;
+		String gu = (auction.getTradingLocation() != null) ? auction.getTradingLocation().getGu() : null;
+		String dong = (auction.getTradingLocation() != null) ? auction.getTradingLocation().getDong() : null;
+
 		return AuctionDetailResponse.of(
 			auction.getId(),
 			seller.getId(),
@@ -63,9 +67,7 @@ public class AuctionMapper {
 			auction.getTradeMethod().getLabel(),
 			product.getImages().stream()
 				.map(ProductImage::getImageUrl).toList(),
-			auction.getTradingLocation().getSi(),
-			auction.getTradingLocation().getGu(),
-			auction.getTradingLocation().getDong(),
+			si, gu, dong,
 			auction.getBookmarkCount(),
 			auction.getCreatedAt().toString()
 		);
