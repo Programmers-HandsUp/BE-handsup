@@ -37,7 +37,7 @@ import dev.handsup.user.domain.User;
 class BookmarkServiceTest {
 	private final User user = UserFixture.user();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
-	private final Auction auction = AuctionFixture.auction();
+	private final Auction auction = AuctionFixture.auction(UserFixture.user("seller@naver.com"));
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
