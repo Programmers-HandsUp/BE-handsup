@@ -26,7 +26,7 @@ public class Bookmark extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	@Column(name = "chat_room_id")
+	@Column(name = "bookmark_id")
 	private Long id;
 
 	@ManyToOne(fetch = LAZY)
