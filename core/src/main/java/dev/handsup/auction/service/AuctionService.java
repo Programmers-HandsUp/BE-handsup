@@ -42,7 +42,7 @@ public class AuctionService {
 	}
 
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request, User user) {
-		ProductCategory productCategory = getProductCategoryByType(request.productCategory());
+		ProductCategory productCategory = getProductCategoryByValue(request.productCategory());
 		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
 		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
 	}
@@ -76,8 +76,8 @@ public class AuctionService {
 		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 
-	private ProductCategory getProductCategoryByType(String productCategoryType) {
-		return productCategoryRepository.findByValue(productCategoryType)
+	private ProductCategory getProductCategoryByValue(String productCategoryValue) {
+		return productCategoryRepository.findByValue(productCategoryValue)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_PRODUCT_CATEGORY));
 	}
 

@@ -23,7 +23,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.Message;
 
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.domain.product.product_category.ProductCategoryType;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.dto.request.LoginRequest;
@@ -89,7 +89,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			List.of(1L)        // 선호 카테고리 id
 		);
 
-		productCategoryRepository.save(ProductCategory.of(ProductCategoryType.BEAUTY_COSMETICS.getLabel()));
+		productCategoryRepository.save(ProductCategory.of(ProductCategoryValue.BEAUTY_COSMETICS.getLabel()));
 
 		mockMvc.perform(
 			MockMvcRequestBuilders

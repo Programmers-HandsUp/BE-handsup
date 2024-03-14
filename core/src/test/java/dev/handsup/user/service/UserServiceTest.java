@@ -18,7 +18,7 @@ import org.mockito.quality.Strictness;
 
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.domain.product.product_category.ProductCategoryType;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
@@ -98,7 +98,7 @@ class UserServiceTest {
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 
-		ProductCategory productCategory = ProductCategory.of(ProductCategoryType.SPORTS_LEISURE.getLabel());
+		ProductCategory productCategory = ProductCategory.of(ProductCategoryValue.SPORTS_LEISURE.getLabel());
 		given(productCategoryRepository.findById(1L)).willReturn(Optional.of(productCategory));
 		given(preferredProductCategoryRepository.save(PreferredProductCategory.of(savedUser, productCategory)))
 			.willReturn(PreferredProductCategory.of(savedUser, productCategory));
