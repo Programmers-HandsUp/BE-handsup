@@ -20,7 +20,7 @@ public class ChatMessageApiController {
 	private final ChatMessageService chatMessageService;
 
 	@MessageMapping("/chat-rooms/{chatRoomId}")
-	@SendTo("/subscribe/chat-rooms/{chatRoomId}")
+	@SendTo("/sub/chat-rooms/{chatRoomId}")
 	public ChatMessageResponse chatMessageOfNewRoom(
 		@DestinationVariable Long chatRoomId,
 		@Payload ChatMessageRequest request
