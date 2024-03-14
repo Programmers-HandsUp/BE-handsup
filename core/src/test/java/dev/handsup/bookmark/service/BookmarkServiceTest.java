@@ -29,7 +29,7 @@ import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.notification.domain.service.FCMService;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 
 @DisplayName("[BookmarkService 테스트]")
@@ -37,7 +37,7 @@ import dev.handsup.user.domain.User;
 class BookmarkServiceTest {
 	private final User user = UserFixture.user();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
-	private final Auction auction = AuctionFixture.auction();
+	private final Auction auction = AuctionFixture.auction(UserFixture.user("seller@naver.com"));
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock

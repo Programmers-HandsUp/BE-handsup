@@ -1,5 +1,7 @@
 package dev.handsup.bookmark.service;
 
+import java.util.Objects;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -14,12 +16,14 @@ import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
 import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.exception.BookmarkErrorCode;
+import dev.handsup.bookmark.exception.BookmarkException;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
-import dev.handsup.notification.domain.service.FCMService;
+import dev.handsup.notification.domain.NotificationType;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
@@ -35,17 +39,28 @@ public class BookmarkService {
 	public EditBookmarkResponse addBookmark(User user, Long auctionId) {
 		Auction auction = getAuctionById(auctionId);
 		validateIfBookmarkExists(user, auction);
+		validateSelfBookmark(user, auction);
 		auction.increaseBookmarkCount();
 		Bookmark bookmark = BookmarkMapper.toBookmark(user, auction);
 
 		bookmarkRepository.save(bookmark);
 
-		fcmService.sendBookmarkMessage(
+		// user 는 sender
+		fcmService.sendMessage(
+			user.getEmail(),
+			user.getNickname(),
 			auction.getSeller().getEmail(),
-			user.getNickname()
+			NotificationType.BOOKMARK,
+			auction
 		);
 
 		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
+	}
+
+	private void validateSelfBookmark(User user, Auction auction) {
+		if (Objects.equals(auction.getSeller().getId(), user.getId())) {
+			throw new BookmarkException(BookmarkErrorCode.NOT_ALLOW_SELF_BOOKMARK);
+		}
 	}
 
 	@Transactional

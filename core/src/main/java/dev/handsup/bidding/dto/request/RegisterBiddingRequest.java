@@ -9,7 +9,7 @@ import lombok.Builder;
 @Builder(access = PRIVATE)
 public record RegisterBiddingRequest(
 
-	@NotNull(message = "currentBiddingPrice 값이 공백입니다.")
+	@NotNull(message = "currentBiddingPrice 은 필수입니다.")
 	@Max(value = 1_000_000_000, message = "최대 입찰가는 10억입니다.")
 	int biddingPrice
 ) {

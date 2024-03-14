@@ -7,7 +7,7 @@ import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.user.domain.User;
+import dev.handsup.common.entity.TimeBaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -23,24 +23,21 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Notification {
+public class Notification extends TimeBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	@Column(name = "notification_id")
 	private Long id;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "user_id",
-		nullable = false,
-		foreignKey = @ForeignKey(NO_CONSTRAINT))
-	private User user;
+	@Column(name = "sender_email", nullable = false)
+	private String senderEmail;
+
+	@Column(name = "receiver_email", nullable = false)
+	private String receiverEmail;
 
 	@Column(name = "content", nullable = false)
 	private String content;
-
-	@Column(name = "is_read", nullable = false)
-	private Boolean isRead;
 
 	@Column(name = "type", nullable = false)
 	@Enumerated(STRING)
@@ -53,11 +50,34 @@ public class Notification {
 	private Auction auction;
 
 	@Builder
-	public Notification(User user, String content, NotificationType type, Auction auction) {
-		this.user = user;
+	private Notification(
+		String senderEmail,
+		String receiverEmail,
+		String content,
+		NotificationType type,
+		Auction auction
+	) {
+		this.senderEmail = senderEmail;
+		this.receiverEmail = receiverEmail;
 		this.content = content;
 		this.type = type;
 		this.auction = auction;
-		isRead = false;
 	}
+
+	public static Notification of(
+		String senderEmail,
+		String receiverEmail,
+		String content,
+		NotificationType type,
+		Auction auction
+	) {
+		return Notification.builder()
+			.senderEmail(senderEmail)
+			.receiverEmail(receiverEmail)
+			.content(content)
+			.type(type)
+			.auction(auction)
+			.build();
+	}
+
 }

@@ -33,7 +33,7 @@ class AuthServiceTest {
 
 	private final User user = UserFixture.user(1L);
 	private final LoginRequest loginRequest = LoginRequest.of(
-		user.getEmail(), user.getPassword(), "fcmToken123"
+		user.getEmail(), user.getPassword()
 	);
 	@InjectMocks
 	private AuthService authService;
