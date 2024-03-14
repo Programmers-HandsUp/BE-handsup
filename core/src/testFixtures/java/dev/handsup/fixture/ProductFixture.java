@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class ProductFixture {
 
 	public static ProductCategory productCategory(String productCategory) {
-		return ProductCategory.of(productCategory);
+		return ProductCategory.from(productCategory);
 	}
 }
 

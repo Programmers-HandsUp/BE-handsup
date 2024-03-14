@@ -195,8 +195,8 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	@DisplayName("[유저 선호 카테고리 경매를 북마크 순으로 정렬한다.]")
 	@Test
 	void getUserPreferredCategoryAuctions() throws Exception {
-		ProductCategory productCategory2 = productCategoryRepository.save(ProductCategory.of("생활/주방"));
-		ProductCategory notPreferredProductCategory = productCategoryRepository.save(ProductCategory.of("티켓/교환권"));
+		ProductCategory productCategory2 = productCategoryRepository.save(ProductCategory.from("생활/주방"));
+		ProductCategory notPreferredProductCategory = productCategoryRepository.save(ProductCategory.from("티켓/교환권"));
 
 		preferredProductCategoryRepository.saveAll(List.of(
 			PreferredProductCategory.of(user, productCategory),

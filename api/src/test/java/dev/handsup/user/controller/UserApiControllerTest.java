@@ -14,7 +14,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
+import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
+import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ReviewFixture;
@@ -54,6 +59,10 @@ class UserApiControllerTest extends ApiTestSupport {
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private PreferredProductCategoryRepository preferredProductCategoryRepository;
+	@Autowired
+	private ProductCategoryRepository productCategoryRepository;
 
 	@Test
 	@DisplayName("[[회원가입 API] 회원이 등록되고 회원 ID를 응답한다]")
@@ -166,5 +175,39 @@ class UserApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content[0].content").value(review2.getContent()))
 			.andExpect(jsonPath("$.content[1].writerNickName").value(writer.getNickname()))
 			.andExpect(jsonPath("$.content[1].content").value(review1.getContent()));
+	}
+
+	@Test
+	@DisplayName("[사용자의 기본 정보가 반환된다]")
+	void getUserBasicInfo() throws Exception {
+		// given
+		ProductCategory productCategory1 = ProductCategory.from(ProductCategoryValue.BEAUTY_COSMETICS.toString());
+		ProductCategory productCategory2 = ProductCategory.from(ProductCategoryValue.BOOKS.toString());
+
+		productCategoryRepository.saveAll(
+			List.of(productCategory1, productCategory2)
+		);
+
+		preferredProductCategoryRepository.deleteAll();
+		preferredProductCategoryRepository.saveAll(
+			List.of(
+				PreferredProductCategory.of(user, productCategory1),
+				PreferredProductCategory.of(user, productCategory2)
+			)
+		);
+
+		// when, then
+		mockMvc.perform(get("/api/users/{userId}/bases", user.getId())
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.profileImageUrl").value(user.getProfileImageUrl()))
+			.andExpect(jsonPath("$.nickname").value(user.getNickname()))
+			.andExpect(jsonPath("$.dong").value(user.getAddress().getDong()))
+			.andExpect(jsonPath("$.preferredProductCategories.size()").value(2))
+			.andExpect(jsonPath("$.preferredProductCategories[0]")
+				.value(ProductCategoryValue.BEAUTY_COSMETICS.toString()))
+			.andExpect(jsonPath("$.preferredProductCategories[1]")
+				.value(ProductCategoryValue.BOOKS.toString()))
+			.andExpect(jsonPath("$.score").value(user.getScore()));
 	}
 }
