@@ -15,6 +15,7 @@ import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
+import dev.handsup.user.dto.response.UserBasicInfoResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.service.UserService;
@@ -78,4 +79,14 @@ public class UserApiController {
 		return ResponseEntity.ok(response);
 	}
 
+	@NoAuth
+	@GetMapping("/api/users/{userId}/bases")
+	@Operation(summary = "사용자 기본 정보 조회 API", description = "특정 사용자의의 기본 정보를 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<UserBasicInfoResponse> getUserBasicInfo(
+		@PathVariable Long userId
+	) {
+		UserBasicInfoResponse response = userService.getUserBasicInfo(userId);
+		return ResponseEntity.ok(response);
+	}
 }

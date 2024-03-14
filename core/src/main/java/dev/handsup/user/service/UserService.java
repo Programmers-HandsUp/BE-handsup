@@ -1,5 +1,7 @@
 package dev.handsup.user.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import dev.handsup.user.dto.UserMapper;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
+import dev.handsup.user.dto.response.UserBasicInfoResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.exception.UserErrorCode;
@@ -95,5 +98,23 @@ public class UserService {
 			.findByAuction_Seller_IdOrderByCreatedAtDesc(userId, pageable)
 			.map(UserMapper::toUserReviewResponse);
 		return CommonMapper.toPageResponse(userReviewResponsePage);
+	}
+
+	@Transactional(readOnly = true)
+	public UserBasicInfoResponse getUserBasicInfo(Long userId) {
+		User user = getUserById(userId);
+		List<String> preferredProductCategories = preferredProductCategoryRepository
+			.findByUser(user).stream()
+			.map(preferredProductCategory ->
+				preferredProductCategory.getProductCategory().getValue())
+			.toList();
+
+		return UserBasicInfoResponse.of(
+			user.getProfileImageUrl(),
+			user.getNickname(),
+			user.getAddress().getDong(),
+			preferredProductCategories,
+			user.getScore()
+		);
 	}
 }
