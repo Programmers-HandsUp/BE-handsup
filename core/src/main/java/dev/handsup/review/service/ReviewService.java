@@ -43,6 +43,7 @@ public class ReviewService {
 		User writer
 	) {
 		Auction auction = getAuctionById(auctionId);
+		User seller = auction.getSeller();
 		Review review = reviewRepository.save(
 			ReviewMapper.toReview(request, auction, writer)
 		);
@@ -53,10 +54,12 @@ public class ReviewService {
 			);
 
 			UserReviewLabel sellerReviewLabel = userReviewLabelRepository.save(
-				UserReviewLabel.of(reviewLabel, auction.getSeller())
+				UserReviewLabel.of(reviewLabel, seller)
 			);
 			sellerReviewLabel.increaseCount();
 		});
+
+		seller.operateScore(request.evaluationScore());
 
 		return ReviewMapper.toReviewResponse(review);
 	}

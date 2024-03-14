@@ -138,4 +138,14 @@ public class User extends TimeBaseEntity {
 	public void setReadNotificationCount(long readNotificationCount) {
 		this.readNotificationCount = readNotificationCount;
 	}
+
+	public void operateScore(int evaluationScore) {
+		score += evaluationScore;
+
+		if (score < 0) {
+			score = 0;
+		} else if (score > 200) {
+			score = 200;
+		}
+	}
 }
