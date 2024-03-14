@@ -20,7 +20,7 @@ public class BiddingMapper {
 			bidding.getBidder().getId(),
 			bidding.getBidder().getNickname(),
 			bidding.getTradingStatus().getLabel(),
-			bidding.getAuction().getProduct().getImages().get(0).getImageUrl(),
+			bidding.getBidder().getProfileImageUrl(),
 			bidding.getCreatedAt().toString()
 		);
 	}
