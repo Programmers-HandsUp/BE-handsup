@@ -46,7 +46,8 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				siEq(condition.si()),
 				guEq(condition.gu()),
 				dongEq(condition.dong()),
-				initPriceBetween(condition.minPrice(), condition.maxPrice()),
+				initPriceMin(condition.minPrice()),
+				initPriceMax(condition.maxPrice()),
 				isNewProductEq(condition.isNewProduct()),
 				isProgressEq(condition.isProgress())
 			)
@@ -142,8 +143,12 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 		return hasText(dong) ? auction.tradingLocation.dong.eq(dong) : null;
 	}
 
-	private BooleanExpression initPriceBetween(Integer minPrice, Integer maxPrice) {
-		return (minPrice != null && maxPrice != null) ? auction.initPrice.between(minPrice, maxPrice) : null;
+	private BooleanExpression initPriceMin(Integer minPrice) {
+		return (minPrice != null) ? auction.initPrice.goe(minPrice) : null;
+	}
+
+	private BooleanExpression initPriceMax(Integer maxPrice) {
+		return (maxPrice != null) ? auction.initPrice.loe(maxPrice) : null;
 	}
 
 	private BooleanExpression isNewProductEq(Boolean isNewProduct) {

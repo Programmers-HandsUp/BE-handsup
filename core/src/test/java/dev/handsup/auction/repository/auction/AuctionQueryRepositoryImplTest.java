@@ -51,33 +51,9 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		productCategoryRepository.saveAll(List.of(category1, category2));
 	}
 
-	@DisplayName("[상품 카테고리로 경매를 필터링할 수 있다.(categoryEq)]")
+	@DisplayName("[경매 시작 금액에 min값을 설정해 필터링할 수 있다.(minGoe)]")
 	@Test
-	void searchAuction_category_filter() {
-		//given
-		Auction auction1 = AuctionFixture.auction(category1);
-		Auction auction2 = AuctionFixture.auction(category2);
-		assertThat(auction1.getProduct().getProductCategory().getValue()).isEqualTo(DIGITAL_DEVICE);
-		auctionRepository.saveAll(List.of(auction1, auction2));
-
-		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword(KEYWORD)
-			.productCategory(DIGITAL_DEVICE)
-			.build();
-
-		//when
-		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
-
-		//then
-		assertAll(
-			() -> assertThat(auctions).hasSize(1),
-			() -> assertThat(auctions.get(0)).isEqualTo(auction1)
-		);
-	}
-
-	@DisplayName("[경매 시작 금액으로 경매를 필터링할 수 있다.(initPriceBetween)]")
-	@Test
-	void searchAuction_initPrice_filter() {
+	void searchAuction_initPrice_min_filter() {
 		//given
 		Auction auction1 = AuctionFixture.auction(category1, 2000);
 		Auction auction2 = AuctionFixture.auction(category2, 5000);
@@ -87,7 +63,31 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword(KEYWORD)
-			.minPrice(2000)
+			.minPrice(5000)
+			.build();
+
+		//when
+		List<Auction> auctions = auctionQueryRepository.searchAuctions(condition, pageRequest).getContent();
+
+		//then
+		assertAll(
+			() -> assertThat(auctions).hasSize(2),
+			() -> assertThat(auctions).containsExactly(auction2, auction3)
+		);
+	}
+
+	@DisplayName("[경매 시작 금액에 max값을 설정해 필터링할 수 있다.(maxLoe)]")
+	@Test
+	void searchAuction_initPrice_max_filter() {
+		//given
+		Auction auction1 = AuctionFixture.auction(category1, 2000);
+		Auction auction2 = AuctionFixture.auction(category2, 5000);
+		Auction auction3 = AuctionFixture.auction(category2, 10000);
+
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
 			.maxPrice(5000)
 			.build();
 
@@ -99,7 +99,6 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 			() -> assertThat(auctions).hasSize(2),
 			() -> assertThat(auctions).containsExactly(auction1, auction2)
 		);
-
 	}
 
 	@DisplayName("[경매 상품 미개봉 여부로 경매를 필터링할 수 있다. (isNewProductEq)]")
