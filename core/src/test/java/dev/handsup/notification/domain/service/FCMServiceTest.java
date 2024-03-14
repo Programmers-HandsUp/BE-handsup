@@ -80,7 +80,7 @@ class FCMServiceTest {
 				auction
 			))
 			.isInstanceOf(NotificationException.class)
-			.hasMessageContaining(NotificationErrorCode.INVALID_NOTIFICATION_TARGET.getMessage());
+			.hasMessageContaining(NotificationErrorCode.NOT_FOUND_FCM_TOKEN.getMessage());
 
 		verify(firebaseMessaging, never()).sendAsync(any());
 	}

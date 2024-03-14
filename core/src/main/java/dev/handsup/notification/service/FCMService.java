@@ -32,7 +32,7 @@ public class FCMService {
 		Auction auction
 	) {
 		if (!fcmTokenRepository.hasKey(receiverEmail)) {
-			throw new NotificationException(NotificationErrorCode.INVALID_NOTIFICATION_TARGET);
+			throw new NotificationException(NotificationErrorCode.NOT_FOUND_FCM_TOKEN);
 		}
 
 		if (notificationType.equals(NotificationType.CANCELED_PURCHASE_WINNING) ||
@@ -66,7 +66,7 @@ public class FCMService {
 	private String getFcmToken(String receiverEmail) {
 		String fcmToken = fcmTokenRepository.getFcmToken(receiverEmail);
 		if (fcmToken == null) {
-			throw new NotificationException(NotificationErrorCode.INVALID_NOTIFICATION_TARGET);
+			throw new NotificationException(NotificationErrorCode.NOT_FOUND_FCM_TOKEN);
 		}
 		return fcmToken;
 	}
