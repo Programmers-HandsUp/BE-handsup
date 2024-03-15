@@ -21,7 +21,7 @@ public class ChatMessageApiController {
 	private final MessagePublisher messagePublisher;
 
 	@MessageMapping("/chat-rooms/{chatRoomId}")
-	public void chatMessageOfNewRoom(@DestinationVariable Long chatRoomId, @Payload ChatMessageRequest request) {
+	public void chatMessage(@DestinationVariable Long chatRoomId, @Payload ChatMessageRequest request) {
 		ChatMessageResponse response = chatMessageService.registerChatMessage(chatRoomId, request);
 		messagePublisher.publish("/sub/chat-rooms/" + chatRoomId, response);
 	}
