@@ -63,7 +63,7 @@ class ChatMessageRepositoryTest extends DataJpaTestSupport {
 	@DisplayName("[수신받은 메시지를 벌크 연산으로 읽음처리할 수 있다.]")
 	@Test
 	void readReceiveMessages() {
-	    //given
+		//given
 		chatMessageRepository.saveAll(
 			List.of(
 				ChatMessageFixture.chatMessage(chatRoom, seller),
@@ -71,10 +71,10 @@ class ChatMessageRepositoryTest extends DataJpaTestSupport {
 			)
 		);
 
-	    //when
+		//when
 		chatMessageRepository.readReceivedMessages(chatRoom, bidder.getId());
 
-	    //then
+		//then
 		List<ChatMessage> messages = chatMessageRepository.findAll();
 		assertThat(messages.get(0).getIsRead()).isTrue();
 		assertThat(messages.get(1).getIsRead()).isTrue();
