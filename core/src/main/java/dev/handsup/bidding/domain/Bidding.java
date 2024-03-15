@@ -6,6 +6,8 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
+import java.time.LocalDateTime;
+
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
@@ -52,6 +54,9 @@ public class Bidding extends TimeBaseEntity {
 	@Column(name = "trading_status", nullable = false)
 	private TradingStatus tradingStatus;
 
+	@Column(name = "trading_created_at")
+	private LocalDateTime tradingCreatedAt;
+
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
@@ -60,8 +65,8 @@ public class Bidding extends TimeBaseEntity {
 		this.tradingStatus = TradingStatus.WAITING;
 	}
 
-	//테스트용
-	private Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
+	// 테스트용
+	public Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
@@ -69,7 +74,8 @@ public class Bidding extends TimeBaseEntity {
 		this.tradingStatus = tradingStatus;
 	}
 
-	private Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
+	// 테스트용
+	public Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
@@ -82,14 +88,6 @@ public class Bidding extends TimeBaseEntity {
 			.auction(auction)
 			.bidder(bidder)
 			.build();
-	}
-
-	public static Bidding of(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus status) {
-		return new Bidding(id, biddingPrice, auction, bidder, status);
-	}
-
-	public static Bidding of(int biddingPrice, Auction auction, User bidder, TradingStatus status) {
-		return new Bidding(biddingPrice, auction, bidder, status);
 	}
 
 	// 비즈니스 메서드
@@ -119,5 +117,9 @@ public class Bidding extends TimeBaseEntity {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_PROGRESS_TRADING);
 		}
 		tradingStatus = TradingStatus.PROGRESSING;
+	}
+
+	public void updateTradingCreatedAt(LocalDateTime tradingCreatedAt) {
+		this.tradingCreatedAt = tradingCreatedAt;
 	}
 }
