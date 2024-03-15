@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.notification.service.NotificationService;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
+import dev.handsup.user.dto.response.UserProfileResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.service.UserService;
@@ -30,7 +30,6 @@ import lombok.RequiredArgsConstructor;
 public class UserApiController {
 
 	private final UserService userService;
-	private final NotificationService notificationService;
 
 	@NoAuth
 	@PostMapping("/api/users")
@@ -78,4 +77,14 @@ public class UserApiController {
 		return ResponseEntity.ok(response);
 	}
 
+	@NoAuth
+	@GetMapping("/api/users/{userId}/profiles")
+	@Operation(summary = "사용자 프로필 조회 API", description = "특정 사용자의 프로필을 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<UserProfileResponse> getUserProfile(
+		@PathVariable Long userId
+	) {
+		UserProfileResponse response = userService.getUserProfile(userId);
+		return ResponseEntity.ok(response);
+	}
 }

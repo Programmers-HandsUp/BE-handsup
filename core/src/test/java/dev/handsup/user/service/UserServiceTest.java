@@ -98,7 +98,7 @@ class UserServiceTest {
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 
-		ProductCategory productCategory = ProductCategory.of(ProductCategoryValue.SPORTS_LEISURE.getLabel());
+		ProductCategory productCategory = ProductCategory.from(ProductCategoryValue.SPORTS_LEISURE.getLabel());
 		given(productCategoryRepository.findById(1L)).willReturn(Optional.of(productCategory));
 		given(preferredProductCategoryRepository.save(PreferredProductCategory.of(savedUser, productCategory)))
 			.willReturn(PreferredProductCategory.of(savedUser, productCategory));

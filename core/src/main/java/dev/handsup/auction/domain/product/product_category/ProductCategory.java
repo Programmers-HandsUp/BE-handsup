@@ -28,7 +28,7 @@ public class ProductCategory {
 		this.value = value;
 	}
 
-	public static ProductCategory of(String value) {
+	public static ProductCategory from(String value) {
 		return ProductCategory.builder()
 			.value(value)
 			.build();

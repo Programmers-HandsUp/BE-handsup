@@ -262,7 +262,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	@Test
 	void findByProductCategories() {
 		//given
-		ProductCategory notPreferredCategory = productCategoryRepository.save(ProductCategory.of("스포츠/레저"));
+		ProductCategory notPreferredCategory = productCategoryRepository.save(ProductCategory.from("스포츠/레저"));
 		Auction auction1 = AuctionFixture.auction(category1);
 		ReflectionTestUtils.setField(auction1, "bookmarkCount", 4);
 		Auction auction2 = AuctionFixture.auction(category2);

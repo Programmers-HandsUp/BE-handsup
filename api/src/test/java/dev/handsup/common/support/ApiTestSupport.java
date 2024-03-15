@@ -89,7 +89,7 @@ public abstract class ApiTestSupport extends TestContainerSupport {
 			List.of(1L)        // 선호 카테고리 id
 		);
 
-		productCategoryRepository.save(ProductCategory.of(ProductCategoryValue.BEAUTY_COSMETICS.getLabel()));
+		productCategoryRepository.save(ProductCategory.from(ProductCategoryValue.BEAUTY_COSMETICS.getLabel()));
 
 		mockMvc.perform(
 			MockMvcRequestBuilders

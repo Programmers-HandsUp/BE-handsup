@@ -1,5 +1,6 @@
 package dev.handsup.review.controller;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
@@ -27,6 +29,8 @@ import dev.handsup.review.dto.request.RegisterReviewRequest;
 import dev.handsup.review.dto.response.ReviewResponse;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
+import dev.handsup.user.domain.User;
+import dev.handsup.user.exception.UserErrorCode;
 
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
@@ -74,6 +78,7 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			auctionId,
 			user.getId()
 		);
+		int beforeSellerScore = auction.getSeller().getScore();
 
 		// when & then
 		mockMvc.perform(post("/api/auctions/{auctionId}/reviews", auctionId)
@@ -85,6 +90,12 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.content").value(expectedResponse.content()))
 			.andExpect(jsonPath("$.auctionId").value(expectedResponse.auctionId()))
 			.andExpect(jsonPath("$.writerId").value(expectedResponse.writerId()));
+
+		User evaluatedSeller = userRepository.findById(auction.getSeller().getId())
+			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
+
+		assertThat(evaluatedSeller.getScore())
+			.isEqualTo(beforeSellerScore + request.evaluationScore());
 	}
 
 	@Test

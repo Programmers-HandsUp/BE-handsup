@@ -2,7 +2,6 @@ package dev.handsup.common.config;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 
