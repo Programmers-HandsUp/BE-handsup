@@ -181,7 +181,7 @@ class ChatRoomServiceTest {
 			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
 
 		//when
-		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, pageRequest);
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, seller, pageRequest);
 		//then
 		assertThat(response.content()).hasSize(2);
 	}
