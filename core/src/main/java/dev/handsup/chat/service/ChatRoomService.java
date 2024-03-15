@@ -13,11 +13,14 @@ import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.chat.domain.ChatRoom;
+import dev.handsup.chat.dto.ChatMessageMapper;
 import dev.handsup.chat.dto.ChatRoomMapper;
+import dev.handsup.chat.dto.response.ChatMessageResponse;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
 import dev.handsup.chat.exception.ChatRoomErrorCode;
+import dev.handsup.chat.repository.ChatMessageRepository;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
@@ -31,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
+	private final ChatMessageRepository chatMessageRepository;
 	private final BiddingRepository biddingRepository;
 
 	@Transactional
@@ -83,6 +87,15 @@ public class ChatRoomService {
 		ChatRoom chatRoom = getChatRoomByCurrentBidding(bidding);
 
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, bidding, receiver);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<ChatMessageResponse> getChatRoomMessages(Long chatRoomId, Pageable pageable){
+		ChatRoom chatRoom = getChatRoomById(chatRoomId);
+		Slice<ChatMessageResponse> responsePage = chatMessageRepository
+			.findByChatRoomOrderByCreatedAt(chatRoom, pageable)
+			.map(ChatMessageMapper::toChatMessageResponse);
+		return CommonMapper.toPageResponse(responsePage);
 	}
 
 	private ChatRoom getChatRoomByCurrentBidding(Bidding currentBidding) {
