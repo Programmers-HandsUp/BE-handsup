@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
@@ -33,9 +32,9 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+	private final Auction auction = AuctionFixture.auction(seller, productCategory);
 	private final User user = UserFixture.user();
 	private final User seller = UserFixture.user("seller@naver.com");
-	private final Auction auction = AuctionFixture.auction(seller, productCategory);
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 	@Autowired

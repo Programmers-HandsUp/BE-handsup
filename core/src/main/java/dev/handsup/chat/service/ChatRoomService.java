@@ -37,6 +37,14 @@ public class ChatRoomService {
 	private final ChatMessageRepository chatMessageRepository;
 	private final BiddingRepository biddingRepository;
 
+	// 채팅방 메시지 조회 권한
+	private static void validateAuthorization(User user, ChatRoom chatRoom) {
+		if (!(Objects.equals(chatRoom.getSeller().getId(), user.getId()) || Objects.equals(chatRoom.getBidder().getId(),
+			user.getId()))) {
+			throw new ValidationException(ChatRoomErrorCode.CHAT_MESSAGE_ACCESS_DENIED);
+		}
+	}
+
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
@@ -109,14 +117,6 @@ public class ChatRoomService {
 		User seller = bidding.getAuction().getSeller();
 		if (!Objects.equals(user.getId(), seller.getId())) { // 조회자와 경매 판매자가 같은지
 			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
-		}
-	}
-
-	// 채팅방 메시지 조회 권한
-	private static void validateAuthorization(User user, ChatRoom chatRoom) {
-		if (!(Objects.equals(chatRoom.getSeller().getId(), user.getId()) || Objects.equals(chatRoom.getBidder().getId(),
-			user.getId()))) {
-			throw new ValidationException(ChatRoomErrorCode.CHAT_MESSAGE_ACCESS_DENIED);
 		}
 	}
 

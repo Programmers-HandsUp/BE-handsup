@@ -225,7 +225,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@DisplayName("[채팅방 아이디로 채팅 메시지를 모두 조회할 수 있다.]")
 	@Test
 	void getChatRoomMessages() throws Exception {
-	    //given
+		//given
 		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(seller, bidding);
 		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2));
@@ -235,7 +235,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		ChatMessage otherChatMessage3 = ChatMessageFixture.chatMessage(chatRoom2, seller);
 		chatMessageRepository.saveAll(List.of(chatMessage1, chatMessage2, otherChatMessage3));
 
-	    //when, then
+		//when, then
 		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", bidding.getId())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
