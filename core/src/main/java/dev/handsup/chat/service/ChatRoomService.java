@@ -37,14 +37,6 @@ public class ChatRoomService {
 	private final ChatMessageRepository chatMessageRepository;
 	private final BiddingRepository biddingRepository;
 
-	// 채팅방 메시지 조회 권한
-	private static void validateAuthorization(User user, ChatRoom chatRoom) {
-		if (!(Objects.equals(chatRoom.getSeller().getId(), user.getId()) || Objects.equals(chatRoom.getBidder().getId(),
-			user.getId()))) {
-			throw new ValidationException(ChatRoomErrorCode.CHAT_MESSAGE_ACCESS_DENIED);
-		}
-	}
-
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
@@ -81,6 +73,7 @@ public class ChatRoomService {
 	public ChatRoomDetailResponse getChatRoomWithId(Long chatRoomId, User user) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Bidding currentBidding = getBiddingById(chatRoom.getCurrentBiddingId());
+		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
 		User receiver = getReceiver(user, chatRoom);
 
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, currentBidding, receiver);
@@ -93,6 +86,7 @@ public class ChatRoomService {
 		validateAuthorization(user, bidding);
 		User receiver = bidding.getBidder();
 		ChatRoom chatRoom = getChatRoomByCurrentBidding(bidding);
+		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
 
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, bidding, receiver);
 	}
@@ -100,7 +94,6 @@ public class ChatRoomService {
 	@Transactional(readOnly = true)
 	public PageResponse<ChatMessageResponse> getChatRoomMessages(Long chatRoomId, User user, Pageable pageable) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
-		validateAuthorization(user, chatRoom);
 		Slice<ChatMessageResponse> responsePage = chatMessageRepository
 			.findByChatRoomOrderByCreatedAt(chatRoom, pageable)
 			.map(ChatMessageMapper::toChatMessageResponse);
