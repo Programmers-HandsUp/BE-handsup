@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
@@ -104,8 +105,10 @@ class ReviewServiceTest {
 		given(userReviewLabelRepository.findById(userReviewLabelCheap.getId())).willReturn(
 			Optional.of(userReviewLabelCheap));
 
+		Bidding bidding = BiddingFixture.bidding(auction, writer);
+		ReflectionTestUtils.setField(bidding, "tradingCreatedAt", LocalDateTime.now());
 		given(biddingRepository.findByAuctionAndBidder(auction, writer)).willReturn(
-			Optional.of(BiddingFixture.bidding(auction, writer)));
+			Optional.of(bidding));
 
 		// when
 		ReviewDetailResponse response = reviewService.registerReview(request, auctionId, writer);
