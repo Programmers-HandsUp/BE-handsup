@@ -11,8 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
 		registry.addMapping("/**")
-			.allowedOrigins("http://localhost:3000") // 허용할 출처 : 배포할 때는 특정 출처로 변경
-			.allowedMethods("*")
+			.allowedOriginPatterns("*")
+			.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 			.allowCredentials(true) // 쿠키 인증 요청 허용
 			.maxAge(3000); // 원하는 시간만큼 pre-flight 리퀘스트를 캐싱
 	}
