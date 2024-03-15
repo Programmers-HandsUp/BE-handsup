@@ -76,9 +76,9 @@ public class ReviewService {
 			review.getWriter().getNickname(),
 			auction.getTitle(),
 			bidding.getBiddingPrice(),
-			auction.getTradeMethod(),
+			auction.getTradeMethod().toString(),
 			auction.getTradingLocation(),
-			"tradingCreateAt",
+			bidding.getTradingCreatedAt().toString(),
 			review.getCreatedAt().toString()
 		);
 	}
