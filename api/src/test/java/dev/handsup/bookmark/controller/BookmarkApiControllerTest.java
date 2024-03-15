@@ -30,11 +30,6 @@ import dev.handsup.user.domain.User;
 @DisplayName("[Bookmark 통합 테스트]")
 class BookmarkApiControllerTest extends ApiTestSupport {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-	private final Auction auction = AuctionFixture.auction(seller, productCategory);
-	private final User user = UserFixture.user();
-	private final User seller = UserFixture.user("seller@naver.com");
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 	@Autowired
@@ -43,6 +38,12 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
 	private FCMTokenRepository fcmTokenRepository;
+
+	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
+	private final User user = UserFixture.user();
+	private final User seller = UserFixture.user("seller@naver.com");
+	private final Auction auction = AuctionFixture.auction(seller, productCategory);
 
 	@BeforeEach
 	void setUp() {
