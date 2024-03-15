@@ -167,6 +167,14 @@ public class Auction extends TimeBaseEntity {
 		bookmarkCount--;
 	}
 
+	public void increaseBiddingCount() {
+		biddingCount++;
+	}
+
+	public void decreaseBiddingCount() {
+		biddingCount--;
+	}
+
 	public void updateCurrentBiddingPrice(int currentBiddingPrice) {
 		this.currentBiddingPrice = currentBiddingPrice;
 	}
