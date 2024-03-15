@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.jwt.JwtAuthorization;
+import dev.handsup.chat.dto.response.ChatMessageResponse;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
@@ -72,6 +73,19 @@ public class ChatRoomApiController {
 		@Parameter(hidden = true) @JwtAuthorization User user
 	) {
 		ChatRoomDetailResponse response = chatRoomService.getChatRoomWithBiddingId(biddingId, user);
+		return ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "채팅방 아이디로 채팅 메시지 조회", description = "채팅방 아이디로 채팅 메시지를 슬라이스하여 가져온다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	@GetMapping("/{chatRoomId}/messages")
+	public ResponseEntity<PageResponse<ChatMessageResponse>> getChatRoomMessages(
+		@PathVariable("chatRoomId") Long chatRoomId,
+		@Parameter(hidden = true) @JwtAuthorization User user,
+		Pageable pageable
+	) {
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(chatRoomId, user,
+			pageable);
 		return ResponseEntity.ok(response);
 	}
 }
