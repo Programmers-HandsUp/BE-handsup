@@ -16,6 +16,11 @@ public class ChatMessageMapper {
 	}
 
 	public static ChatMessageResponse toChatMessageResponse(ChatMessage chatMessage) {
-		return ChatMessageResponse.from(chatMessage);
+		return ChatMessageResponse.of(
+			chatMessage.getChatRoom().getId(),
+			chatMessage.getSenderId(),
+			chatMessage.getContent(),
+			chatMessage.getCreatedAt().toString()
+		);
 	}
 }
