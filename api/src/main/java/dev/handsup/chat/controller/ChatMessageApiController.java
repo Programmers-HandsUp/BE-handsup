@@ -3,9 +3,9 @@ package dev.handsup.chat.controller;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import dev.handsup.chat.MessagePublisher;
 import dev.handsup.chat.dto.request.ChatMessageRequest;
 import dev.handsup.chat.dto.response.ChatMessageResponse;
 import dev.handsup.chat.service.ChatMessageService;
@@ -18,14 +18,12 @@ import lombok.RequiredArgsConstructor;
 public class ChatMessageApiController {
 
 	private final ChatMessageService chatMessageService;
+	private final MessagePublisher messagePublisher;
 
 	@MessageMapping("/chat-rooms/{chatRoomId}")
-	@SendTo("/subscribe/chat-rooms/{chatRoomId}")
-	public ChatMessageResponse chatMessageOfNewRoom(
-		@DestinationVariable Long chatRoomId,
-		@Payload ChatMessageRequest request
-	) {
-		return chatMessageService.registerChatMessage(chatRoomId, request);
+	public void chatMessageOfNewRoom(@DestinationVariable Long chatRoomId, @Payload ChatMessageRequest request) {
+		ChatMessageResponse response = chatMessageService.registerChatMessage(chatRoomId, request);
+		messagePublisher.publish("/sub/chat-rooms/" + chatRoomId, response);
 	}
 
 }

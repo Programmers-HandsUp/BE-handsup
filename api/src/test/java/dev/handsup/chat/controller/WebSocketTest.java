@@ -50,6 +50,7 @@ import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 
 //포트 번호가 랜덤이 되고, @LocalServerPort로 해당 포트 번호 불러올 수 있음 -> 다른 테스트와 포트 충돌 방지
+// @Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class WebSocketTest extends ApiTestSupport {
 
@@ -74,7 +75,7 @@ class WebSocketTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() throws ExecutionException, InterruptedException, TimeoutException {
-		url = "ws://localhost:" + port + "/ws-stomp";
+		url = "ws://localhost:" + port + "/ws";
 		stompSession = getStompSession();
 
 		chatMessageResponses = new LinkedBlockingDeque<>();
@@ -102,13 +103,13 @@ class WebSocketTest extends ApiTestSupport {
 		ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom, seller);
 		ChatMessageRequest request = ChatMessageRequest.of(chatMessage.getSenderId(), chatMessage.getContent());
 
-		stompSession.subscribe("/subscribe/chat-rooms/" + chatRoom.getId(),
+		stompSession.subscribe("/sub/chat-rooms/" + chatRoom.getId(),
 			new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
 
 		ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
 
 		// when
-		stompSession.send("/publish/chat-rooms/" + chatRoom.getId(), request);
+		stompSession.send("/pub/chat-rooms/" + chatRoom.getId(), request);
 		ChatMessageResponse result = chatMessageResponses.poll(5, TimeUnit.SECONDS); // 큐에 저장된 요소 하나 꺼냄
 
 		// then
