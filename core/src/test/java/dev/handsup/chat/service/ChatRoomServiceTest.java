@@ -22,14 +22,18 @@ import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.chat.domain.ChatMessage;
 import dev.handsup.chat.domain.ChatRoom;
+import dev.handsup.chat.dto.response.ChatMessageResponse;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
+import dev.handsup.chat.repository.ChatMessageRepository;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
+import dev.handsup.fixture.ChatMessageFixture;
 import dev.handsup.fixture.ChatRoomFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
@@ -47,6 +51,8 @@ class ChatRoomServiceTest {
 
 	@Mock
 	private ChatRoomRepository chatRoomRepository;
+	@Mock
+	private ChatMessageRepository chatMessageRepository;
 
 	@Mock
 	private UserRepository userRepository;
@@ -160,4 +166,23 @@ class ChatRoomServiceTest {
 		);
 	}
 
+	@DisplayName("[채팅방 아이디로 메시지를 슬라이스하여 조회할 수 있다.]")
+	@Test
+	void getChatRoomMessages() {
+		//given
+		Auction auction = AuctionFixture.auction(seller);
+		Bidding bidding = BiddingFixture.bidding(auction, bidder);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
+		ChatMessage chatMessage1 = ChatMessageFixture.chatMessage(chatRoom, seller);
+		ChatMessage chatMessage2 = ChatMessageFixture.chatMessage(chatRoom, bidder);
+
+		given(chatRoomRepository.findById(1L)).willReturn(Optional.of(chatRoom));
+		given(chatMessageRepository.findByChatRoomOrderByCreatedAt(chatRoom, pageRequest))
+			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
+
+		//when
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, pageRequest);
+		//then
+		assertThat(response.content()).hasSize(2);
+	}
 }
