@@ -22,8 +22,8 @@ public class TradingLocation {
 	@Column(name = "dong")
 	private String dong;
 
-	@Builder(access = PRIVATE)
-	public TradingLocation(String si, String gu, String dong) {
+	@Builder
+	private TradingLocation(String si, String gu, String dong) {
 		this.si = si;
 		this.gu = gu;
 		this.dong = dong;
