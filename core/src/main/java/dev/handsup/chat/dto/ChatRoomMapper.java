@@ -35,6 +35,7 @@ public class ChatRoomMapper {
 			chatRoom.getId(),
 			bidding.getAuction().getId(),
 			bidding.getId(),
+			bidding.getBiddingPrice(),
 			bidding.getTradingStatus().getLabel(),
 			bidding.getAuction().getTitle(),
 			receiver.getId(),

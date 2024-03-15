@@ -74,7 +74,7 @@ class WebSocketTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() throws ExecutionException, InterruptedException, TimeoutException {
-		url = "ws://localhost:" + port + "/ws-stomp";
+		url = "ws://localhost:" + port + "/ws";
 		stompSession = getStompSession();
 
 		chatMessageResponses = new LinkedBlockingDeque<>();
@@ -102,13 +102,13 @@ class WebSocketTest extends ApiTestSupport {
 		ChatMessage chatMessage = ChatMessageFixture.chatMessage(chatRoom, seller);
 		ChatMessageRequest request = ChatMessageRequest.of(chatMessage.getSenderId(), chatMessage.getContent());
 
-		stompSession.subscribe("/subscribe/chat-rooms/" + chatRoom.getId(),
+		stompSession.subscribe("/sub/chat-rooms/" + chatRoom.getId(),
 			new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
 
 		ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
 
 		// when
-		stompSession.send("/publish/chat-rooms/" + chatRoom.getId(), request);
+		stompSession.send("/pub/chat-rooms/" + chatRoom.getId(), request);
 		ChatMessageResponse result = chatMessageResponses.poll(5, TimeUnit.SECONDS); // 큐에 저장된 요소 하나 꺼냄
 
 		// then
