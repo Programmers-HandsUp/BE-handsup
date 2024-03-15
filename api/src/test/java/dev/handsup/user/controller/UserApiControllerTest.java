@@ -107,8 +107,7 @@ class UserApiControllerTest extends ApiTestSupport {
 	void checkEmailAvailabilityFailTest() throws Exception {
 		// given
 		String existedEmail = user.getEmail();
-		String requestEmail = existedEmail;
-		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
+		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(existedEmail);
 
 		// when
 		ResultActions actions = mockMvc.perform(
@@ -178,8 +177,8 @@ class UserApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
-	@DisplayName("[사용자의 기본 정보가 반환된다]")
-	void getUserBasicInfo() throws Exception {
+	@DisplayName("[사용자의 프로필이 반환된다]")
+	void getUserProfile() throws Exception {
 		// given
 		ProductCategory productCategory1 = ProductCategory.from(ProductCategoryValue.BEAUTY_COSMETICS.toString());
 		ProductCategory productCategory2 = ProductCategory.from(ProductCategoryValue.BOOKS.toString());
@@ -197,7 +196,7 @@ class UserApiControllerTest extends ApiTestSupport {
 		);
 
 		// when, then
-		mockMvc.perform(get("/api/users/{userId}/bases", user.getId())
+		mockMvc.perform(get("/api/users/{userId}/profiles", user.getId())
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.profileImageUrl").value(user.getProfileImageUrl()))

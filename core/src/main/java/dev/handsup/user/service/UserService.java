@@ -23,7 +23,7 @@ import dev.handsup.user.dto.UserMapper;
 import dev.handsup.user.dto.request.EmailAvailibilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
-import dev.handsup.user.dto.response.UserBasicInfoResponse;
+import dev.handsup.user.dto.response.UserProfileResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.exception.UserErrorCode;
@@ -101,7 +101,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public UserBasicInfoResponse getUserBasicInfo(Long userId) {
+	public UserProfileResponse getUserProfile(Long userId) {
 		User user = getUserById(userId);
 		List<String> preferredProductCategories = preferredProductCategoryRepository
 			.findByUser(user).stream()
@@ -109,7 +109,8 @@ public class UserService {
 				preferredProductCategory.getProductCategory().getValue())
 			.toList();
 
-		return UserBasicInfoResponse.of(
+		return UserProfileResponse.of(
+			userId,
 			user.getProfileImageUrl(),
 			user.getNickname(),
 			user.getAddress().getDong(),
