@@ -5,7 +5,7 @@ import static lombok.AccessLevel.*;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.review.domain.Review;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
-import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.dto.response.ReviewSimpleResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
@@ -25,12 +25,15 @@ public class ReviewMapper {
 		);
 	}
 
-	public static ReviewResponse toReviewResponse(Review review) {
-		return ReviewResponse.of(
+	public static ReviewSimpleResponse toReviewSimpleResponse(Review review) {
+		return ReviewSimpleResponse.of(
+			review.getId(),
 			review.getEvaluationScore(),
 			review.getContent(),
 			review.getAuction().getId(),
-			review.getWriter().getId()
+			review.getWriter().getId(),
+			review.getWriter().getNickname(),
+			review.getCreatedAt().toString()
 		);
 	}
 
