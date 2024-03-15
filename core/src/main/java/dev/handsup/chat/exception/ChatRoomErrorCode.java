@@ -12,7 +12,9 @@ public enum ChatRoomErrorCode implements ErrorCode {
 	NOT_TRADING_AUCTION("거래 상태의 경매가 아닙니다.", "CR_002"),
 	CHAT_ROOM_ACCESS_DENIED("채팅방 조회 권한이 없습니다.", "CR_003"),
 	NOT_FOUND_CHAT_ROOM("해당 아이디의 채팅방이 존재하지 않습니다.", "CR_004"),
-	NOT_FOUND_CHAT_ROOM_BY_BIDDING_ID("입찰 아이디에 해당하는 채팅방이 존재하지 않습니다.", "CR_005");
+	NOT_FOUND_CHAT_ROOM_BY_BIDDING_ID("입찰 아이디에 해당하는 채팅방이 존재하지 않습니다.", "CR_005"),
+	CHAT_MESSAGE_ACCESS_DENIED("채팅메시지 조회 권한이 없습니다.", "CR_006");
+
 
 	private final String message;
 	private final String code;
