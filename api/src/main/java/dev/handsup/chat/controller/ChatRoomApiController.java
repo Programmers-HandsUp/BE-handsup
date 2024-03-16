@@ -81,11 +81,9 @@ public class ChatRoomApiController {
 	@GetMapping("/{chatRoomId}/messages")
 	public ResponseEntity<PageResponse<ChatMessageResponse>> getChatRoomMessages(
 		@PathVariable("chatRoomId") Long chatRoomId,
-		@Parameter(hidden = true) @JwtAuthorization User user,
 		Pageable pageable
 	) {
-		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(chatRoomId, user,
-			pageable);
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(chatRoomId, pageable);
 		return ResponseEntity.ok(response);
 	}
 }
