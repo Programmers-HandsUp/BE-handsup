@@ -36,6 +36,8 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[BiddingApiController 테스트]")
 class BiddingApiControllerTest extends ApiTestSupport {
 
+	private final User seller = user;
+	private final User bidder = UserFixture.user(2L, "bidder@naver.com");
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
@@ -44,10 +46,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private UserRepository userRepository;
 	@Autowired
 	private JwtProvider jwtProvider;
-
-	private final User seller = user;
 	private String sellerAccessToken;
-	private final User bidder = UserFixture.user(2L, "bidder@naver.com");
 	private String bidderAccessToken;
 	private Auction auction1;
 	private Auction auction2;
