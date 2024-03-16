@@ -69,18 +69,18 @@ public class ChatRoomService {
 	}
 
 	// 채팅 목록에서 조회
-	@Transactional(readOnly = true)
+	@Transactional
 	public ChatRoomDetailResponse getChatRoomWithId(Long chatRoomId, User user) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Bidding currentBidding = getBiddingById(chatRoom.getCurrentBiddingId());
-		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
 		User receiver = getReceiver(user, chatRoom);
+		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
 
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, currentBidding, receiver);
 	}
 
 	// 입찰자 목록에서 조회
-	@Transactional(readOnly = true)
+	@Transactional
 	public ChatRoomDetailResponse getChatRoomWithBiddingId(Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
 		validateAuthorization(user, bidding);
@@ -121,7 +121,7 @@ public class ChatRoomService {
 	}
 
 	private Bidding getBiddingById(Long biddingId) {
-		return biddingRepository.findById(biddingId)
+		return biddingRepository.findBiddingWithAuctionAndBidder(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
 
