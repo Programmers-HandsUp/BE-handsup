@@ -71,7 +71,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
@@ -94,7 +94,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
@@ -130,7 +130,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
 
 		//when
@@ -152,7 +152,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findChatRoomByCurrentBiddingId(bidding.getId()))
 			.willReturn(Optional.of(chatRoom));
 
@@ -181,7 +181,7 @@ class ChatRoomServiceTest {
 			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
 
 		//when
-		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, seller, pageRequest);
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, pageRequest);
 		//then
 		assertThat(response.content()).hasSize(2);
 	}
