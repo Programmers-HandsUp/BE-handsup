@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.service.JwtProvider;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
@@ -44,6 +46,8 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private BiddingRepository biddingRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private AuctionService auctionService;
 	@Autowired
 	private JwtProvider jwtProvider;
 	private String sellerAccessToken;
@@ -72,6 +76,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	void registerBiddingTest() throws Exception {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(10000);
+		int beforeBiddingCount = auction1.getBiddingCount();
 
 		// when
 		ResultActions resultActions = mockMvc.perform(
@@ -92,6 +97,9 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.tradingStatus").value(TradingStatus.PREPARING.getLabel()),
 			jsonPath("$.imgUrl").value(bidder.getProfileImageUrl())
 		);
+
+		auction1 = auctionService.getAuctionById(this.auction1.getId());
+		assertThat(this.auction1.getBiddingCount()).isEqualTo(beforeBiddingCount + 1);
 	}
 
 	@DisplayName("[[입찰 목록 전체 조회 API] 한 경매의 모든 입찰 목록을 입찰가 기준 내림차순으로 조회한다]")

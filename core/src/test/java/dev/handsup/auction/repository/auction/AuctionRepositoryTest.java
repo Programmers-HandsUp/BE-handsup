@@ -50,7 +50,7 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 		category = ProductFixture.productCategory(DIGITAL_DEVICE);
 		productCategoryRepository.save(category);
 
-		user = UserFixture.user();
+		user = UserFixture.user1();
 		userRepository.save(user);
 	}
 

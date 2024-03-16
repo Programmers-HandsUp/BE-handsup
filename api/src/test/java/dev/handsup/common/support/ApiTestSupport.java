@@ -49,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 @ExtendWith(DatabaseCleanerExtension.class)
 public abstract class ApiTestSupport extends TestContainerSupport {
 
-	protected final User user = UserFixture.user();
+	protected final User user = UserFixture.user1();
 	protected String accessToken;
 	protected String refreshToken;
 	@Autowired

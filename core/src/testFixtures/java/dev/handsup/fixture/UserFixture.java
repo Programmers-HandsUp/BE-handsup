@@ -9,23 +9,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public final class UserFixture {
 
-	static final String EMAIL = "hello123@naver.com";
 	static final String PASSWORD = "password123";
 	static final String NICKNAME = "nickname123";
 	static final String PROFILE_IMAGE_URL =
 		"https://lh3.googleusercontent.com/a/ACg8ocI5mIsHlnobowJ34VO9ZN8G31hlB4OBBRo_JoWItp5Vyg=s288-c-no";
 	static final Address address = Address.of("서울시", "구로구", "가리봉동");
 
-	public static User user() {
-		return User.getTestUser(1L, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
+	public static User user1() {
+		return User.getTestUser(1L, "hello1@naver.com", PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
 	}
 
-	public static User user(Long id) {
-		return User.getTestUser(id, EMAIL, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
-	}
-
-	public static User user(String email) {
-		return User.of(email, PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
+	public static User user2() {
+		return User.getTestUser(2L, "hello2@naver.com", PASSWORD, NICKNAME, address, PROFILE_IMAGE_URL);
 	}
 
 	public static User user(Long id, String email) {

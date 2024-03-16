@@ -36,7 +36,7 @@ import dev.handsup.user.domain.User;
 class ChatRoomApiControllerTest extends ApiTestSupport {
 
 	private final User seller = user; // loginUser
-	private final User bidder = UserFixture.user("bidder@gmail.com");
+	private final User bidder = UserFixture.user2();
 	private ProductCategory productCategory;
 	private Auction auction;
 	private Bidding bidding;
@@ -115,7 +115,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getUserChatRooms() throws Exception {
 		//given
-		User unrelatedUser = UserFixture.user("user@gmail.com");
+		User unrelatedUser = UserFixture.user(3L, "unrelatedUser@gmail.com");
 		userRepository.save(unrelatedUser);
 
 		Auction auction2 = AuctionFixture.auction(productCategory);
@@ -200,7 +200,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getChatRoomWithBiddingId_fails() throws Exception {
 		//given
-		User unrelatedUser = UserFixture.user("user@gmail.com");
+		User unrelatedUser = UserFixture.user(3L, "unrelatedUser@gmail.com");
 		userRepository.save(unrelatedUser);
 		Auction unrelatedUserAuction = auctionRepository.save(AuctionFixture.auction(unrelatedUser, productCategory));
 		auctionRepository.save(unrelatedUserAuction);

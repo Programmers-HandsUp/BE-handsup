@@ -29,7 +29,7 @@ import dev.handsup.user.domain.User;
 @ExtendWith(MockitoExtension.class)
 class FCMServiceTest {
 
-	private final User receiver = UserFixture.user();
+	private final User receiver = UserFixture.user1();
 	private final Auction auction = AuctionFixture.auction();
 	@Mock
 	private FCMTokenRepository fcmTokenRepository;

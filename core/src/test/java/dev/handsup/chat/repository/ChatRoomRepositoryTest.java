@@ -51,9 +51,9 @@ class ChatRoomRepositoryTest extends DataJpaTestSupport {
 		ProductCategory category = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(category);
 
-		user1 = UserFixture.user("user1@gmail.com");
-		user2 = UserFixture.user("user2@gmail.com");
-		user3 = UserFixture.user("user3@gmail.com");
+		user1 = UserFixture.user1();
+		user2 = UserFixture.user2();
+		user3 = UserFixture.user(3L, "user3@naver.com");
 		userRepository.saveAll(List.of(user1, user2, user3));
 
 		auction1 = AuctionFixture.auction(category);

@@ -40,7 +40,7 @@ import dev.handsup.user.domain.User;
 class BiddingServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	@Mock
 	private BiddingRepository biddingRepository;
 	@Mock
@@ -146,7 +146,7 @@ class BiddingServiceTest {
 	@Test
 	void completeTrading() {
 		//given
-		User bidder = UserFixture.user("bidder@gmail.com");
+		User bidder = UserFixture.user2();
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
 		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
 
@@ -164,7 +164,7 @@ class BiddingServiceTest {
 	@Test
 	void cancelTrading() {
 		//given
-		User bidder = UserFixture.user("bidder@gmail.com");
+		User bidder = UserFixture.user2();
 		Bidding bidding1 = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING, 40000);
 		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());
 
