@@ -48,6 +48,7 @@ public class ReviewService {
 		User writer
 	) {
 		Auction auction = getAuctionById(auctionId);
+		Bidding bidding = getBidding(auction, writer);
 		User seller = auction.getSeller();
 		Review review = reviewRepository.save(ReviewMapper.toReview(request, auction, writer));
 
@@ -65,22 +66,7 @@ public class ReviewService {
 
 		seller.operateScore(request.evaluationScore());
 
-		Bidding bidding = getBidding(auction, writer);
-
-		return ReviewDetailResponse.of(
-			review.getId(),
-			review.getEvaluationScore(),
-			review.getContent(),
-			auction.getId(),
-			review.getWriter().getId(),
-			review.getWriter().getNickname(),
-			auction.getTitle(),
-			bidding.getBiddingPrice(),
-			auction.getTradeMethod().toString(),
-			auction.getTradingLocation(),
-			bidding.getTradingCreatedAt().toString(),
-			review.getCreatedAt().toString()
-		);
+		return ReviewMapper.toReviewDetailResponse(review, auction, bidding);
 	}
 
 	private ReviewLabel getReviewById(Long reviewLabelId) {

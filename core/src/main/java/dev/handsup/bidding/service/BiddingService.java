@@ -1,6 +1,5 @@
 package dev.handsup.bidding.service;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 import org.springframework.data.domain.Pageable;
@@ -78,20 +77,17 @@ public class BiddingService {
 
 	@Transactional
 	public BiddingResponse completeTrading(Long biddingId, User seller) {
-		LocalDateTime now = LocalDateTime.now();
-
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
-		bidding.updateTradingCreatedAt(now);
 
 		// 거래 완료 알림 추가
 		bidding.getAuction().changeAuctionStatusCompleted();
 		//
 
-		return BiddingMapper.toBiddingResponse(bidding, now.toString());
+		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
 	@Transactional

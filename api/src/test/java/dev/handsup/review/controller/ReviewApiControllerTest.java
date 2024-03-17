@@ -6,6 +6,7 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
@@ -106,12 +108,12 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			bidding.getBiddingPrice(),
 			this.auction.getTradeMethod().toString(),
 			this.auction.getTradingLocation(),
-			bidding.getTradingCreatedAt().toString(),
+			bidding.getUpdatedAt().toString(),
 			review.getCreatedAt().toString()
 		);
 
 		// when & then
-		mockMvc.perform(post("/api/auctions/{auctionId}/reviews", auctionId)
+		ResultActions resultActions = mockMvc.perform(post("/api/auctions/{auctionId}/reviews", auctionId)
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(toJson(request)))
@@ -127,14 +129,21 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.tradeMethod").value(expectedResponse.tradeMethod()))
 			.andExpect(jsonPath("$.tradingLocation.si").value(expectedResponse.tradingLocation().getSi()))
 			.andExpect(jsonPath("$.tradingLocation.gu").value(expectedResponse.tradingLocation().getGu()))
-			.andExpect(jsonPath("$.tradingLocation.dong").value(expectedResponse.tradingLocation().getDong()))
-			.andExpect(jsonPath("$.tradingCreatedAt").value(expectedResponse.tradingCreatedAt()));
+			.andExpect(jsonPath("$.tradingLocation.dong").value(expectedResponse.tradingLocation().getDong()));
 
 		User evaluatedSeller = userRepository.findById(this.auction.getSeller().getId())
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 
 		assertThat(evaluatedSeller.getScore())
 			.isEqualTo(beforeSellerScore + request.evaluationScore());
+
+		String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+		ReviewDetailResponse actualResponse = objectMapper.readValue(responseBody, ReviewDetailResponse.class);
+		LocalDateTime expectedTime = LocalDateTime.parse(expectedResponse.tradingCreatedAt());
+		LocalDateTime actualTime = LocalDateTime.parse(actualResponse.tradingCreatedAt());
+		long secondsBetween = Duration.between(expectedTime, actualTime).getSeconds();
+
+		assertThat(Math.abs(secondsBetween)).isLessThan(1);
 	}
 
 	@Test

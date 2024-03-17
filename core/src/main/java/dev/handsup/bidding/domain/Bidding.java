@@ -54,9 +54,6 @@ public class Bidding extends TimeBaseEntity {
 	@Column(name = "trading_status", nullable = false)
 	private TradingStatus tradingStatus;
 
-	@Column(name = "trading_created_at")
-	private LocalDateTime tradingCreatedAt;
-
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
 		this.biddingPrice = biddingPrice;
@@ -117,9 +114,5 @@ public class Bidding extends TimeBaseEntity {
 			throw new ValidationException(BiddingErrorCode.CAN_NOT_PROGRESS_TRADING);
 		}
 		tradingStatus = TradingStatus.PROGRESSING;
-	}
-
-	public void updateTradingCreatedAt(LocalDateTime tradingCreatedAt) {
-		this.tradingCreatedAt = tradingCreatedAt;
 	}
 }
