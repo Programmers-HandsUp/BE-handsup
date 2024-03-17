@@ -152,8 +152,8 @@ class UserApiControllerTest extends ApiTestSupport {
 	@DisplayName("[[유저 리뷰 조회 API] 유저의 리뷰가 생성된 시간 기준 내림차순으로 반환된다]")
 	void getUserReviewsTest() throws Exception {
 		// given
-		User seller = UserFixture.user();
-		User writer = UserFixture.user("writer@naver.com");
+		User seller = UserFixture.user1();
+		User writer = UserFixture.user2();
 
 		userRepository.saveAll(List.of(seller, writer));
 		Auction auction = AuctionFixture.auction(seller);

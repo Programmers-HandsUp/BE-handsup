@@ -54,7 +54,7 @@ import dev.handsup.user.domain.User;
 class WebSocketTest extends ApiTestSupport {
 
 	private final User seller = user; // loginUser
-	private final User bidder = UserFixture.user("bidder@gmail.com");
+	private final User bidder = UserFixture.user2();
 	@LocalServerPort
 	private int port;
 	private BlockingQueue<ChatMessageResponse> chatMessageResponses;
@@ -105,7 +105,8 @@ class WebSocketTest extends ApiTestSupport {
 		stompSession.subscribe("/sub/chat-rooms/" + chatRoom.getId(),
 			new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
 
-		ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
+		ChatMessageResponse expected = ChatMessageResponse.of(chatMessage.getChatRoom().getId(),
+			chatMessage.getSenderId(), chatMessage.getContent(), chatMessage.getCreatedAt().toString());
 
 		// when
 		stompSession.send("/pub/chat-rooms/" + chatRoom.getId(), request);

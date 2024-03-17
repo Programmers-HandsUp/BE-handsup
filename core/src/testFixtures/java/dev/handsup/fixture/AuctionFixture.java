@@ -29,7 +29,7 @@ public class AuctionFixture {
 	public static Auction auction() {
 		return Auction.of(
 			3L,
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			ProductCategory.from(DIGITAL_DEVICE),
 			10000,
@@ -66,7 +66,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,
@@ -103,7 +103,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, Integer initPrice) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			initPrice,
@@ -121,7 +121,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, ProductStatus productStatus) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,
@@ -139,7 +139,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, TradeMethod tradeMethod) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,
@@ -157,7 +157,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String title) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			title,
 			productCategory,
 			10000,
@@ -175,7 +175,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String title, int initPrice) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			title,
 			productCategory,
 			initPrice,
@@ -193,7 +193,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String si, String gu, String dong) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,
@@ -211,7 +211,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, String endDate, String si, String gu, String dong) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,
@@ -229,7 +229,7 @@ public class AuctionFixture {
 
 	public static Auction auction(ProductCategory productCategory, LocalDate endDate) {
 		return Auction.of(
-			UserFixture.user(),
+			UserFixture.user1(),
 			TITLE,
 			productCategory,
 			10000,

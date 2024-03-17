@@ -20,7 +20,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[UserReviewLabelRepository 테스트]")
 class UserReviewLabelRepositoryTest extends DataJpaTestSupport {
 
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	@Autowired
 	private TestEntityManager entityManager;
 	@Autowired

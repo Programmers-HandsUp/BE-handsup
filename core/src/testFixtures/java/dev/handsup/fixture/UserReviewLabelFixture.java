@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public final class UserReviewLabelFixture {
 
-	static final User user = UserFixture.user();
+	static final User user = UserFixture.user1();
 
 	public static UserReviewLabel userReviewLabel(Long id, ReviewLabel reviewLabel) {
 		return new UserReviewLabel(id, reviewLabel);

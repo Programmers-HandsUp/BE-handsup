@@ -44,7 +44,7 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 class ReviewServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();
-	private final User writer = UserFixture.user();
+	private final User writer = UserFixture.user1();
 	private final Review review = ReviewFixture.review();
 	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
 		1L, ReviewLabelValue.MANNER.getDescription()

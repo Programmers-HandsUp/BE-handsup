@@ -22,14 +22,18 @@ import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.chat.domain.ChatMessage;
 import dev.handsup.chat.domain.ChatRoom;
+import dev.handsup.chat.dto.response.ChatMessageResponse;
 import dev.handsup.chat.dto.response.ChatRoomDetailResponse;
 import dev.handsup.chat.dto.response.ChatRoomSimpleResponse;
 import dev.handsup.chat.dto.response.RegisterChatRoomResponse;
+import dev.handsup.chat.repository.ChatMessageRepository;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
+import dev.handsup.fixture.ChatMessageFixture;
 import dev.handsup.fixture.ChatRoomFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
@@ -39,14 +43,16 @@ import dev.handsup.user.repository.UserRepository;
 @ExtendWith(MockitoExtension.class)
 class ChatRoomServiceTest {
 
-	private final User seller = UserFixture.user(1L);
-	private final User bidder = UserFixture.user(2L);
+	private final User seller = UserFixture.user1();
+	private final User bidder = UserFixture.user2();
 	private PageRequest pageRequest = PageRequest.of(0, 5);
 	@Mock
 	private AuctionRepository auctionRepository;
 
 	@Mock
 	private ChatRoomRepository chatRoomRepository;
+	@Mock
+	private ChatMessageRepository chatMessageRepository;
 
 	@Mock
 	private UserRepository userRepository;
@@ -65,7 +71,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
@@ -88,7 +94,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
@@ -124,7 +130,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
 
 		//when
@@ -146,7 +152,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findById(bidding.getId())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findChatRoomByCurrentBiddingId(bidding.getId()))
 			.willReturn(Optional.of(chatRoom));
 
@@ -160,4 +166,24 @@ class ChatRoomServiceTest {
 		);
 	}
 
+	@DisplayName("[채팅방 아이디로 메시지를 슬라이스하여 조회할 수 있다.]")
+	@Test
+	void getChatRoomMessages() {
+		//given
+		Auction auction = AuctionFixture.auction(seller);
+		Bidding bidding = BiddingFixture.bidding(auction, bidder);
+		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
+		ChatMessage chatMessage1 = ChatMessageFixture.chatMessage(chatRoom, seller);
+		ChatMessage chatMessage2 = ChatMessageFixture.chatMessage(chatRoom, bidder);
+
+		given(chatRoomRepository.findById(1L)).willReturn(Optional.of(chatRoom));
+		given(chatMessageRepository.findByChatRoomOrderByCreatedAt(chatRoom, pageRequest))
+			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
+
+		//when
+		PageResponse<ChatMessageResponse> response = chatRoomService.getChatRoomMessages(1L, pageRequest);
+		//then
+		assertThat(response.content()).hasSize(2);
+	}
 }
+

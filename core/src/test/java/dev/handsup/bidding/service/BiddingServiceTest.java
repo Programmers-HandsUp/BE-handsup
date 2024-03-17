@@ -22,11 +22,13 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
+import dev.handsup.bidding.repository.BiddingQueryRepository;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
@@ -40,9 +42,11 @@ import dev.handsup.user.domain.User;
 class BiddingServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	@Mock
 	private BiddingRepository biddingRepository;
+	@Mock
+	private BiddingQueryRepository biddingQueryRepository;
 	@Mock
 	private AuctionService auctionService;
 	@InjectMocks
@@ -146,9 +150,10 @@ class BiddingServiceTest {
 	@Test
 	void completeTrading() {
 		//given
-		User bidder = UserFixture.user("bidder@gmail.com");
+		User bidder = UserFixture.user2();
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
 		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding));
 
@@ -164,14 +169,14 @@ class BiddingServiceTest {
 	@Test
 	void cancelTrading() {
 		//given
-		User bidder = UserFixture.user("bidder@gmail.com");
+		User bidder = UserFixture.user2();
 		Bidding bidding1 = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING, 40000);
 		ReflectionTestUtils.setField(bidding1, "createdAt", LocalDateTime.now());
 
 		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING,
 			bidding1.getBiddingPrice() + 1000);
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding1));
-		given(biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
+		given(biddingQueryRepository.findWaitingBiddingLatest(auction)).willReturn(Optional.of(bidding2));
 
 		//when
 		BiddingResponse response = biddingService.cancelTrading(bidding1.getId(), user);
