@@ -8,4 +8,5 @@ import dev.handsup.bidding.domain.Bidding;
 public interface BiddingQueryRepository {
 
 	Optional<Bidding> findWaitingBiddingLatest(Auction auction);
+	void updateBiddingTradingStatus();
 }
