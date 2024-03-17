@@ -21,7 +21,9 @@ import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
+import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -157,6 +159,12 @@ public class Auction extends TimeBaseEntity {
 
 	public void changeAuctionStatusTrading() {
 		status = AuctionStatus.TRADING;
+	}
+	public void changeAuctionStatusCompleted() {
+		if (status!=TRADING){
+			throw new ValidationException(AuctionErrorCode.CAN_NOT_COMPLETE_AUCTION);
+		}
+		status = COMPLETED;
 	}
 
 	public void increaseBookmarkCount() {
