@@ -93,7 +93,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			jsonPath("$.auctionId").value(auction1.getId()),
 			jsonPath("$.bidderId").value(bidder.getId()),
 			jsonPath("$.bidderNickname").value(bidder.getNickname()),
-			jsonPath("$.tradingStatus").value(TradingStatus.PREPARING.getLabel()),
+			jsonPath("$.tradingStatus").value(TradingStatus.WAITING.getLabel()),
 			jsonPath("$.imgUrl").value(bidder.getProfileImageUrl())
 		);
 

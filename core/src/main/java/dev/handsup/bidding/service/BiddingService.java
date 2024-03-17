@@ -30,15 +30,12 @@ public class BiddingService {
 	private final BiddingRepository biddingRepository;
 	private final BiddingQueryRepository biddingQueryRepository;
 	private final AuctionService auctionService;
-	private boolean isFirstBidding;
 
 	private void validateBiddingPrice(int biddingPrice, Auction auction) {
-		isFirstBidding = false;
 		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
 
 		if (maxBiddingPrice == null) {
 			// 입찰 내역이 없는 경우, 최소 입찰가부터 입찰 가능
-			isFirstBidding = true;
 			if (biddingPrice < auction.getInitPrice()) {
 				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_LESS_THAN_INIT_PRICE);
 			}
@@ -63,9 +60,7 @@ public class BiddingService {
 		Bidding savedBidding = biddingRepository.save(
 			BiddingMapper.toBidding(request, auction, bidder)
 		);
-		if (isFirstBidding) {
-			savedBidding.updateTradingStatusPreparing(); // 첫 입찰일 경우 준비중 상태로 변경
-		}
+
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
 		auction.increaseBiddingCount();
 
