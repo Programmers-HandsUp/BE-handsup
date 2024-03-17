@@ -50,8 +50,8 @@ class ChatMessageRepositoryTest extends DataJpaTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		seller = userRepository.save(UserFixture.user("seller@gmail.com"));
-		bidder = userRepository.save(UserFixture.user("buyer@gmail.com"));
+		seller = userRepository.save(UserFixture.user1());
+		bidder = userRepository.save(UserFixture.user2());
 		ProductCategory category = productCategoryRepository.save(ProductFixture.productCategory("디지털 기기"));
 		Auction auction = auctionRepository.save(AuctionFixture.auction(category));
 		Bidding bidding = biddingRepository.save(BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING));
