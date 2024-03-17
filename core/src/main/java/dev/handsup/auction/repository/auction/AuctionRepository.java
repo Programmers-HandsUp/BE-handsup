@@ -15,7 +15,6 @@ import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.user.domain.User;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
-	Boolean existsByStatus(AuctionStatus status);
 
 	@Query("select distinct b.auction from Bookmark b " +
 		"where b.user = :user")

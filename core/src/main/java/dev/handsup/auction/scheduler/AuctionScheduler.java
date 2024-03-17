@@ -1,6 +1,5 @@
 package dev.handsup.auction.scheduler;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuctionScheduler {
 	private final AuctionRepository auctionRepository;
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void updateAuctionStatus() {
