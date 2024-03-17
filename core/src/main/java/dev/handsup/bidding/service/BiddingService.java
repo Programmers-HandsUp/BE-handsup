@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
-import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.bidding.exception.BiddingErrorCode;
+import dev.handsup.bidding.repository.BiddingQueryRepository;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class BiddingService {
 
 	private final BiddingRepository biddingRepository;
+	private final BiddingQueryRepository biddingQueryRepository;
 	private final AuctionService auctionService;
 	private boolean isFirstBidding;
 
@@ -96,7 +97,7 @@ public class BiddingService {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 		bidding.updateTradingStatusCanceled();
-		biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING) // 다음 입찰 준비중 상태로 변경
+		biddingQueryRepository.findWaitingBiddingLatest(bidding.getAuction()) // 다음 입찰 준비중 상태로 변경
 			.ifPresent(Bidding::updateTradingStatusPreparing);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
