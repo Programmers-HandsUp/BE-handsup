@@ -64,7 +64,7 @@ class BiddingQueryRepositoryTest extends DataJpaTestSupport {
 	@Test
 	@DisplayName("[경매 내 대기 상태 입찰들 중 가장 최신 입찰(=가격 높은 입찰)을 조회한다.]")
 	void findWaitingBiddingLatest() {
-	    //given
+		//given
 		Bidding waitingBidding1 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 2000);
 		Bidding waitingBidding2 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 3000);
 		Bidding anotherAuctionBidding = BiddingFixture.bidding(bidder, auction2, TradingStatus.WAITING, 4000);

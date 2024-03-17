@@ -160,8 +160,9 @@ public class Auction extends TimeBaseEntity {
 	public void changeAuctionStatusTrading() {
 		status = AuctionStatus.TRADING;
 	}
+
 	public void changeAuctionStatusCompleted() {
-		if (status!=TRADING){
+		if (status != TRADING) {
 			throw new ValidationException(AuctionErrorCode.CAN_NOT_COMPLETE_AUCTION);
 		}
 		status = COMPLETED;
