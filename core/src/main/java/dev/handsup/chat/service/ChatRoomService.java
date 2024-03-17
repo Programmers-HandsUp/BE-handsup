@@ -69,25 +69,21 @@ public class ChatRoomService {
 	}
 
 	// 채팅 목록에서 조회
-	@Transactional
+	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithId(Long chatRoomId, User user) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Bidding currentBidding = getBiddingById(chatRoom.getCurrentBiddingId());
 		User receiver = getReceiver(user, chatRoom);
-		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
-
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, currentBidding, receiver);
 	}
 
 	// 입찰자 목록에서 조회
-	@Transactional
+	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithBiddingId(Long biddingId, User user) {
 		Bidding bidding = getBiddingById(biddingId);
 		validateAuthorization(user, bidding);
 		User receiver = bidding.getBidder();
 		ChatRoom chatRoom = getChatRoomByCurrentBidding(bidding);
-		chatMessageRepository.readReceivedMessages(chatRoom, user.getId());
-
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, bidding, receiver);
 	}
 
