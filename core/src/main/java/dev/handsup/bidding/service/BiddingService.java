@@ -52,6 +52,11 @@ public class BiddingService {
 	@Transactional
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
 		Auction auction = auctionService.getAuctionById(auctionId);
+
+		if (auction.getSeller().equals(bidder)) {
+			throw new ValidationException(BiddingErrorCode.NOT_ALLOW_SELF_BIDDING);
+		}
+
 		validateBiddingPrice(request.biddingPrice(), auction);
 
 		Bidding savedBidding = biddingRepository.save(
@@ -61,6 +66,8 @@ public class BiddingService {
 			savedBidding.updateTradingStatusPreparing(); // 첫 입찰일 경우 준비중 상태로 변경
 		}
 		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
+		auction.increaseBiddingCount();
+
 		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
 

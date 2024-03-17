@@ -13,7 +13,7 @@ public final class ReviewFixture {
 	static final int EVALUATION_SCORE = 2;
 	static final String CONTENT = "저렴한 가격에 좋은 물건을 잘 구매했어요!";
 	static final Auction AUCTION = AuctionFixture.auction();
-	static final User WRITER = UserFixture.user();
+	static final User WRITER = UserFixture.user1();
 
 	public static Review review() {
 		return Review.of(EVALUATION_SCORE, CONTENT, AUCTION, WRITER);

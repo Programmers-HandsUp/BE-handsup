@@ -31,7 +31,7 @@ import dev.handsup.user.service.UserService;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-	private final User user = UserFixture.user(1L);
+	private final User user = UserFixture.user1();
 	private final LoginRequest loginRequest = LoginRequest.of(
 		user.getEmail(), user.getPassword()
 	);
