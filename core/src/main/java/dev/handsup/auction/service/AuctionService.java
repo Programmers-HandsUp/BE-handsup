@@ -1,7 +1,5 @@
 package dev.handsup.auction.service;
 
-import static dev.handsup.auction.exception.AuctionErrorCode.*;
-
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -36,11 +34,6 @@ public class AuctionService {
 	private final PreferredProductCategoryRepository preferredProductCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
 
-	public Auction getAuction(Long auctionId) {
-		return auctionRepository.findById(auctionId)
-			.orElseThrow(() -> new NotFoundException(NOT_FOUND_AUCTION));
-	}
-
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request, User user) {
 		ProductCategory productCategory = getProductCategoryByValue(request.productCategory());
 		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
@@ -49,7 +42,7 @@ public class AuctionService {
 
 	@Transactional(readOnly = true)
 	public AuctionDetailResponse getAuctionDetail(Long auctionId) {
-		Auction auction = getAuction(auctionId);
+		Auction auction = getAuctionById(auctionId);
 		return AuctionMapper.toAuctionDetailResponse(auction);
 	}
 
