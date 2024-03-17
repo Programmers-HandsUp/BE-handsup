@@ -33,7 +33,7 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[UserService 테스트]")
 class UserServiceTest {
 
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	private final JoinUserRequest request = JoinUserRequest.of(
 		user.getEmail(),
 		user.getPassword(),
@@ -94,7 +94,7 @@ class UserServiceTest {
 		given(encryptHelper.encrypt(request.password()))
 			.willReturn("encryptedPassword");
 
-		User savedUser = UserFixture.user(1L);
+		User savedUser = UserFixture.user1();
 		given(userRepository.save(any(User.class)))
 			.willReturn(savedUser);
 

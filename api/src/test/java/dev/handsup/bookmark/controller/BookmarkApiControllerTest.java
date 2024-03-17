@@ -11,10 +11,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bookmark.domain.Bookmark;
@@ -23,7 +22,6 @@ import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BookmarkFixture;
-import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.notification.repository.FCMTokenRepository;
 import dev.handsup.user.domain.User;
@@ -31,11 +29,8 @@ import dev.handsup.user.domain.User;
 @DisplayName("[Bookmark 통합 테스트]")
 class BookmarkApiControllerTest extends ApiTestSupport {
 
-	private final String DIGITAL_DEVICE = "디지털 기기";
-	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-	private final User user = UserFixture.user();
-	private final User seller = UserFixture.user("seller@naver.com");
-	private final Auction auction = AuctionFixture.auction(seller, productCategory);
+	private Auction auction;
+	private User seller;
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 	@Autowired
@@ -47,14 +42,17 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		productCategoryRepository.save(productCategory);
+		seller = UserFixture.user2();
+		auction = AuctionFixture.auction(seller);
+
+		productCategoryRepository.save(auction.getProduct().getProductCategory());
 		userRepository.save(user);
 		userRepository.save(seller);
 		auctionRepository.save(auction);
 	}
 
-	@DisplayName("[북마크를 추가할 수 있다.]")
 	@Test
+	@DisplayName("[북마크를 추가할 수 있다.]")
 	void addBookmark() throws Exception {
 		// fcm 토큰 저장, seller 는 receiver
 		String fcmToken = "c1SuCte6bF--OIMW94J1tV:APA91bEU1mLbYiv7OwmHjKp0cpKZ9d64n7bDgkkkPtwk3iSLwbc"
@@ -68,8 +66,8 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.bookmarkCount").value(1));
 	}
 
-	@DisplayName("[북마크 추가 시 북마크가 존재하면 예외가 발생한다.]")
 	@Test
+	@DisplayName("[북마크 추가 시 북마크가 존재하면 예외가 발생한다.]")
 	void addBookmark_fails() throws Exception {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
@@ -84,8 +82,8 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 				.value(BookmarkErrorCode.ALREADY_EXISTS_BOOKMARK.getCode()));
 	}
 
-	@DisplayName("[북마크를 삭제할 수 있다.]")
 	@Test
+	@DisplayName("[북마크를 삭제할 수 있다.]")
 	void deleteBookmark() throws Exception {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
@@ -97,8 +95,8 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount() - 1));
 	}
 
-	@DisplayName("[북마크 삭제 시 북마크가 존재하지 않으면 예외가 발생한다.]")
 	@Test
+	@DisplayName("[북마크 삭제 시 북마크가 존재하지 않으면 예외가 발생한다.]")
 	void deleteBookmark_fails() throws Exception {
 		mockMvc.perform(delete("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
@@ -108,8 +106,8 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.code").value(BookmarkErrorCode.NOT_FOUND_BOOKMARK.getCode()));
 	}
 
-	@DisplayName("[북마크가 없으면 북마크 여부 조회 시 false를 반환한다.]")
 	@Test
+	@DisplayName("[북마크가 없으면 북마크 여부 조회 시 false를 반환한다.]")
 	void getBookmarkStatusFalse() throws Exception {
 		mockMvc.perform(get("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)
@@ -118,8 +116,8 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.isBookmarked").value(false));
 	}
 
-	@DisplayName("[북마크가 존재하면 북마크 여부 조회 시 true를 반환한다.]")
 	@Test
+	@DisplayName("[북마크가 존재하면 북마크 여부 조회 시 true를 반환한다.]")
 	void getBookmarkStatusTrue() throws Exception {
 		Bookmark bookmark = BookmarkFixture.bookmark(user, auction);
 		bookmarkRepository.save(bookmark);
@@ -130,10 +128,12 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.isBookmarked").value(true));
 	}
 
-	// @DisplayName("[북마크한 경매를 모두 조회할 수 있다.]")
 	@Test
+	@DisplayName("[북마크한 경매를 모두 조회할 수 있다.]")
 	void findUserBookmarks() throws Exception {
-		Auction auction2 = AuctionFixture.auction(productCategory);
+		Auction auction2 = AuctionFixture.auction(UserFixture.user(2L, "anothorSeller@naver.com"));
+		ReflectionTestUtils.setField(auction2, "id", 2L);
+		productCategoryRepository.save(auction2.getProduct().getProductCategory());
 		auctionRepository.save(auction2);
 
 		Bookmark bookmark1 = BookmarkFixture.bookmark(user, auction);

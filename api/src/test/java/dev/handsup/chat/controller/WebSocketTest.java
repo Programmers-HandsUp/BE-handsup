@@ -54,7 +54,7 @@ import dev.handsup.user.domain.User;
 class WebSocketTest extends ApiTestSupport {
 
 	private final User seller = user; // loginUser
-	private final User bidder = UserFixture.user("bidder@gmail.com");
+	private final User bidder = UserFixture.user2();
 	@LocalServerPort
 	private int port;
 	private BlockingQueue<ChatMessageResponse> chatMessageResponses;

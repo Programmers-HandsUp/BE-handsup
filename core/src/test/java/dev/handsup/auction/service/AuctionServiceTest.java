@@ -45,7 +45,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[경매 서비스 테스트]")
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
@@ -96,7 +96,7 @@ class AuctionServiceTest {
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
 
 		// when
-		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user());
+		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user1());
 
 		// then
 		assertAll(

@@ -20,7 +20,7 @@ import dev.handsup.user.domain.User;
 class BiddingRepositoryTest extends DataJpaTestSupport {
 
 	private final Auction auction = AuctionFixture.auction();
-	private final User bidder = UserFixture.user();
+	private final User bidder = UserFixture.user1();
 	@Autowired
 	private BiddingRepository biddingRepository;
 

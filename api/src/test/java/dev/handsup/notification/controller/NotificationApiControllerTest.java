@@ -47,7 +47,7 @@ class NotificationApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
-		receiver = UserFixture.user("receiver@naver.com");
+		receiver = UserFixture.user2();
 		ReflectionTestUtils.setField(receiver, "readNotificationCount", 1);
 		userRepository.save(receiver);
 		receiverAccessToken = jwtProvider.createAccessToken(receiver.getId());

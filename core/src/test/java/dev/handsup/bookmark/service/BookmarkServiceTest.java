@@ -35,9 +35,9 @@ import dev.handsup.user.domain.User;
 @DisplayName("[BookmarkService 테스트]")
 @ExtendWith(MockitoExtension.class)
 class BookmarkServiceTest {
-	private final User user = UserFixture.user();
+	private final User user = UserFixture.user1();
 	private final PageRequest pageRequest = PageRequest.of(0, 5);
-	private final Auction auction = AuctionFixture.auction(UserFixture.user("seller@naver.com"));
+	private final Auction auction = AuctionFixture.auction(UserFixture.user2());
 	@Mock
 	private AuctionRepository auctionRepository;
 	@Mock
