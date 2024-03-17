@@ -15,4 +15,6 @@ public interface AuctionQueryRepository {
 	Slice<Auction> sortAuctionByCriteria(String si, String gu, String dong, Pageable pageable);
 
 	Slice<Auction> findByProductCategories(List<ProductCategory> productCategories, Pageable pageable);
+
+	void updateAuctionStatusTrading();
 }
