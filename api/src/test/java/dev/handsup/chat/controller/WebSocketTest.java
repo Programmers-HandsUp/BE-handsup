@@ -105,7 +105,8 @@ class WebSocketTest extends ApiTestSupport {
 		stompSession.subscribe("/sub/chat-rooms/" + chatRoom.getId(),
 			new StompFrameHandlerImpl<>(ChatMessageResponse.class, chatMessageResponses));
 
-		ChatMessageResponse expected = ChatMessageResponse.from(chatMessage);
+		ChatMessageResponse expected = ChatMessageResponse.of(chatMessage.getChatRoom().getId(),
+			chatMessage.getSenderId(), chatMessage.getContent(), chatMessage.getCreatedAt().toString());
 
 		// when
 		stompSession.send("/pub/chat-rooms/" + chatRoom.getId(), request);

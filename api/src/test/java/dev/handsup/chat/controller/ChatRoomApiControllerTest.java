@@ -21,12 +21,15 @@ import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.chat.domain.ChatMessage;
 import dev.handsup.chat.domain.ChatRoom;
 import dev.handsup.chat.exception.ChatRoomErrorCode;
+import dev.handsup.chat.repository.ChatMessageRepository;
 import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
+import dev.handsup.fixture.ChatMessageFixture;
 import dev.handsup.fixture.ChatRoomFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
@@ -49,6 +52,8 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	private BiddingRepository biddingRepository;
 	@Autowired
 	private ChatRoomRepository chatRoomRepository;
+	@Autowired
+	private ChatMessageRepository chatMessageRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -179,7 +184,6 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getChatRoomWithBiddingId() throws Exception {
 		//given
-		biddingRepository.save(bidding);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 		chatRoomRepository.save(chatRoom);
 		//when, then
@@ -216,5 +220,34 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andDo(MockMvcResultHandlers.print());
+	}
+
+	@DisplayName("[채팅방 아이디로 채팅 메시지를 모두 조회할 수 있다.]")
+	@Test
+	void getChatRoomMessages() throws Exception {
+		//given
+		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(seller, bidding);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding);
+		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2));
+
+		ChatMessage chatMessage1 = ChatMessageFixture.chatMessage(chatRoom1, bidder);
+		ChatMessage chatMessage2 = ChatMessageFixture.chatMessage(chatRoom1, seller);
+		ChatMessage otherChatMessage3 = ChatMessageFixture.chatMessage(chatRoom2, seller);
+		chatMessageRepository.saveAll(List.of(chatMessage1, chatMessage2, otherChatMessage3));
+
+		//when, then
+		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", bidding.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.size").value(2))
+			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatMessage1.getChatRoom().getId()))
+			.andExpect(jsonPath("$.content[0].content").value(chatMessage1.getContent()))
+			.andExpect(jsonPath("$.content[0].senderId").value(chatMessage1.getSenderId()))
+			.andExpect(jsonPath("$.content[0].content").value(chatMessage1.getContent()))
+			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatMessage2.getChatRoom().getId()))
+			.andExpect(jsonPath("$.content[1].content").value(chatMessage2.getContent()))
+			.andExpect(jsonPath("$.content[1].senderId").value(chatMessage2.getSenderId()))
+			.andExpect(jsonPath("$.content[1].content").value(chatMessage2.getContent()));
 	}
 }
