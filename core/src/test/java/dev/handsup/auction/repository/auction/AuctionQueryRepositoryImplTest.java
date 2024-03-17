@@ -3,6 +3,7 @@ package dev.handsup.auction.repository.auction;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
@@ -23,6 +25,7 @@ import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
+import jakarta.persistence.EntityManager;
 
 @DisplayName("[AuctionQueryRepositoryImpl 테스트]")
 class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
@@ -32,11 +35,13 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 	private final String KEYWORD = "버즈";
 	private final PageRequest pageRequest = PageRequest.of(0, 10);
-
 	private ProductCategory category1;
 	private ProductCategory category2;
 	@Autowired
 	private AuctionQueryRepository auctionQueryRepository;
+
+	@Autowired
+	private EntityManager em;
 
 	@Autowired
 	private AuctionRepository auctionRepository;
@@ -277,5 +282,34 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		//then
 		assertThat(auctions).containsExactly(auction2, auction1);
 
+	}
+
+	@DisplayName("[마감 일자가 지난 경매의 상태를 새로운 경매 상태로 변경한다.")
+	@Test
+	void updateAuctionStatus() {
+		//given
+		LocalDate today = LocalDate.now();
+		Auction auction1 = AuctionFixture.auction(category1, today.minusDays(1)); // 마감 일자(endDate)
+		Auction auction2 = AuctionFixture.auction(category1, today);
+		Auction auction3 = AuctionFixture.auction(category1, today.plusDays(1));
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		//when
+		//벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
+		auctionQueryRepository.updateAuctionStatusTrading();
+
+		em.flush();
+		em.clear();
+
+		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
+		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
+		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
+
+		//then
+		assertAll(
+			() -> assertThat(savedAuction1.getStatus()).isEqualTo(AuctionStatus.TRADING),
+			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING),
+			() -> assertThat(savedAuction3.getStatus()).isEqualTo(AuctionStatus.BIDDING)
+		);
 	}
 }
