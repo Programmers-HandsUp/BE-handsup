@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -77,13 +78,14 @@ class ReviewApiControllerTest extends ApiTestSupport {
 	@DisplayName("[리뷰 등록 API] 작성자가 경매에 대한 리뷰를 등록한다")
 	void registerReviewTest() throws Exception {
 		// given
-		Long auctionId = review.getAuction().getId();
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
+		Long auctionId = auction.getId();
 		int beforeSellerScore = auction.getSeller().getScore();
 		LocalDateTime now = LocalDateTime.now();
 		ReflectionTestUtils.setField(review, "createdAt", now);
 
 		Bidding bidding = new Bidding(
-			auction.getInitPrice() + 1000, auction, user, TradingStatus.PROGRESSING);
+			this.auction.getInitPrice() + 1000, this.auction, user, TradingStatus.PROGRESSING);
 		biddingRepository.save(bidding);
 		biddingService.completeTrading(bidding.getId(), user);
 
@@ -100,10 +102,10 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			auctionId,
 			user.getId(),
 			user.getNickname(),
-			auction.getTitle(),
+			this.auction.getTitle(),
 			bidding.getBiddingPrice(),
-			auction.getTradeMethod().toString(),
-			auction.getTradingLocation(),
+			this.auction.getTradeMethod().toString(),
+			this.auction.getTradingLocation(),
 			bidding.getTradingCreatedAt().toString(),
 			review.getCreatedAt().toString()
 		);
@@ -128,7 +130,7 @@ class ReviewApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.tradingLocation.dong").value(expectedResponse.tradingLocation().getDong()))
 			.andExpect(jsonPath("$.tradingCreatedAt").value(expectedResponse.tradingCreatedAt()));
 
-		User evaluatedSeller = userRepository.findById(auction.getSeller().getId())
+		User evaluatedSeller = userRepository.findById(this.auction.getSeller().getId())
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 
 		assertThat(evaluatedSeller.getScore())
