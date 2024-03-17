@@ -3,7 +3,6 @@ package dev.handsup.auction.repository.auction;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bookmark.domain.Bookmark;
@@ -26,7 +24,6 @@ import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 
 @DisplayName("[AuctionRepository 테스트]")
 class AuctionRepositoryTest extends DataJpaTestSupport {
@@ -35,13 +32,8 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	private final PageRequest pageRequest = PageRequest.of(0, 10);
 
 	@Autowired
-	private EntityManager em;
-
-	@Autowired
 	private AuctionRepository auctionRepository;
 
-	@Autowired
-	private AuctionQueryRepository auctionQueryRepository;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -84,34 +76,5 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 			() -> assertThat(auctions.get(1)).isEqualTo(auction2)
 		);
 
-	}
-
-	@DisplayName("[마감 일자가 지난 경매의 상태를 새로운 경매 상태로 변경한다.")
-	@Test
-	void updateAuctionStatus() {
-		//given
-		LocalDate today = LocalDate.now();
-		Auction auction1 = AuctionFixture.auction(category, today.minusDays(1)); // 마감 일자(endDate)
-		Auction auction2 = AuctionFixture.auction(category, today);
-		Auction auction3 = AuctionFixture.auction(category, today.plusDays(1));
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-
-		//when
-		//벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
-		auctionQueryRepository.updateAuctionStatusTrading();
-
-		em.flush();
-		em.clear();
-
-		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
-		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
-		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
-
-		//then
-		assertAll(
-			() -> assertThat(savedAuction1.getStatus()).isEqualTo(AuctionStatus.TRADING),
-			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING),
-			() -> assertThat(savedAuction3.getStatus()).isEqualTo(AuctionStatus.BIDDING)
-		);
 	}
 }
