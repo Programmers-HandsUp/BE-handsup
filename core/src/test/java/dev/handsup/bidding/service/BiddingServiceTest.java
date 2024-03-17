@@ -22,6 +22,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
@@ -152,6 +153,7 @@ class BiddingServiceTest {
 		User bidder = UserFixture.user2();
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PROGRESSING);
 		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding));
 

@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auction.service.AuctionService;
 import dev.handsup.auth.service.JwtProvider;
@@ -160,10 +161,12 @@ class BiddingApiControllerTest extends ApiTestSupport {
 		).andDo(MockMvcResultHandlers.print());
 	}
 
+	@Transactional
 	@DisplayName("[판매자는 진행 중인 거래를 완료 상태로 변경할 수 있다.]")
 	@Test
 	void completeTrading() throws Exception {
 		//given
+		ReflectionTestUtils.setField(auction1, "status", AuctionStatus.TRADING); //변경 감지
 		Bidding bidding = BiddingFixture.bidding(bidder, auction1, TradingStatus.PROGRESSING);
 		biddingRepository.save(bidding);
 		//when, then
