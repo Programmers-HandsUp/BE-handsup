@@ -14,12 +14,18 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 @OpenAPIDefinition(
 	info = @Info(
 		title = "Hands-Up API",
 		description = "경매 중고 거래 API 명세서",
-		version = "v.0.1"))
+		version = "v.0.1"),
+	servers = {
+		@Server(url = "https://handssup.shop", description = "Default Server URL"),
+		@Server(url = "http://localhost:8080")
+	}
+)
 @Configuration
 public class SwaggerConfig {
 
