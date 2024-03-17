@@ -50,4 +50,13 @@ public class BiddingFixture {
 		);
 	}
 
+	public static Bidding bidding(User user, Auction auction, TradingStatus status, int price) {
+		return Bidding.of(
+			price,
+			auction,
+			user,
+			status
+		);
+	}
+
 }

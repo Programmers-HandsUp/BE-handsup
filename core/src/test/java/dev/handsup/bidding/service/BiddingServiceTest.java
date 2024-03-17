@@ -27,6 +27,7 @@ import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
+import dev.handsup.bidding.repository.BiddingQueryRepository;
 import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.ValidationException;
@@ -43,6 +44,8 @@ class BiddingServiceTest {
 	private final User user = UserFixture.user1();
 	@Mock
 	private BiddingRepository biddingRepository;
+	@Mock
+	private BiddingQueryRepository biddingQueryRepository;
 	@Mock
 	private AuctionService auctionService;
 	@InjectMocks
@@ -171,7 +174,7 @@ class BiddingServiceTest {
 		Bidding bidding2 = BiddingFixture.bidding(auction, bidder, TradingStatus.WAITING,
 			bidding1.getBiddingPrice() + 1000);
 		given(biddingRepository.findById(1L)).willReturn(Optional.of(bidding1));
-		given(biddingRepository.findFirstByTradingStatus(TradingStatus.WAITING)).willReturn(Optional.of(bidding2));
+		given(biddingQueryRepository.findWaitingBiddingLatest(auction)).willReturn(Optional.of(bidding2));
 
 		//when
 		BiddingResponse response = biddingService.cancelTrading(bidding1.getId(), user);
