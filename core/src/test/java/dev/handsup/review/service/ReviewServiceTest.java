@@ -106,7 +106,7 @@ class ReviewServiceTest {
 			Optional.of(userReviewLabelCheap));
 
 		Bidding bidding = BiddingFixture.bidding(auction, writer);
-		ReflectionTestUtils.setField(bidding, "tradingCreatedAt", LocalDateTime.now());
+		ReflectionTestUtils.setField(bidding, "updatedAt", LocalDateTime.now());
 		given(biddingRepository.findByAuctionAndBidder(auction, writer)).willReturn(
 			Optional.of(bidding));
 
