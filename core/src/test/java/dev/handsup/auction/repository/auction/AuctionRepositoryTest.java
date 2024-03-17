@@ -26,6 +26,7 @@ import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 
 @DisplayName("[AuctionRepository 테스트]")
 class AuctionRepositoryTest extends DataJpaTestSupport {
@@ -34,7 +35,13 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 	private final PageRequest pageRequest = PageRequest.of(0, 10);
 
 	@Autowired
+	private EntityManager em;
+
+	@Autowired
 	private AuctionRepository auctionRepository;
+
+	@Autowired
+	private AuctionQueryRepository auctionQueryRepository;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -90,8 +97,12 @@ class AuctionRepositoryTest extends DataJpaTestSupport {
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		//when
-		auctionRepository.updateAuctionStatus(AuctionStatus.BIDDING, AuctionStatus.TRADING,
-			today); //벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
+		//벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
+		auctionQueryRepository.updateAuctionStatusTrading();
+
+		em.flush();
+		em.clear();
+
 		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
 		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
 		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
