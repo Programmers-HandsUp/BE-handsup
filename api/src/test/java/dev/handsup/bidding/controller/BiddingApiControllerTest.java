@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -197,11 +196,14 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	@Test
 	void cancelTrading() throws Exception {
 		//given
-		Bidding bidding1 = BiddingFixture.bidding(bidder, auction1, TradingStatus.PROGRESSING);
-		Bidding bidding2 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING);
-		biddingRepository.saveAll(List.of(bidding1, bidding2));
+		Bidding waitingBidding1 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 200000);
+		Bidding waitingBidding2 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 300000);
+		Bidding anotherAuctionBidding = BiddingFixture.bidding(bidder, auction2, TradingStatus.WAITING, 400000);
+		Bidding progressingBidding = BiddingFixture.bidding(bidder, auction1, TradingStatus.PROGRESSING, 500000);
+		biddingRepository.saveAll(List.of(waitingBidding1, waitingBidding2, anotherAuctionBidding, progressingBidding));
+
 		//when, then
-		mockMvc.perform(patch("/api/auctions/bids/{biddingId}/cancel", bidding1.getId())
+		mockMvc.perform(patch("/api/auctions/bids/{biddingId}/cancel", progressingBidding.getId())
 				.contentType(APPLICATION_JSON)
 				.header(AUTHORIZATION, "Bearer " + sellerAccessToken))
 			.andExpect(status().isOk())
@@ -209,7 +211,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.auctionId").value(auction1.getId()))
 			.andExpect(jsonPath("$.bidderId").value(bidder.getId()));
 
-		assertThat(bidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING); // 변경 감지 위해 @Transactional 필요
+		assertThat(waitingBidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING); // 변경 감지 위해 @Transactional 필요
 	}
 
 	@DisplayName("[판매자는 거래가 진행중이 아니면 취소할 수 없다.]")
