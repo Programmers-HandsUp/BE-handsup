@@ -5,12 +5,14 @@ import static dev.handsup.auction.domain.product.QProduct.*;
 import static dev.handsup.auction.domain.product.product_category.QProductCategory.*;
 import static org.springframework.util.StringUtils.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -92,6 +94,16 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 			.fetch();
 		boolean hasNext = hasNext(pageable.getPageSize(), content);
 		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+	@Override
+	@Transactional
+	public void updateAuctionStatusTrading() {
+		queryFactory
+			.update(auction)
+			.set(auction.status, AuctionStatus.TRADING)
+			.where(auction.endDate.eq(LocalDate.now().minusDays(1)))
+			.execute();
 	}
 
 	private OrderSpecifier<?> searchAuctionSort(Pageable pageable) {
