@@ -16,7 +16,6 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.common.exception.NotFoundException;
-import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.notification.domain.NotificationType;
