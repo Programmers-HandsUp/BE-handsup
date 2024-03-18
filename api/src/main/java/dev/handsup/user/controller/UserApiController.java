@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
@@ -62,7 +63,7 @@ public class UserApiController {
 	@GetMapping("/api/users/check-email")
 	@Operation(summary = "이메일 중복 체크 API", description = "이메일이 이미 사용중인지 체크한다")
 	public ResponseEntity<EmailAvailabilityResponse> checkEmailAvailability(
-		@Valid @RequestBody EmailAvailabilityRequest request
+		@Valid @RequestParam("email") EmailAvailabilityRequest request
 	) {
 		EmailAvailabilityResponse response = userService.isEmailAvailable(request);
 		return ResponseEntity.ok(response);
