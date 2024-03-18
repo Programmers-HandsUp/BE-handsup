@@ -6,36 +6,47 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.domain.TradingStatus;
+import dev.handsup.bidding.repository.BiddingRepository;
+import dev.handsup.bidding.service.BiddingService;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
-import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.ReviewFixture;
 import dev.handsup.fixture.ReviewLabelFixture;
 import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
-import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.dto.response.ReviewDetailResponse;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.exception.UserErrorCode;
+import dev.handsup.user.repository.UserRepository;
 
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
 
-	private final Review review = ReviewFixture.review();
+	private final Review review = ReviewFixture.review(1L);
 	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
 		1L, ReviewLabelValue.MANNER.getDescription()
 	);
@@ -43,59 +54,96 @@ class ReviewApiControllerTest extends ApiTestSupport {
 		2L, ReviewLabelValue.CHEAP.getDescription()
 	);
 	private final List<Long> reviewLabelIds = List.of(1L, 2L);
-
 	@Autowired
 	private ReviewRepository reviewRepository;
 	@Autowired
 	private ReviewLabelRepository reviewLabelRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-	private ProductCategory productCategory;
+	@Autowired
+	private BiddingRepository biddingRepository;
+	@Autowired
+	private BiddingService biddingService;
+	@Autowired
+	private UserRepository userRepository;
 	private Auction auction;
 
 	@BeforeEach
 	void setUp() {
-		String DIGITAL_DEVICE = "디지털 기기";
-		productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
-		productCategoryRepository.save(productCategory);
-		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
+		productCategoryRepository.save(review.getAuction().getProduct().getProductCategory());
+		auction = auctionRepository.save(review.getAuction());
 		reviewLabelRepository.saveAll(List.of(reviewLabelManner, reviewLabelCheap));
 	}
 
 	@Test
+	@Transactional
 	@DisplayName("[리뷰 등록 API] 작성자가 경매에 대한 리뷰를 등록한다")
 	void registerReviewTest() throws Exception {
 		// given
-		Long auctionId = 1L;
+		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
+		Long auctionId = auction.getId();
+		int beforeSellerScore = auction.getSeller().getScore();
+		LocalDateTime now = LocalDateTime.now();
+		ReflectionTestUtils.setField(review, "createdAt", now);
+
+		Bidding bidding = new Bidding(
+			this.auction.getInitPrice() + 1000, this.auction, user, TradingStatus.PROGRESSING);
+		biddingRepository.save(bidding);
+		biddingService.completeTrading(bidding.getId(), user);
+
 		RegisterReviewRequest request = RegisterReviewRequest.of(
 			review.getEvaluationScore(),
 			review.getContent(),
 			reviewLabelIds
 		);
-		ReviewResponse expectedResponse = ReviewResponse.of(
+
+		ReviewDetailResponse expectedResponse = ReviewDetailResponse.of(
+			review.getId(),
 			review.getEvaluationScore(),
 			review.getContent(),
 			auctionId,
-			user.getId()
+			user.getId(),
+			user.getNickname(),
+			this.auction.getTitle(),
+			bidding.getBiddingPrice(),
+			this.auction.getTradeMethod().toString(),
+			this.auction.getTradingLocation(),
+			bidding.getUpdatedAt().toString(),
+			review.getCreatedAt().toString()
 		);
-		int beforeSellerScore = auction.getSeller().getScore();
 
 		// when & then
-		mockMvc.perform(post("/api/auctions/{auctionId}/reviews", auctionId)
+		ResultActions resultActions = mockMvc.perform(post("/api/auctions/{auctionId}/reviews", auctionId)
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON)
 				.content(toJson(request)))
 			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.reviewId").value(expectedResponse.reviewId()))
 			.andExpect(jsonPath("$.evaluationScore").value(expectedResponse.evaluationScore()))
 			.andExpect(jsonPath("$.content").value(expectedResponse.content()))
 			.andExpect(jsonPath("$.auctionId").value(expectedResponse.auctionId()))
-			.andExpect(jsonPath("$.writerId").value(expectedResponse.writerId()));
+			.andExpect(jsonPath("$.writerId").value(expectedResponse.writerId()))
+			.andExpect(jsonPath("$.writerNickname").value(expectedResponse.writerNickname()))
+			.andExpect(jsonPath("$.auctionTitle").value(expectedResponse.auctionTitle()))
+			.andExpect(jsonPath("$.winningPrice").value(expectedResponse.winningPrice()))
+			.andExpect(jsonPath("$.tradeMethod").value(expectedResponse.tradeMethod()))
+			.andExpect(jsonPath("$.tradingLocation.si").value(expectedResponse.tradingLocation().getSi()))
+			.andExpect(jsonPath("$.tradingLocation.gu").value(expectedResponse.tradingLocation().getGu()))
+			.andExpect(jsonPath("$.tradingLocation.dong").value(expectedResponse.tradingLocation().getDong()));
 
-		User evaluatedSeller = userRepository.findById(auction.getSeller().getId())
+		User evaluatedSeller = userRepository.findById(this.auction.getSeller().getId())
 			.orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_USER));
 
 		assertThat(evaluatedSeller.getScore())
 			.isEqualTo(beforeSellerScore + request.evaluationScore());
+
+		String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+		ReviewDetailResponse actualResponse = objectMapper.readValue(responseBody, ReviewDetailResponse.class);
+		LocalDateTime expectedTime = LocalDateTime.parse(expectedResponse.tradingCreatedAt());
+		LocalDateTime actualTime = LocalDateTime.parse(actualResponse.tradingCreatedAt());
+		long secondsBetween = Duration.between(expectedTime, actualTime).getSeconds();
+
+		assertThat(Math.abs(secondsBetween)).isLessThan(1);
 	}
 
 	@Test
@@ -103,7 +151,9 @@ class ReviewApiControllerTest extends ApiTestSupport {
 	void getReviewsOfAuctionTest() throws Exception {
 		// given
 		Auction auction1 = auction;
-		Auction auction2 = AuctionFixture.auction(productCategory);
+		ProductCategory productCategoryBooks = ProductCategory.from(ProductCategoryValue.BOOKS.toString());
+		productCategoryRepository.save(productCategoryBooks);
+		Auction auction2 = AuctionFixture.auction(productCategoryBooks);
 		auctionRepository.save(auction2);
 
 		Review review1 = ReviewFixture.review("content1", auction1);

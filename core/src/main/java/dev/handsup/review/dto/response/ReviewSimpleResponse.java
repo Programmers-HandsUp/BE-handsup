@@ -5,24 +5,33 @@ import static lombok.AccessLevel.*;
 import lombok.Builder;
 
 @Builder(access = PRIVATE)
-public record ReviewResponse(
+public record ReviewSimpleResponse(
 
+	Long reviewId,
 	int evaluationScore,
 	String content,
 	Long auctionId,
-	Long writerId
+	Long writerId,
+	String writerNickName,
+	String reviewCreatedAt
 ) {
-	public static ReviewResponse of(
+	public static ReviewSimpleResponse of(
+		Long reviewId,
 		int evaluationScore,
 		String content,
 		Long auctionId,
-		Long writerId
+		Long writerId,
+		String writerNickName,
+		String reviewCreatedAt
 	) {
-		return ReviewResponse.builder()
+		return ReviewSimpleResponse.builder()
+			.reviewId(reviewId)
 			.evaluationScore(evaluationScore)
 			.content(content)
 			.auctionId(auctionId)
 			.writerId(writerId)
+			.writerNickName(writerNickName)
+			.reviewCreatedAt(reviewCreatedAt)
 			.build();
 	}
 }
