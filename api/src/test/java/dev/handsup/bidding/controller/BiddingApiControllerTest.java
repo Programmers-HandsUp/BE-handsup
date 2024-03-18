@@ -32,6 +32,7 @@ import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.UserFixture;
+import dev.handsup.notification.repository.FCMTokenRepository;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
 
@@ -40,6 +41,11 @@ class BiddingApiControllerTest extends ApiTestSupport {
 
 	private final User seller = user;
 	private final User bidder = UserFixture.user(2L, "bidder@naver.com");
+	private String sellerAccessToken;
+	private String bidderAccessToken;
+	private Auction auction1;
+	private Auction auction2;
+
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
 	@Autowired
@@ -50,10 +56,8 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	private AuctionService auctionService;
 	@Autowired
 	private JwtProvider jwtProvider;
-	private String sellerAccessToken;
-	private String bidderAccessToken;
-	private Auction auction1;
-	private Auction auction2;
+	@Autowired
+	private FCMTokenRepository fcmTokenRepository;
 
 	@BeforeEach
 	void setUp() {
