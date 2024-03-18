@@ -12,7 +12,7 @@ logging.level:
 
 jwt:
   secret: prgrmsdevcoursehandsupjsonwebtokensecretkeytest123
-  token-validity-in-seconds: 864000
+  token-validity-in-seconds: 1800
 cloud:
   aws:
     credentials:
