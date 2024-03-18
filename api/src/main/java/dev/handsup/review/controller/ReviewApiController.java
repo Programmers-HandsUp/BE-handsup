@@ -17,6 +17,7 @@ import dev.handsup.review.dto.response.ReviewSimpleResponse;
 import dev.handsup.review.service.ReviewService;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class ReviewApiController {
 	public ResponseEntity<ReviewDetailResponse> registerReview(
 		@Valid @RequestBody RegisterReviewRequest request,
 		@PathVariable Long auctionId,
-		@JwtAuthorization User writer
+		@Parameter(hidden = true) @JwtAuthorization User writer
 	) {
 		ReviewDetailResponse response = reviewService.registerReview(
 			request,

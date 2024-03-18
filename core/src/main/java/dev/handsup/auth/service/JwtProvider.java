@@ -8,7 +8,7 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import dev.handsup.auth.exception.AuthException;
+import dev.handsup.common.exception.ValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -74,13 +74,13 @@ public class JwtProvider {
 				.parseClaimsJws(token)
 				.getBody();
 		} catch (io.jsonwebtoken.ExpiredJwtException e) {
-			throw new AuthException(TOKEN_EXPIRED);
+			throw new ValidationException(TOKEN_EXPIRED);
 		} catch (io.jsonwebtoken.UnsupportedJwtException e) {
-			throw new AuthException(UNSUPPORTED_TOKEN);
+			throw new ValidationException(UNSUPPORTED_TOKEN);
 		} catch (io.jsonwebtoken.MalformedJwtException e) {
-			throw new AuthException(MALFORMED_TOKEN);
+			throw new ValidationException(MALFORMED_TOKEN);
 		} catch (Exception e) {
-			throw new AuthException(INVALID_TOKEN_ETC);
+			throw new ValidationException(INVALID_TOKEN_ETC);
 		}
 	}
 

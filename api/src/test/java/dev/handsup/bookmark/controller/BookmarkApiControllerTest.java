@@ -55,9 +55,7 @@ class BookmarkApiControllerTest extends ApiTestSupport {
 	@DisplayName("[북마크를 추가할 수 있다.]")
 	void addBookmark() throws Exception {
 		// fcm 토큰 저장, seller 는 receiver
-		String fcmToken = "c1SuCte6bF--OIMW94J1tV:APA91bEU1mLbYiv7OwmHjKp0cpKZ9d64n7bDgkkkPtwk3iSLwbc"
-			+ "PuttF1cbj0teRkHgB3GKF4bWiE4nGSVjgrWfnCJpnukv-Tl34-FHFQbugHmVvXpQGTJzBhJhV-EsMgt7opmco6UV Z";
-		fcmTokenRepository.saveFcmToken(seller.getEmail(), fcmToken);
+		fcmTokenRepository.saveFcmToken(seller.getEmail(), "fcmToken123");
 
 		mockMvc.perform(post("/api/auctions/bookmarks/{auctionId}", auction.getId())
 				.contentType(APPLICATION_JSON)

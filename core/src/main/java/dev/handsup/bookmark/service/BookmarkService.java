@@ -16,7 +16,6 @@ import dev.handsup.bookmark.dto.EditBookmarkResponse;
 import dev.handsup.bookmark.dto.FindUserBookmarkResponse;
 import dev.handsup.bookmark.dto.GetBookmarkStatusResponse;
 import dev.handsup.bookmark.exception.BookmarkErrorCode;
-import dev.handsup.bookmark.exception.BookmarkException;
 import dev.handsup.bookmark.repository.BookmarkRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
@@ -46,6 +45,12 @@ public class BookmarkService {
 		bookmarkRepository.save(bookmark);
 
 		// user 는 sender
+		sendMessage(user, auction);
+
+		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
+	}
+
+	private void sendMessage(User user, Auction auction) {
 		fcmService.sendMessage(
 			user.getEmail(),
 			user.getNickname(),
@@ -53,13 +58,11 @@ public class BookmarkService {
 			NotificationType.BOOKMARK,
 			auction
 		);
-
-		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
 	}
 
 	private void validateSelfBookmark(User user, Auction auction) {
 		if (Objects.equals(auction.getSeller().getId(), user.getId())) {
-			throw new BookmarkException(BookmarkErrorCode.NOT_ALLOW_SELF_BOOKMARK);
+			throw new ValidationException(BookmarkErrorCode.NOT_ALLOW_SELF_BOOKMARK);
 		}
 	}
 

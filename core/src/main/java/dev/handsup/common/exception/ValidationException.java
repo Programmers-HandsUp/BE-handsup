@@ -11,4 +11,9 @@ public class ValidationException extends RuntimeException {
 		super(errorCode.getMessage());
 		this.code = errorCode.getCode();
 	}
+
+	public ValidationException(String message) {
+		super(message);
+		this.code = "MSG_000";
+	}
 }
