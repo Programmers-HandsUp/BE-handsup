@@ -93,7 +93,7 @@ public class BiddingService {
 			seller.getEmail(),
 			seller.getNickname(),
 			bidding.getBidder().getEmail(),
-			NotificationType.COMPLETED_PURCHASE_WINNING,
+			NotificationType.COMPLETED_PURCHASE_TRADING,
 			bidding.getAuction()
 		);
 
@@ -115,7 +115,7 @@ public class BiddingService {
 			seller.getEmail(),
 			seller.getNickname(),
 			bidding.getBidder().getEmail(),
-			NotificationType.CANCELED_PURCHASE_WINNING,
+			NotificationType.CANCELED_PURCHASE_TRADING,
 			bidding.getAuction()
 		);
 
