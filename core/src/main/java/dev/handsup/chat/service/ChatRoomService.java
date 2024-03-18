@@ -91,7 +91,7 @@ public class ChatRoomService {
 	public PageResponse<ChatMessageResponse> getChatRoomMessages(Long chatRoomId,Pageable pageable) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Slice<ChatMessageResponse> responsePage = chatMessageRepository
-			.findByChatRoomOrderByCreatedAt(chatRoom, pageable)
+			.findByChatRoom(chatRoom, pageable)
 			.map(ChatMessageMapper::toChatMessageResponse);
 		return CommonMapper.toPageResponse(responsePage);
 	}

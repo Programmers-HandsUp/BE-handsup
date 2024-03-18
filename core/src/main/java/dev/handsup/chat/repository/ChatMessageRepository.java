@@ -11,7 +11,7 @@ import dev.handsup.chat.domain.ChatMessage;
 import dev.handsup.chat.domain.ChatRoom;
 
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-	Slice<ChatMessage> findByChatRoomOrderByCreatedAt(ChatRoom chatRoom, Pageable pageable);
+	Slice<ChatMessage> findByChatRoom(ChatRoom chatRoom, Pageable pageable);
 
 	@Modifying(flushAutomatically = true, clearAutomatically = true)
 	@Query(
