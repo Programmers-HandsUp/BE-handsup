@@ -81,7 +81,7 @@ public class BiddingService {
 		validateAuthorization(bidding, seller);
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
-		bidding.getAuction().changeAuctionStatusCompleted();
+		bidding.getAuction().updateAuctionStatusCompleted();
 		//
 
 		return BiddingMapper.toBiddingResponse(bidding);

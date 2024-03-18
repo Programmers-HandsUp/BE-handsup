@@ -157,11 +157,11 @@ public class Auction extends TimeBaseEntity {
 		);
 	}
 
-	public void changeAuctionStatusTrading() {
+	public void updateAuctionStatusTrading() {
 		status = AuctionStatus.TRADING;
 	}
 
-	public void changeAuctionStatusCompleted() {
+	public void updateAuctionStatusCompleted() {
 		if (status != TRADING) {
 			throw new ValidationException(AuctionErrorCode.CAN_NOT_COMPLETE_AUCTION);
 		}
