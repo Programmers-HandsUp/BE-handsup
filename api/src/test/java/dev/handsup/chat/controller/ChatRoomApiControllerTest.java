@@ -241,7 +241,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		chatMessageRepository.saveAll(List.of(chatMessage1, chatMessage2, otherChatMessage3));
 
 		//when, then
-		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", bidding.getId())
+		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", chatRoom1.getId())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
