@@ -38,8 +38,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[ChatRoom 통합 테스트]")
 class ChatRoomApiControllerTest extends ApiTestSupport {
 
-	private final User seller = user; // loginUser
-	private final User bidder = UserFixture.user2();
+	private User seller, bidder;
 	private ProductCategory productCategory;
 	private Auction auction;
 	private Bidding bidding;
@@ -57,14 +56,18 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
+		seller = user;
+		bidder = UserFixture.user2();
 		userRepository.saveAll(List.of(bidder, seller));
+
 		productCategory = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(productCategory);
+
 		auction = AuctionFixture.auction(seller, productCategory);
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 		auctionRepository.save(auction);
-		bidding = BiddingFixture.bidding(auction, bidder);
-		biddingRepository.save(bidding);
+
+		biddingRepository.save(bidding = BiddingFixture.bidding(auction, bidder));
 	}
 
 	@DisplayName("[기존 채팅방이 없으면, 채팅방을 생성할 수 있다.]")
