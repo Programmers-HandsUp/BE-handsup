@@ -45,6 +45,12 @@ public class BookmarkService {
 		bookmarkRepository.save(bookmark);
 
 		// user 는 sender
+		sendMessage(user, auction);
+
+		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
+	}
+
+	private void sendMessage(User user, Auction auction) {
 		fcmService.sendMessage(
 			user.getEmail(),
 			user.getNickname(),
@@ -52,8 +58,6 @@ public class BookmarkService {
 			NotificationType.BOOKMARK,
 			auction
 		);
-
-		return BookmarkMapper.toEditBookmarkResponse(auction.getBookmarkCount());
 	}
 
 	private void validateSelfBookmark(User user, Auction auction) {

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ReviewLabelValue {
 
 	FAST_RESPONSE("응답이 빨라요"),
-	PRICE("가격이 착해요"),
+	CHEAP_PRICE("가격이 착해요"),
 	MANNER("친절하고 매너 있어요"),
 	PROMISE("약속을 잘 지켜요"),
 	DETAILED_DESCRIPTION("설명을 잘 해줘요"),

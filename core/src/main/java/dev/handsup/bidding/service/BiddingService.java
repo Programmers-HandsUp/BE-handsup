@@ -89,13 +89,7 @@ public class BiddingService {
 		// 거래 완료 알림 추가
 		bidding.getAuction().changeAuctionStatusCompleted();
 
-		fcmService.sendMessage(
-			seller.getEmail(),
-			seller.getNickname(),
-			bidding.getBidder().getEmail(),
-			NotificationType.COMPLETED_PURCHASE_TRADING,
-			bidding.getAuction()
-		);
+		sendMessage(seller, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
 
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
@@ -111,22 +105,10 @@ public class BiddingService {
 		nextBidding.updateTradingStatusPreparing();    // 다음 입찰 준비중 상태로 변경
 
 		// 현재 입찰자 거래 취소 알림
-		fcmService.sendMessage(
-			seller.getEmail(),
-			seller.getNickname(),
-			bidding.getBidder().getEmail(),
-			NotificationType.CANCELED_PURCHASE_TRADING,
-			bidding.getAuction()
-		);
+		sendMessage(seller, bidding, NotificationType.CANCELED_PURCHASE_TRADING);
 
 		// 다음 입찰자 낙찰 알림
-		fcmService.sendMessage(
-			seller.getEmail(),
-			seller.getNickname(),
-			nextBidding.getBidder().getEmail(),
-			NotificationType.PURCHASE_WINNING,
-			nextBidding.getAuction()
-		);
+		sendMessage(seller, nextBidding, NotificationType.PURCHASE_WINNING);
 
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
@@ -140,6 +122,16 @@ public class BiddingService {
 	public Bidding findBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
+	}
+
+	private void sendMessage(User seller, Bidding bidding, NotificationType completedPurchaseTrading) {
+		fcmService.sendMessage(
+			seller.getEmail(),
+			seller.getNickname(),
+			bidding.getBidder().getEmail(),
+			completedPurchaseTrading,
+			bidding.getAuction()
+		);
 	}
 
 }

@@ -126,7 +126,7 @@ class UserApiControllerTest extends ApiTestSupport {
 	void getUserReviewLabelsTest() throws Exception {
 		// given
 		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
-		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.PRICE.getDescription());
+		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP_PRICE.getDescription());
 		reviewLabelRepository.saveAll(
 			List.of(reviewLabel1, reviewLabel2)
 		);

@@ -48,6 +48,12 @@ public class ChatMessageService {
 			receiver = chatRoom.getSeller();
 		}
 
+		sendMessage(sender, receiver, chatRoom);
+
+		return ChatMessageMapper.toChatMessageResponse(savedChatMessage);
+	}
+
+	private void sendMessage(User sender, User receiver, ChatRoom chatRoom) {
 		fcmService.sendMessage(
 			sender.getEmail(),
 			sender.getNickname(),
@@ -55,8 +61,6 @@ public class ChatMessageService {
 			NotificationType.BOOKMARK,
 			getAuctionById(chatRoom.getAuctionId())
 		);
-
-		return ChatMessageMapper.toChatMessageResponse(savedChatMessage);
 	}
 
 	private ChatRoom getChatRoomById(Long chatRoomId) {
