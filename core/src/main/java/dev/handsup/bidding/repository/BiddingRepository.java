@@ -18,6 +18,11 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
 		+ "WHERE b.id = :id")
 	Optional<Bidding> findBiddingWithAuctionAndBidder(@Param("id") Long id);
 
+	@Query("SELECT b FROM Bidding b "
+		+ "JOIN FETCH b.auction "
+		+ "WHERE b.id = :id")
+	Optional<Bidding> findBiddingWithAuction(@Param("id") Long id);
+
 	@Query("SELECT MAX(b.biddingPrice) FROM Bidding b WHERE b.auction.id = :auctionId")
 	Integer findMaxBiddingPriceByAuctionId(Long auctionId);
 
