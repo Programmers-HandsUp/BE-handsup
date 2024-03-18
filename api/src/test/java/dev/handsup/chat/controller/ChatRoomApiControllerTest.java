@@ -229,8 +229,10 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getChatRoomMessages() throws Exception {
 		//given
+		User user1 = userRepository.save(UserFixture.user1());
+		Bidding bidding2 = biddingRepository.save(BiddingFixture.bidding(auction, user1));
 		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(seller, bidding);
-		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding2);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2));
 
 		ChatMessage chatMessage1 = ChatMessageFixture.chatMessage(chatRoom1, bidder);
