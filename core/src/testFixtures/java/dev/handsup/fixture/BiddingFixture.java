@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class BiddingFixture {
 
 	public static Bidding bidding(Auction auction, User user) {
-		return Bidding.of(
+		return new Bidding(
 			1L,
 			40000,
 			auction,
@@ -22,7 +22,7 @@ public class BiddingFixture {
 	}
 
 	public static Bidding bidding(Auction auction, User user, TradingStatus status) {
-		return Bidding.of(
+		return new Bidding(
 			1L,
 			40000,
 			auction,
@@ -32,7 +32,7 @@ public class BiddingFixture {
 	}
 
 	public static Bidding bidding(Auction auction, User user, TradingStatus status, int biddingPrice) {
-		return Bidding.of(
+		return new Bidding(
 			1L,
 			biddingPrice,
 			auction,
@@ -42,7 +42,7 @@ public class BiddingFixture {
 	}
 
 	public static Bidding bidding(User user, Auction auction, TradingStatus status) {
-		return Bidding.of(
+		return new Bidding(
 			40000,
 			auction,
 			user,
@@ -51,7 +51,7 @@ public class BiddingFixture {
 	}
 
 	public static Bidding bidding(User user, Auction auction, TradingStatus status, int price) {
-		return Bidding.of(
+		return new Bidding(
 			price,
 			auction,
 			user,

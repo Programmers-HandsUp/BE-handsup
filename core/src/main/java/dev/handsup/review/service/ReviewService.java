@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.exception.BiddingErrorCode;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
@@ -17,7 +20,8 @@ import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.dto.ReviewMapper;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
-import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.dto.response.ReviewDetailResponse;
+import dev.handsup.review.dto.response.ReviewSimpleResponse;
 import dev.handsup.review.exception.ReviewErrorCode;
 import dev.handsup.review.repository.ReviewInterReviewLabelRepository;
 import dev.handsup.review.repository.ReviewLabelRepository;
@@ -35,18 +39,19 @@ public class ReviewService {
 	private final ReviewInterReviewLabelRepository reviewInterReviewLabelRepository;
 	private final UserReviewLabelRepository userReviewLabelRepository;
 	private final AuctionRepository auctionRepository;
+	private final BiddingRepository biddingRepository;
 
 	@Transactional
-	public ReviewResponse registerReview(
+	public ReviewDetailResponse registerReview(
 		RegisterReviewRequest request,
 		Long auctionId,
 		User writer
 	) {
 		Auction auction = getAuctionById(auctionId);
+		Bidding bidding = getBidding(auction, writer);
 		User seller = auction.getSeller();
-		Review review = reviewRepository.save(
-			ReviewMapper.toReview(request, auction, writer)
-		);
+		Review review = reviewRepository.save(ReviewMapper.toReview(request, auction, writer));
+
 		request.reviewLabelIds().forEach(reviewLabelId -> {
 			ReviewLabel reviewLabel = getReviewById(reviewLabelId);
 			reviewInterReviewLabelRepository.save(
@@ -61,7 +66,7 @@ public class ReviewService {
 
 		seller.operateScore(request.evaluationScore());
 
-		return ReviewMapper.toReviewResponse(review);
+		return ReviewMapper.toReviewDetailResponse(review, auction, bidding);
 	}
 
 	private ReviewLabel getReviewById(Long reviewLabelId) {
@@ -75,10 +80,15 @@ public class ReviewService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<ReviewResponse> getReviewsOfAuction(Long auctionId, Pageable pageable) {
-		Slice<ReviewResponse> reviewResponsePage = reviewRepository
+	public PageResponse<ReviewSimpleResponse> getReviewsOfAuction(Long auctionId, Pageable pageable) {
+		Slice<ReviewSimpleResponse> reviewResponsePage = reviewRepository
 			.findByAuctionIdOrderByCreatedAtDesc(auctionId, pageable)
-			.map(ReviewMapper::toReviewResponse);
+			.map(ReviewMapper::toReviewSimpleResponse);
 		return CommonMapper.toPageResponse(reviewResponsePage);
+	}
+
+	private Bidding getBidding(Auction auction, User bidder) {
+		return biddingRepository.findByAuctionAndBidder(auction, bidder)
+			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING_BY_AUCTION_AND_BIDDER));
 	}
 }

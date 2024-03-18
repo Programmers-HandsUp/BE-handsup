@@ -79,11 +79,11 @@ public class BiddingService {
 	public BiddingResponse completeTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
+
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
 		bidding.getAuction().updateAuctionStatusCompleted();
 		//
-
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
@@ -103,7 +103,7 @@ public class BiddingService {
 		}
 	}
 
-	private Bidding findBiddingById(Long biddingId) {
+	public Bidding findBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}

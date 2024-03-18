@@ -3,6 +3,7 @@ package dev.handsup.review.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +15,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.ReviewFixture;
 import dev.handsup.fixture.ReviewLabelFixture;
 import dev.handsup.fixture.UserFixture;
@@ -27,7 +32,7 @@ import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
-import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.dto.response.ReviewDetailResponse;
 import dev.handsup.review.repository.ReviewInterReviewLabelRepository;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
@@ -64,6 +69,8 @@ class ReviewServiceTest {
 	private UserReviewLabelRepository userReviewLabelRepository;
 	@Mock
 	private AuctionRepository auctionRepository;
+	@Mock
+	private BiddingRepository biddingRepository;
 	@InjectMocks
 	private ReviewService reviewService;
 
@@ -85,6 +92,7 @@ class ReviewServiceTest {
 		Long auctionId = auction.getId();
 		given(auctionRepository.findById(auctionId)).willReturn(Optional.of(auction));
 		given(reviewRepository.save(any(Review.class))).willReturn(review);
+		ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
 
 		given(reviewLabelRepository.findById(reviewLabelManner.getId())).willReturn(Optional.of(reviewLabelManner));
 		given(reviewLabelRepository.findById(reviewLabelCheap.getId())).willReturn(Optional.of(reviewLabelCheap));
@@ -97,8 +105,13 @@ class ReviewServiceTest {
 		given(userReviewLabelRepository.findById(userReviewLabelCheap.getId())).willReturn(
 			Optional.of(userReviewLabelCheap));
 
+		Bidding bidding = BiddingFixture.bidding(auction, writer);
+		ReflectionTestUtils.setField(bidding, "updatedAt", LocalDateTime.now());
+		given(biddingRepository.findByAuctionAndBidder(auction, writer)).willReturn(
+			Optional.of(bidding));
+
 		// when
-		ReviewResponse response = reviewService.registerReview(request, auctionId, writer);
+		ReviewDetailResponse response = reviewService.registerReview(request, auctionId, writer);
 
 		// then
 		assertThat(response).isNotNull();
