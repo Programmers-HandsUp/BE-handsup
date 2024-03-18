@@ -15,9 +15,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.method.HandlerMethod;
 
 import dev.handsup.auth.annotation.NoAuth;
-import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.jwt.JwtInterceptor;
 import dev.handsup.auth.service.JwtProvider;
+import dev.handsup.common.exception.ValidationException;
 import jakarta.servlet.http.HttpServletResponse;
 
 @DisplayName("[JwtInterceptor 통합 테스트]")
@@ -68,7 +68,7 @@ class JwtInterceptorTest {
 	void shouldThrowExceptionWithInvalidToken() {
 		// given
 		request.addHeader(HttpHeaders.AUTHORIZATION, "Bearer invalidToken");
-		doThrow(new AuthException(TOKEN_EXPIRED))
+		doThrow(new ValidationException(TOKEN_EXPIRED))
 			.when(jwtProvider).validateToken("invalidToken");
 
 		// when, then

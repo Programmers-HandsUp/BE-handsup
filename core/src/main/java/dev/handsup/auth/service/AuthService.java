@@ -12,10 +12,10 @@ import dev.handsup.auth.dto.request.LoginRequest;
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.dto.response.TokenReIssueResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
-import dev.handsup.auth.exception.AuthException;
 import dev.handsup.auth.repository.AuthRepository;
 import dev.handsup.auth.repository.BlacklistTokenRepository;
 import dev.handsup.common.exception.NotFoundException;
+import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -85,7 +85,7 @@ public class AuthService {
 	public TokenReIssueResponse createAccessTokenByRefreshToken(String refreshTokenFromCookies) {
 		boolean isBlacklisted = blacklistTokenRepository.existsByRefreshToken(refreshTokenFromCookies);
 		if (isBlacklisted) {
-			throw new AuthException(AuthErrorCode.BLACKLISTED_TOKEN);
+			throw new ValidationException(AuthErrorCode.BLACKLISTED_TOKEN);
 		}
 
 		Auth auth = getAuthByRefreshToken(refreshTokenFromCookies);
