@@ -31,7 +31,7 @@ import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.EmailAvailibilityRequest;
+import dev.handsup.user.dto.request.EmailAvailabilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;
@@ -88,13 +88,11 @@ class UserApiControllerTest extends ApiTestSupport {
 		// given
 		String existedEmail = user.getEmail();
 		String requestEmail = "hello" + existedEmail;
-		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(requestEmail);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			get("/api/users/check-email")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request))
+				.param("email", requestEmail)
 		);
 
 		// then
@@ -107,13 +105,11 @@ class UserApiControllerTest extends ApiTestSupport {
 	void checkEmailAvailabilityFailTest() throws Exception {
 		// given
 		String existedEmail = user.getEmail();
-		EmailAvailibilityRequest request = EmailAvailibilityRequest.from(existedEmail);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			get("/api/users/check-email")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request))
+				.param("email", existedEmail)
 		);
 
 		// then
