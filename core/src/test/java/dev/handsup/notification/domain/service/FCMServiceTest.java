@@ -15,6 +15,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.UserFixture;
@@ -79,7 +80,7 @@ class FCMServiceTest {
 				NotificationType.BOOKMARK,
 				auction
 			))
-			.isInstanceOf(ValidationException.class)
+			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(NotificationErrorCode.NOT_FOUND_FCM_TOKEN.getMessage());
 
 		verify(firebaseMessaging, never()).sendAsync(any());
