@@ -13,7 +13,6 @@ import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.EmailAvailabilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
@@ -63,9 +62,9 @@ public class UserApiController {
 	@GetMapping("/api/users/check-email")
 	@Operation(summary = "이메일 중복 체크 API", description = "이메일이 이미 사용중인지 체크한다")
 	public ResponseEntity<EmailAvailabilityResponse> checkEmailAvailability(
-		@Valid @RequestParam("email") EmailAvailabilityRequest request
+		@RequestParam("email") String email
 	) {
-		EmailAvailabilityResponse response = userService.isEmailAvailable(request);
+		EmailAvailabilityResponse response = userService.isEmailAvailable(email);
 		return ResponseEntity.ok(response);
 	}
 

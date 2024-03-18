@@ -88,13 +88,11 @@ class UserApiControllerTest extends ApiTestSupport {
 		// given
 		String existedEmail = user.getEmail();
 		String requestEmail = "hello" + existedEmail;
-		EmailAvailabilityRequest request = EmailAvailabilityRequest.from(requestEmail);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			get("/api/users/check-email")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request))
+				.param("email", requestEmail)
 		);
 
 		// then
@@ -107,13 +105,11 @@ class UserApiControllerTest extends ApiTestSupport {
 	void checkEmailAvailabilityFailTest() throws Exception {
 		// given
 		String existedEmail = user.getEmail();
-		EmailAvailabilityRequest request = EmailAvailabilityRequest.from(existedEmail);
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			get("/api/users/check-email")
-				.contentType(APPLICATION_JSON)
-				.content(toJson(request))
+				.param("email", existedEmail)
 		);
 
 		// then

@@ -20,7 +20,6 @@ import dev.handsup.common.exception.ValidationException;
 import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
-import dev.handsup.user.dto.request.EmailAvailabilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.UserProfileResponse;
@@ -74,8 +73,8 @@ public class UserService {
 		return savedUser.getId();
 	}
 
-	public EmailAvailabilityResponse isEmailAvailable(EmailAvailabilityRequest request) {
-		boolean isEmailAvailable = userRepository.findByEmail(request.email()).isEmpty();
+	public EmailAvailabilityResponse isEmailAvailable(String email) {
+		boolean isEmailAvailable = userRepository.findByEmail(email).isEmpty();
 		return EmailAvailabilityResponse.from(isEmailAvailable);
 	}
 
