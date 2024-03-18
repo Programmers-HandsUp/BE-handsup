@@ -170,6 +170,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	@Test
 	void completeTrading() throws Exception {
 		//given
+		fcmTokenRepository.saveFcmToken(bidder.getEmail(), "fcmToken123");
 		ReflectionTestUtils.setField(auction1, "status", AuctionStatus.TRADING); //변경 감지
 		Bidding bidding = BiddingFixture.bidding(bidder, auction1, TradingStatus.PROGRESSING);
 		biddingRepository.save(bidding);
@@ -203,6 +204,7 @@ class BiddingApiControllerTest extends ApiTestSupport {
 	@Test
 	void cancelTrading() throws Exception {
 		//given
+		fcmTokenRepository.saveFcmToken(bidder.getEmail(), "fcmToken123");
 		Bidding waitingBidding1 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 200000);
 		Bidding waitingBidding2 = BiddingFixture.bidding(bidder, auction1, TradingStatus.WAITING, 300000);
 		Bidding anotherAuctionBidding = BiddingFixture.bidding(bidder, auction2, TradingStatus.WAITING, 400000);
