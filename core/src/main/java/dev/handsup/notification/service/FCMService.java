@@ -36,7 +36,7 @@ public class FCMService {
 			throw new NotFoundException(NotificationErrorCode.NOT_FOUND_FCM_TOKEN);
 		}
 
-		if (notificationType.equals(NotificationType.CANCELED_PURCHASE_WINNING) ||
+		if (notificationType.equals(NotificationType.CANCELED_PURCHASE_TRADING) ||
 			notificationType.equals(NotificationType.PURCHASE_WINNING)) {
 			senderNickname = "";
 		}

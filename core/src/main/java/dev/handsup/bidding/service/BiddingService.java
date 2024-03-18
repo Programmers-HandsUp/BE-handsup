@@ -82,8 +82,11 @@ public class BiddingService {
 	public BiddingResponse completeTrading(Long biddingId, User seller) {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
+
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
+
+		// 거래 완료 알림 추가
 		bidding.getAuction().changeAuctionStatusCompleted();
 
 		fcmService.sendMessage(
@@ -134,7 +137,7 @@ public class BiddingService {
 		}
 	}
 
-	private Bidding findBiddingById(Long biddingId) {
+	public Bidding findBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}

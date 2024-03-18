@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.review.dto.request.RegisterReviewRequest;
-import dev.handsup.review.dto.response.ReviewResponse;
+import dev.handsup.review.dto.response.ReviewDetailResponse;
+import dev.handsup.review.dto.response.ReviewSimpleResponse;
 import dev.handsup.review.service.ReviewService;
 import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,12 +34,12 @@ public class ReviewApiController {
 	@PostMapping("/{auctionId}/reviews")
 	@Operation(summary = "리뷰 등록 API", description = "리뷰를 등록한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<ReviewResponse> registerReview(
+	public ResponseEntity<ReviewDetailResponse> registerReview(
 		@Valid @RequestBody RegisterReviewRequest request,
 		@PathVariable Long auctionId,
 		@Parameter(hidden = true) @JwtAuthorization User writer
 	) {
-		ReviewResponse response = reviewService.registerReview(
+		ReviewDetailResponse response = reviewService.registerReview(
 			request,
 			auctionId,
 			writer
@@ -49,11 +50,11 @@ public class ReviewApiController {
 	@GetMapping("/{auctionId}/reviews")
 	@Operation(summary = "경매 리뷰 조회 API", description = "해당 경매의 리뷰를 전체 조회한다")
 	@ApiResponse(useReturnTypeSchema = true)
-	public ResponseEntity<PageResponse<ReviewResponse>> getReviewsOfAuction(
+	public ResponseEntity<PageResponse<ReviewSimpleResponse>> getReviewsOfAuction(
 		@PathVariable Long auctionId,
 		Pageable pageable
 	) {
-		PageResponse<ReviewResponse> response = reviewService.getReviewsOfAuction(auctionId, pageable);
+		PageResponse<ReviewSimpleResponse> response = reviewService.getReviewsOfAuction(auctionId, pageable);
 		return ResponseEntity.ok(response);
 	}
 }
