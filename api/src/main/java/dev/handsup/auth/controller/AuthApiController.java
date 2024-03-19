@@ -1,6 +1,8 @@
 package dev.handsup.auth.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,7 +23,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -47,8 +48,8 @@ public class AuthApiController {
 		LoginDetailResponse loginDetailResponse = authService.login(request);
 		LoginSimpleResponse loginSimpleResponse = LoginSimpleResponse.from(loginDetailResponse.accessToken());
 
-		Cookie cookie = AuthMapper.toCookie(loginDetailResponse);
-		httpServletResponse.addCookie(cookie);
+		ResponseCookie cookie = AuthMapper.toCookie(loginDetailResponse);
+		httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
 		return ResponseEntity.ok(loginSimpleResponse);
 	}
