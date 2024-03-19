@@ -35,6 +35,7 @@ import dev.handsup.common.exception.ValidationException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.UserFixture;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,12 +44,15 @@ class BiddingServiceTest {
 
 	private final Auction auction = AuctionFixture.auction();    // 최소 입찰가 10000원
 	private final User user = UserFixture.user1();
+
 	@Mock
 	private BiddingRepository biddingRepository;
 	@Mock
 	private BiddingQueryRepository biddingQueryRepository;
 	@Mock
 	private AuctionService auctionService;
+	@Mock
+	private FCMService fcmService;
 	@InjectMocks
 	private BiddingService biddingService;
 

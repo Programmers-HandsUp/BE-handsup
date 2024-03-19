@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.handsup.auth.exception.AuthException;
+import dev.handsup.common.exception.ValidationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -113,7 +113,7 @@ class JwtProviderTest {
 		assertThatThrownBy(
 			() -> jwtProvider.validateToken(invalidToken)
 		)
-			.isInstanceOf(AuthException.class)
+			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(MALFORMED_TOKEN.getMessage());
 	}
 
@@ -128,7 +128,7 @@ class JwtProviderTest {
 		assertThatThrownBy(
 			() -> jwtProvider.validateToken(expiredToken)
 		)
-			.isInstanceOf(AuthException.class)
+			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(TOKEN_EXPIRED.getMessage());
 	}
 
@@ -143,7 +143,7 @@ class JwtProviderTest {
 		assertThatThrownBy(
 			() -> jwtProvider.validateToken(alteredToken)
 		)
-			.isInstanceOf(AuthException.class)
+			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(INVALID_TOKEN_ETC.getMessage());
 	}
 }

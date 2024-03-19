@@ -6,19 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auth.annotation.NoAuth;
+import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.user.dto.request.EmailAvailibilityRequest;
+import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
+import dev.handsup.user.dto.response.UserDetailResponse;
 import dev.handsup.user.dto.response.UserProfileResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -43,13 +47,24 @@ public class UserApiController {
 		return ResponseEntity.ok(response);
 	}
 
+	@GetMapping("/api/users")
+	@Operation(summary = "로그인 된 사용자 정보 조회 API",
+		description = "토큰으로 로그인 되어있는 사용자의 정보를 조회한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	public ResponseEntity<UserDetailResponse> getAuthorizedUser(
+		@Parameter(hidden = true) @JwtAuthorization User user
+	) {
+		UserDetailResponse response = UserDetailResponse.of(user);
+		return ResponseEntity.ok(response);
+	}
+
 	@NoAuth
 	@GetMapping("/api/users/check-email")
 	@Operation(summary = "이메일 중복 체크 API", description = "이메일이 이미 사용중인지 체크한다")
 	public ResponseEntity<EmailAvailabilityResponse> checkEmailAvailability(
-		@Valid @RequestBody EmailAvailibilityRequest request
+		@RequestParam("email") String email
 	) {
-		EmailAvailabilityResponse response = userService.isEmailAvailable(request);
+		EmailAvailabilityResponse response = userService.isEmailAvailable(email);
 		return ResponseEntity.ok(response);
 	}
 

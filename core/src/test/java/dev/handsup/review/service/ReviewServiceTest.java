@@ -50,7 +50,7 @@ class ReviewServiceTest {
 		1L, ReviewLabelValue.MANNER.getDescription()
 	);
 	private final ReviewLabel reviewLabelCheap = ReviewLabelFixture.reviewLabel(
-		2L, ReviewLabelValue.CHEAP.getDescription()
+		2L, ReviewLabelValue.CHEAP_PRICE.getDescription()
 	);
 	private final List<Long> reviewLabelIds = List.of(1L, 2L);
 	private final UserReviewLabel userReviewLabelManner = UserReviewLabelFixture.userReviewLabel(

@@ -20,6 +20,8 @@ import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.notification.domain.NotificationType;
+import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
@@ -30,6 +32,7 @@ public class BiddingService {
 	private final BiddingRepository biddingRepository;
 	private final BiddingQueryRepository biddingQueryRepository;
 	private final AuctionService auctionService;
+	private final FCMService fcmService;
 
 	private void validateBiddingPrice(int biddingPrice, Auction auction) {
 		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
@@ -83,7 +86,7 @@ public class BiddingService {
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
 		bidding.getAuction().updateAuctionStatusCompleted();
-		//
+		sendMessage(seller, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
@@ -92,8 +95,17 @@ public class BiddingService {
 		Bidding bidding = findBiddingById(biddingId);
 		validateAuthorization(bidding, seller);
 		bidding.updateTradingStatusCanceled();
-		biddingQueryRepository.findWaitingBiddingLatest(bidding.getAuction()) // 다음 입찰 준비중 상태로 변경
-			.ifPresent(Bidding::updateTradingStatusPreparing);
+
+		Bidding nextBidding = biddingQueryRepository.findWaitingBiddingLatest(bidding.getAuction())
+			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_NEXT_BIDDING));
+		nextBidding.updateTradingStatusPreparing();    // 다음 입찰 준비중 상태로 변경
+
+		// 현재 입찰자 거래 취소 알림
+		sendMessage(seller, bidding, NotificationType.CANCELED_PURCHASE_TRADING);
+
+		// 다음 입찰자 낙찰 알림
+		sendMessage(seller, nextBidding, NotificationType.PURCHASE_WINNING);
+
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
@@ -107,4 +119,15 @@ public class BiddingService {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
+
+	private void sendMessage(User seller, Bidding bidding, NotificationType completedPurchaseTrading) {
+		fcmService.sendMessage(
+			seller.getEmail(),
+			seller.getNickname(),
+			bidding.getBidder().getEmail(),
+			completedPurchaseTrading,
+			bidding.getAuction()
+		);
+	}
+
 }
