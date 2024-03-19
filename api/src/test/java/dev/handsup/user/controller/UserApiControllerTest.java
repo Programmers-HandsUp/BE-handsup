@@ -1,17 +1,22 @@
 package dev.handsup.user.controller;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.http.HttpHeaders.*;
 import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
@@ -20,8 +25,11 @@ import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
+import dev.handsup.bidding.domain.Bidding;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.BiddingFixture;
 import dev.handsup.fixture.ReviewFixture;
 import dev.handsup.fixture.UserFixture;
 import dev.handsup.review.domain.Review;
@@ -31,7 +39,6 @@ import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.EmailAvailabilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;
@@ -39,16 +46,6 @@ import dev.handsup.user.repository.UserReviewLabelRepository;
 @DisplayName("[User 통합 테스트]")
 class UserApiControllerTest extends ApiTestSupport {
 
-	private final JoinUserRequest request = JoinUserRequest.of(
-		"hello12345@naver.com",
-		user.getPassword(),
-		user.getNickname(),
-		user.getAddress().getSi(),
-		user.getAddress().getGu(),
-		user.getAddress().getDong(),
-		user.getProfileImageUrl(),
-		List.of(1L)
-	);
 	@Autowired
 	private UserReviewLabelRepository userReviewLabelRepository;
 	@Autowired
@@ -63,15 +60,27 @@ class UserApiControllerTest extends ApiTestSupport {
 	private PreferredProductCategoryRepository preferredProductCategoryRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
+	@Autowired
+	private BiddingRepository biddingRepository;
 
 	@Test
 	@DisplayName("[[회원가입 API] 회원이 등록되고 회원 ID를 응답한다]")
 	void joinUserTest() throws Exception {
+		JoinUserRequest joinUserRequest = JoinUserRequest.of(
+			"hello12345@naver.com",
+			user.getPassword(),
+			user.getNickname(),
+			user.getAddress().getSi(),
+			user.getAddress().getGu(),
+			user.getAddress().getDong(),
+			user.getProfileImageUrl(),
+			List.of(1L)
+		);
 		// when
 		ResultActions actions = mockMvc.perform(
 			post("/api/users")
 				.contentType(APPLICATION_JSON)
-				.content(toJson(request))
+				.content(toJson(joinUserRequest))
 		);
 
 		// then
@@ -173,7 +182,7 @@ class UserApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
-	@DisplayName("[사용자의 프로필이 반환된다]")
+	@DisplayName("[[사용자 프로필 조회 API]사용자의 프로필이 반환된다]")
 	void getUserProfile() throws Exception {
 		// given
 		ProductCategory productCategory1 = ProductCategory.from(ProductCategoryValue.BEAUTY_COSMETICS.toString());
@@ -205,4 +214,39 @@ class UserApiControllerTest extends ApiTestSupport {
 				.value(ProductCategoryValue.BOOKS.toString()))
 			.andExpect(jsonPath("$.score").value(user.getScore()));
 	}
+
+	// @Test
+	@Transactional
+	@DisplayName("[사용자 구매 내역 조회 API] 전체")
+	void getAuctionsUserBuy_All() throws Exception {
+		// given
+		LocalDateTime now = LocalDateTime.now();
+		Auction auction1 = AuctionFixture.auction(UserFixture.user(2L, "user2@naver.com"));
+		Auction auction2 = AuctionFixture.auction(UserFixture.user(3L, "user3@naver.com"));
+		Auction auction3 = AuctionFixture.auction(UserFixture.user(4L, "user4@naver.com"));
+		ReflectionTestUtils.setField(auction1, "createdAt", now.minusMinutes(1));
+		ReflectionTestUtils.setField(auction2, "createdAt", now);
+		ReflectionTestUtils.setField(auction3, "createdAt", now.plusMinutes(1));
+		productCategoryRepository.save(auction1.getProduct().getProductCategory());
+		productCategoryRepository.save(auction2.getProduct().getProductCategory());
+		productCategoryRepository.save(auction3.getProduct().getProductCategory());
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+		Bidding bidding1 = BiddingFixture.bidding(auction2, user);
+		Bidding bidding2 = BiddingFixture.bidding(auction2, user);
+		Bidding bidding3 = BiddingFixture.bidding(auction3, user);
+		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
+
+		PageRequest pageRequest = PageRequest.of(0, 5);
+
+		// when, then
+		mockMvc.perform(get("/api/users/buys")
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.param("auctionStatus", (String)null)
+				.contentType(APPLICATION_JSON)
+				.content(toJson(pageRequest)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(3))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auction1.getId()));
+	}
+
 }

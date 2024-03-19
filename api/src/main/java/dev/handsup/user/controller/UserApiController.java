@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
@@ -102,4 +104,32 @@ public class UserApiController {
 		UserProfileResponse response = userService.getUserProfile(userId);
 		return ResponseEntity.ok(response);
 	}
+
+	@GetMapping("/api/users/buys")
+	@Operation(summary = "사용자 구매 내역 조회 API",
+		description = "사용자 구매 내역을 전체/입찰 중/거래 중/완료 로 조회한다")
+	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getAuctionsUserBuy(
+		@Parameter(hidden = true) @JwtAuthorization User user,
+		@RequestParam(value = "auctionStatus", required = false) AuctionStatus auctionStatus,
+		Pageable pageable
+	) {
+		PageResponse<AuctionSimpleResponse> response = userService
+			.getAuctionsUserBuy(user, auctionStatus, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@GetMapping("/api/users/{userId}/sales")
+	@Operation(summary = "사용자 판매 내역 조회 API",
+		description = "사용자 판매 내역을 전체/입찰 중/거래 중/완료 로 조회한다")
+	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getAuctionsUserBuy(
+		@PathVariable Long userId,
+		@RequestParam("auctionStatus") AuctionStatus auctionStatus,
+		Pageable pageable
+	) {
+		PageResponse<AuctionSimpleResponse> response = userService
+			.getAuctionsUserSale(userId, auctionStatus, pageable);
+		return ResponseEntity.ok(response);
+	}
+
 }
