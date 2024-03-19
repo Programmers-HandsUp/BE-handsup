@@ -177,7 +177,7 @@ class ChatRoomServiceTest {
 		ChatMessage chatMessage2 = ChatMessageFixture.chatMessage(chatRoom, bidder);
 
 		given(chatRoomRepository.findById(1L)).willReturn(Optional.of(chatRoom));
-		given(chatMessageRepository.findByChatRoom(chatRoom, pageRequest))
+		given(chatMessageRepository.findByChatRoomOrderByCreatedAt(chatRoom, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
 
 		//when
