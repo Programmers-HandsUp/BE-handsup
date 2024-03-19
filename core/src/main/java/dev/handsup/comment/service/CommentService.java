@@ -1,5 +1,7 @@
 package dev.handsup.comment.service;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +13,8 @@ import dev.handsup.comment.dto.request.RegisterCommentRequest;
 import dev.handsup.comment.dto.response.CommentResponse;
 import dev.handsup.comment.mapper.CommentMapper;
 import dev.handsup.comment.repository.CommentRepository;
+import dev.handsup.common.dto.CommonMapper;
+import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +33,18 @@ public class CommentService {
 		auction.validateIfCommentAvailable();
 		Comment comment = commentRepository.save(CommentMapper.toComment(request, auction, user));
 
-		return CommentMapper.toCommentResponse(user, comment, auction.isSeller(user));
+		return CommentMapper.toCommentResponse(comment);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<CommentResponse> getAuctionComments(Long auctionId, Pageable pageable){
+		Auction auction = getAuctionById(auctionId);
+
+		Slice<CommentResponse> responsePage = commentRepository
+			.findByAuctionOrderByCreatedAtDesc(auction, pageable)
+			.map(CommentMapper::toCommentResponse);
+
+		return CommonMapper.toPageResponse(responsePage);
 	}
 
 	public Auction getAuctionById(Long auctionId) {
