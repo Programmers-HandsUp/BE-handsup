@@ -163,6 +163,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
 			.andExpect(jsonPath("$.currentBiddingId").value(bidding.getId()))
 			.andExpect(jsonPath("$.auctionTitle").value(auction.getTitle()))
+			.andExpect(jsonPath("$.auctionImageUrl").value(auction.getProduct().getImages().get(0).getImageUrl()))
 			.andExpect(jsonPath("$.receiverId").value(bidder.getId()))
 			.andExpect(jsonPath("$.receiverNickName").value(bidder.getNickname()))
 			.andExpect(jsonPath("$.receiverScore").value(bidder.getScore()))
@@ -197,6 +198,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.chatRoomId").value(chatRoom.getId()))
 			.andExpect(jsonPath("$.auctionId").value(auction.getId()))
 			.andExpect(jsonPath("$.auctionTitle").value(auction.getTitle()))
+			.andExpect(jsonPath("$.auctionImageUrl").value(auction.getProduct().getImages().get(0).getImageUrl()))
 			.andExpect(jsonPath("$.receiverId").value(bidder.getId()))
 			.andExpect(jsonPath("$.receiverNickName").value(bidder.getNickname()))
 			.andExpect(jsonPath("$.receiverScore").value(bidder.getScore()))
@@ -246,13 +248,13 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size").value(2))
-			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatMessage1.getChatRoom().getId()))
-			.andExpect(jsonPath("$.content[0].content").value(chatMessage1.getContent()))
-			.andExpect(jsonPath("$.content[0].senderId").value(chatMessage1.getSenderId()))
-			.andExpect(jsonPath("$.content[0].content").value(chatMessage1.getContent()))
-			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatMessage2.getChatRoom().getId()))
-			.andExpect(jsonPath("$.content[1].content").value(chatMessage2.getContent()))
-			.andExpect(jsonPath("$.content[1].senderId").value(chatMessage2.getSenderId()))
-			.andExpect(jsonPath("$.content[1].content").value(chatMessage2.getContent()));
+			.andExpect(jsonPath("$.content[1].chatRoomId").value(chatMessage1.getChatRoom().getId()))
+			.andExpect(jsonPath("$.content[1].content").value(chatMessage1.getContent()))
+			.andExpect(jsonPath("$.content[1].senderId").value(chatMessage1.getSenderId()))
+			.andExpect(jsonPath("$.content[1].content").value(chatMessage1.getContent()))
+			.andExpect(jsonPath("$.content[0].chatRoomId").value(chatMessage2.getChatRoom().getId()))
+			.andExpect(jsonPath("$.content[0].content").value(chatMessage2.getContent()))
+			.andExpect(jsonPath("$.content[0].senderId").value(chatMessage2.getSenderId()))
+			.andExpect(jsonPath("$.content[0].content").value(chatMessage2.getContent()));
 	}
 }

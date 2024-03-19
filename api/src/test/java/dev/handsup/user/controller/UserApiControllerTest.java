@@ -31,7 +31,6 @@ import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.review.repository.ReviewLabelRepository;
 import dev.handsup.review.repository.ReviewRepository;
 import dev.handsup.user.domain.User;
-import dev.handsup.user.dto.request.EmailAvailabilityRequest;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;

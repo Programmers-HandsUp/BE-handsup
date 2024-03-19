@@ -6,8 +6,6 @@ import static jakarta.persistence.FetchType.*;
 import static jakarta.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import java.time.LocalDateTime;
-
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
