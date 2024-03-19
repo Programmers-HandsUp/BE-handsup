@@ -38,8 +38,7 @@ import dev.handsup.user.domain.User;
 @DisplayName("[ChatRoom 통합 테스트]")
 class ChatRoomApiControllerTest extends ApiTestSupport {
 
-	private final User seller = user; // loginUser
-	private final User bidder = UserFixture.user2();
+	private User seller, bidder;
 	private ProductCategory productCategory;
 	private Auction auction;
 	private Bidding bidding;
@@ -57,14 +56,18 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 
 	@BeforeEach
 	void setUp() {
+		seller = user;
+		bidder = UserFixture.user2();
 		userRepository.saveAll(List.of(bidder, seller));
+
 		productCategory = ProductFixture.productCategory("디지털 기기");
 		productCategoryRepository.save(productCategory);
+
 		auction = AuctionFixture.auction(seller, productCategory);
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 		auctionRepository.save(auction);
-		bidding = BiddingFixture.bidding(auction, bidder);
-		biddingRepository.save(bidding);
+
+		biddingRepository.save(bidding = BiddingFixture.bidding(auction, bidder));
 	}
 
 	@DisplayName("[기존 채팅방이 없으면, 채팅방을 생성할 수 있다.]")
@@ -226,8 +229,10 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 	@Test
 	void getChatRoomMessages() throws Exception {
 		//given
+		User user1 = userRepository.save(UserFixture.user1());
+		Bidding bidding2 = biddingRepository.save(BiddingFixture.bidding(auction, user1));
 		ChatRoom chatRoom1 = ChatRoomFixture.chatRoom(seller, bidding);
-		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding);
+		ChatRoom chatRoom2 = ChatRoomFixture.chatRoom(seller, bidding2);
 		chatRoomRepository.saveAll(List.of(chatRoom1, chatRoom2));
 
 		ChatMessage chatMessage1 = ChatMessageFixture.chatMessage(chatRoom1, bidder);
@@ -236,7 +241,7 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 		chatMessageRepository.saveAll(List.of(chatMessage1, chatMessage2, otherChatMessage3));
 
 		//when, then
-		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", bidding.getId())
+		mockMvc.perform(get("/api/auctions/chat-rooms/{chatRoomId}/messages", chatRoom1.getId())
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())

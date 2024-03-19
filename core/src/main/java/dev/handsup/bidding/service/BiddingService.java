@@ -85,12 +85,8 @@ public class BiddingService {
 
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
-
-		// 거래 완료 알림 추가
-		bidding.getAuction().changeAuctionStatusCompleted();
-
+		bidding.getAuction().updateAuctionStatusCompleted();
 		sendMessage(seller, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
-
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 

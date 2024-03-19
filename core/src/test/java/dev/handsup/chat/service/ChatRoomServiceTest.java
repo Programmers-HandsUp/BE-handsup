@@ -130,7 +130,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuction(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
 
 		//when
