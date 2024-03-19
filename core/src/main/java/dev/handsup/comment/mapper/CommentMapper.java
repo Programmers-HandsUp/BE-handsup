@@ -15,12 +15,14 @@ public class CommentMapper {
 		return Comment.of(request.content(), auction, writer);
 	}
 
-	public static CommentResponse toCommentResponse(User writer, Comment comment, boolean isSeller) {
+	public static CommentResponse toCommentResponse(Comment comment) {
+		User writer = comment.getWriter();
 		return CommentResponse.of(
-			writer.getId(),
-			writer.getNickname(),
-			writer.getProfileImageUrl(),
-			comment.getContent(), isSeller
+			comment.getWriter().getId(),
+			comment.getWriter().getNickname(),
+			comment.getWriter().getProfileImageUrl(),
+			comment.getContent(),
+			comment.getAuction().isSeller(writer)
 		);
 	}
 }
