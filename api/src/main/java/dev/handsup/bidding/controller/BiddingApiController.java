@@ -74,9 +74,9 @@ public class BiddingApiController {
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<BiddingResponse> completeTrading(
 		@PathVariable("biddingId") Long biddingId,
-		@JwtAuthorization User seller
+		@JwtAuthorization User user
 	) {
-		BiddingResponse response = biddingService.completeTrading(biddingId, seller);
+		BiddingResponse response = biddingService.completeTrading(biddingId, user);
 		return ResponseEntity.ok(response);
 	}
 
@@ -85,9 +85,9 @@ public class BiddingApiController {
 	@ApiResponse(useReturnTypeSchema = true)
 	public ResponseEntity<BiddingResponse> cancelTrading(
 		@PathVariable("biddingId") Long biddingId,
-		@JwtAuthorization User seller
+		@JwtAuthorization User user
 	) {
-		BiddingResponse response = biddingService.cancelTrading(biddingId, seller);
+		BiddingResponse response = biddingService.cancelTrading(biddingId, user);
 		return ResponseEntity.ok(response);
 	}
 }

@@ -1,7 +1,5 @@
 package dev.handsup.bidding.service;
 
-import java.util.Objects;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -79,21 +77,21 @@ public class BiddingService {
 	}
 
 	@Transactional
-	public BiddingResponse completeTrading(Long biddingId, User seller) {
+	public BiddingResponse completeTrading(Long biddingId, User user) {
 		Bidding bidding = findBiddingById(biddingId);
-		validateAuthorization(bidding, seller);
+		bidding.getAuction().validateIfSeller(user);
 
 		bidding.updateTradingStatusComplete();
-		bidding.getAuction().updateBuyer(bidding.getBidder());
 		bidding.getAuction().updateAuctionStatusCompleted();
-		sendMessage(seller, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
+		bidding.getAuction().updateBuyer(bidding.getBidder());
+		sendMessage(user, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
 	@Transactional
-	public BiddingResponse cancelTrading(Long biddingId, User seller) {
+	public BiddingResponse cancelTrading(Long biddingId, User user) {
 		Bidding bidding = findBiddingById(biddingId);
-		validateAuthorization(bidding, seller);
+		bidding.getAuction().validateIfSeller(user);
 		bidding.updateTradingStatusCanceled();
 
 		Bidding nextBidding = biddingQueryRepository.findWaitingBiddingLatest(bidding.getAuction())
@@ -101,18 +99,12 @@ public class BiddingService {
 		nextBidding.updateTradingStatusPreparing();    // 다음 입찰 준비중 상태로 변경
 
 		// 현재 입찰자 거래 취소 알림
-		sendMessage(seller, bidding, NotificationType.CANCELED_PURCHASE_TRADING);
+		sendMessage(user, bidding, NotificationType.CANCELED_PURCHASE_TRADING);
 
 		// 다음 입찰자 낙찰 알림
-		sendMessage(seller, nextBidding, NotificationType.PURCHASE_WINNING);
+		sendMessage(user, nextBidding, NotificationType.PURCHASE_WINNING);
 
 		return BiddingMapper.toBiddingResponse(bidding);
-	}
-
-	private void validateAuthorization(Bidding bidding, User seller) {
-		if (!Objects.equals(bidding.getAuction().getSeller().getId(), seller.getId())) {
-			throw new ValidationException(BiddingErrorCode.NOT_AUTHORIZED_SELLER);
-		}
 	}
 
 	public Bidding findBiddingById(Long biddingId) {
