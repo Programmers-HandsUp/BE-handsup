@@ -98,11 +98,19 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 
 	@Override
 	@Transactional
-	public void updateAuctionStatusTrading() {
+	public void updateAuctionStatusAfterEndDate() {
+		queryFactory
+			.update(auction)
+			.set(auction.status, AuctionStatus.CANCELED)
+			.where(auction.endDate.eq(LocalDate.now().minusDays(1)),
+				auction.biddingCount.eq(0))
+			.execute();
+
 		queryFactory
 			.update(auction)
 			.set(auction.status, AuctionStatus.TRADING)
-			.where(auction.endDate.eq(LocalDate.now().minusDays(1)))
+			.where(auction.endDate.eq(LocalDate.now().minusDays(1)),
+				auction.biddingCount.goe(1))
 			.execute();
 	}
 

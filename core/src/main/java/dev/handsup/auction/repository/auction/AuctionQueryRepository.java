@@ -16,5 +16,5 @@ public interface AuctionQueryRepository {
 
 	Slice<Auction> findByProductCategories(List<ProductCategory> productCategories, Pageable pageable);
 
-	void updateAuctionStatusTrading();
+	void updateAuctionStatusAfterEndDate();
 }
