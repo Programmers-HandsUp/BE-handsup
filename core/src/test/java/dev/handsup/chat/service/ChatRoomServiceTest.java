@@ -93,8 +93,6 @@ class ChatRoomServiceTest {
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
 		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
-
-		given(auction.getSeller()).willReturn(seller); //validateAuthorization
 		given(chatRoomRepository.findByAuctionIdAndBidder(1L, bidder))
 			.willReturn(Optional.of(chatRoom));
 
