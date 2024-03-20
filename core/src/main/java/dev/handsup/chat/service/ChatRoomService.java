@@ -7,8 +7,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.bidding.repository.BiddingRepository;
@@ -41,7 +39,7 @@ public class ChatRoomService {
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingWithAuctionAndBidderById(biddingId);
 		validateAuthorization(user, bidding);
-		validateAuctionTrading(bidding.getAuction());
+		bidding.getAuction().validateAuctionTrading();
 
 		bidding.updateTradingStatusProgressing();
 
@@ -106,13 +104,6 @@ public class ChatRoomService {
 		User seller = bidding.getAuction().getSeller();
 		if (!Objects.equals(user.getId(), seller.getId())) { // 조회자와 경매 판매자가 같은지
 			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
-		}
-	}
-
-	// 경매가 거래상태인지
-	private void validateAuctionTrading(Auction auction) {
-		if (auction.getStatus() != AuctionStatus.TRADING) {
-			throw new ValidationException(ChatRoomErrorCode.NOT_TRADING_AUCTION);
 		}
 	}
 
