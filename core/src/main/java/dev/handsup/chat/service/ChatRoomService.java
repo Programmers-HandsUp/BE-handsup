@@ -1,7 +1,5 @@
 package dev.handsup.chat.service;
 
-import java.util.Objects;
-
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,6 @@ import dev.handsup.chat.repository.ChatRoomRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
-import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
 import lombok.RequiredArgsConstructor;
 
@@ -38,7 +35,7 @@ public class ChatRoomService {
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
 		Bidding bidding = getBiddingWithAuctionAndBidderById(biddingId);
-		validateAuthorization(user, bidding);
+		bidding.getAuction().validateIfSeller(user);
 		bidding.getAuction().validateAuctionTrading();
 
 		bidding.updateTradingStatusProgressing();
@@ -79,7 +76,7 @@ public class ChatRoomService {
 	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithBiddingId(Long biddingId, User user) {
 		Bidding bidding = getBiddingWithAuctionAndBidderById(biddingId);
-		validateAuthorization(user, bidding);
+		bidding.getAuction().validateIfSeller(user);
 		User receiver = bidding.getBidder();
 		ChatRoom chatRoom = getChatRoomByCurrentBidding(bidding);
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, bidding, receiver);
@@ -97,14 +94,6 @@ public class ChatRoomService {
 	private ChatRoom getChatRoomByCurrentBidding(Bidding currentBidding) {
 		return chatRoomRepository.findChatRoomByCurrentBiddingId(currentBidding.getId())
 			.orElseThrow(() -> new NotFoundException(ChatRoomErrorCode.NOT_FOUND_CHAT_ROOM_BY_BIDDING_ID));
-	}
-
-	// 채팅방 조회, 생성은 판매자만 가능하도록
-	private void validateAuthorization(User user, Bidding bidding) {
-		User seller = bidding.getAuction().getSeller();
-		if (!Objects.equals(user.getId(), seller.getId())) { // 조회자와 경매 판매자가 같은지
-			throw new ValidationException(ChatRoomErrorCode.CHAT_ROOM_ACCESS_DENIED);
-		}
 	}
 
 	private Bidding getBiddingWithAuctionAndBidderById(Long biddingId) {
