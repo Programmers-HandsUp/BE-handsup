@@ -58,6 +58,7 @@ public class NotificationService {
 				Auction auction = getAuctionById(notification.getAuction().getId());
 
 				return NotificationMapper.toNotificationResponse(
+					notification.getId(),
 					notification.getType(),
 					notification.getContent(),
 					senderProfileImageUrl,

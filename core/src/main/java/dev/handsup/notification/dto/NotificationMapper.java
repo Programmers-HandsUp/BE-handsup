@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class NotificationMapper {
 
 	public static NotificationResponse toNotificationResponse(
+		Long notificationId,
 		NotificationType notificationType,
 		String content,
 		String senderProfileImageUrl,
@@ -17,6 +18,7 @@ public class NotificationMapper {
 		String auctionImageUrl
 	) {
 		return NotificationResponse.of(
+			notificationId,
 			notificationType,
 			content,
 			senderProfileImageUrl,

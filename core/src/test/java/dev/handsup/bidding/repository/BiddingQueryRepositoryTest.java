@@ -3,6 +3,7 @@ package dev.handsup.bidding.repository;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
@@ -112,5 +115,33 @@ class BiddingQueryRepositoryTest extends DataJpaTestSupport {
 		assertThat(foundAuction2Bidding1.getTradingStatus()).isEqualTo(TradingStatus.WAITING);
 		assertThat(foundAuction2Bidding2.getTradingStatus()).isEqualTo(TradingStatus.PREPARING);
 		assertThat(foundAuction3Bidding.getTradingStatus()).isEqualTo(TradingStatus.WAITING);
+	}
+
+	@Test
+	@DisplayName("[입찰을 입찰자로 조회할 때 입찰의 경매의 CreateAt 으로 최신순으로 정렬한다.]")
+	void findByBidderOrderByAuction_CreatedAtDesc() {
+		// given
+		LocalDateTime now = LocalDateTime.now();
+		ReflectionTestUtils.setField(auction1, "createdAt", now.minusMinutes(1));
+		ReflectionTestUtils.setField(auction2, "createdAt", now);
+		ReflectionTestUtils.setField(auction3, "createdAt", now.plusMinutes(1));
+
+		Bidding bidding1 = BiddingFixture.bidding(1L, auction1, bidder);
+		Bidding bidding2 = BiddingFixture.bidding(2L, auction2, bidder);
+		Bidding bidding3 = BiddingFixture.bidding(3L, auction3, bidder);
+		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
+
+		PageRequest pageRequest = PageRequest.of(0, 5);
+
+		Bidding foundBidding1 = biddingRepository.findById(bidding1.getId()).orElseThrow();
+		Bidding foundBidding2 = biddingRepository.findById(bidding2.getId()).orElseThrow();
+		Bidding foundBidding3 = biddingRepository.findById(bidding3.getId()).orElseThrow();
+
+		// when
+		Slice<Bidding> biddingPageResponse = biddingRepository.
+			findByBidderOrderByAuction_CreatedAtDesc(bidder, pageRequest);
+
+		// then
+		assertThat(biddingPageResponse).containsExactly(foundBidding3, foundBidding2, foundBidding1);
 	}
 }

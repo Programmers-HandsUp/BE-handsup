@@ -1,6 +1,7 @@
 package dev.handsup.auction.dto.response;
 
 public record AuctionSimpleResponse(
+
 	Long auctionId,
 	String title,
 	int currentBiddingPrice,

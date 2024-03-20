@@ -64,6 +64,25 @@ public class AuctionFixture {
 		);
 	}
 
+	public static Auction auction(Long id, User seller) {
+		return Auction.of(
+			id,
+			seller,
+			TITLE,
+			ProductCategory.from(DIGITAL_DEVICE),
+			10000,
+			LocalDate.parse(END_DATE),
+			ProductStatus.NEW,
+			PurchaseTime.UNDER_ONE_MONTH,
+			DESCRIPTION,
+			TradeMethod.DELIVER,
+			List.of(IMAGE_URL),
+			SI,
+			GU,
+			DONG
+		);
+	}
+
 	public static Auction auction(ProductCategory productCategory) {
 		return Auction.of(
 			UserFixture.user1(),

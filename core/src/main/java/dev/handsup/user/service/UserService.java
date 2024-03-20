@@ -7,12 +7,16 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.dto.mapper.AuctionMapper;
+import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
+import dev.handsup.bidding.repository.BiddingRepository;
 import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
@@ -40,6 +44,7 @@ public class UserService {
 	private final ProductCategoryRepository productCategoryRepository;
 	private final UserReviewLabelRepository userReviewLabelRepository;
 	private final ReviewRepository reviewRepository;
+	private final BiddingRepository biddingRepository;
 
 	private void validateDuplicateEmail(String email) {
 		if (userRepository.findByEmail(email).isPresent()) {
@@ -116,5 +121,47 @@ public class UserService {
 			preferredProductCategories,
 			user.getScore()
 		);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<AuctionSimpleResponse> getUserBuyHistory(
+		User user,
+		AuctionStatus auctionStatus,
+		Pageable pageable
+	) {
+		Slice<AuctionSimpleResponse> auctionUserBuyResponsePage;
+
+		if (auctionStatus == null) {
+			auctionUserBuyResponsePage = biddingRepository
+				.findByBidderOrderByAuction_CreatedAtDesc(user, pageable)
+				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+		} else {
+			auctionUserBuyResponsePage = biddingRepository
+				.findByBidderAndAuction_StatusOrderByAuction_CreatedAtDesc(user, auctionStatus, pageable)
+				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+		}
+
+		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<AuctionSimpleResponse> getUserSaleHistory(
+		Long userId,
+		AuctionStatus auctionStatus,
+		Pageable pageable
+	) {
+		Slice<AuctionSimpleResponse> auctionUserBuyResponsePage;
+
+		if (auctionStatus == null) {
+			auctionUserBuyResponsePage = biddingRepository
+				.findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(userId, pageable)
+				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+		} else {
+			auctionUserBuyResponsePage = biddingRepository
+				.findByAuction_Seller_IdAndAuction_StatusOrderByAuction_CreatedAtDesc(userId, auctionStatus, pageable)
+				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+		}
+
+		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
 	}
 }

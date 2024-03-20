@@ -2,7 +2,10 @@ package dev.handsup.auth.dto;
 
 import static lombok.AccessLevel.*;
 
+import java.time.Duration;
+
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 
 import dev.handsup.auth.dto.response.LoginDetailResponse;
 import dev.handsup.auth.exception.AuthErrorCode;
@@ -32,14 +35,14 @@ public class AuthMapper {
 		throw new NotFoundException(AuthErrorCode.NOT_FOUND_ACCESS_TOKEN_IN_REQUEST);
 	}
 
-	public static Cookie toCookie(LoginDetailResponse response) {
-		Cookie cookie = new Cookie("refreshToken", response.refreshToken());
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
-		cookie.setPath("/");
-		cookie.setMaxAge(14 * 24 * 60 * 60); // 14일
-
-		return cookie;
+	public static ResponseCookie toCookie(LoginDetailResponse response) {
+		return ResponseCookie.from("refreshToken", response.refreshToken())
+			.path("/")
+			.sameSite("None")
+			.httpOnly(false)
+			.secure(true)
+			.maxAge(Duration.ofDays(15))
+			.build();
 	}
 
 	public static String extractRefreshTokenFromCookies(HttpServletRequest request) {

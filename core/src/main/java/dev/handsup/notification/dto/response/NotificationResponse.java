@@ -4,6 +4,7 @@ import dev.handsup.notification.domain.NotificationType;
 
 public record NotificationResponse(
 
+	Long notificationId,
 	NotificationType notificationType,
 	String content,
 	String senderProfileImageUrl,
@@ -11,6 +12,7 @@ public record NotificationResponse(
 	String auctionImageUrl
 ) {
 	public static NotificationResponse of(
+		Long notificationId,
 		NotificationType notificationType,
 		String content,
 		String senderProfileImageUrl,
@@ -18,6 +20,12 @@ public record NotificationResponse(
 		String auctionImageUrl
 	) {
 		return new NotificationResponse(
-			notificationType, content, senderProfileImageUrl, auctionId, auctionImageUrl);
+			notificationId,
+			notificationType,
+			content,
+			senderProfileImageUrl,
+			auctionId,
+			auctionImageUrl
+		);
 	}
 }
