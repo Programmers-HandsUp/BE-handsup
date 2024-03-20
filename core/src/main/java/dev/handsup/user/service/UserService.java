@@ -124,7 +124,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionSimpleResponse> getAuctionsUserBuy(
+	public PageResponse<AuctionSimpleResponse> getUserBuyHistory(
 		User user,
 		AuctionStatus auctionStatus,
 		Pageable pageable
@@ -145,7 +145,7 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionSimpleResponse> getAuctionsUserSale(
+	public PageResponse<AuctionSimpleResponse> getUserSaleHistory(
 		Long userId,
 		AuctionStatus auctionStatus,
 		Pageable pageable

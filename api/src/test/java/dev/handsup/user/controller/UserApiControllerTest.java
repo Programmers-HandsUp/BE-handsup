@@ -215,7 +215,7 @@ class UserApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.score").value(user.getScore()));
 	}
 
-	// @Test
+	@Test
 	@Transactional
 	@DisplayName("[사용자 구매 내역 조회 API] 전체")
 	void getAuctionsUserBuy_All() throws Exception {
@@ -227,11 +227,13 @@ class UserApiControllerTest extends ApiTestSupport {
 		ReflectionTestUtils.setField(auction1, "createdAt", now.minusMinutes(1));
 		ReflectionTestUtils.setField(auction2, "createdAt", now);
 		ReflectionTestUtils.setField(auction3, "createdAt", now.plusMinutes(1));
-		productCategoryRepository.save(auction1.getProduct().getProductCategory());
-		productCategoryRepository.save(auction2.getProduct().getProductCategory());
-		productCategoryRepository.save(auction3.getProduct().getProductCategory());
+		productCategoryRepository.saveAll(List.of(
+			auction1.getProduct().getProductCategory(),
+			auction2.getProduct().getProductCategory(),
+			auction3.getProduct().getProductCategory()
+		));
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-		Bidding bidding1 = BiddingFixture.bidding(auction2, user);
+		Bidding bidding1 = BiddingFixture.bidding(auction1, user);//
 		Bidding bidding2 = BiddingFixture.bidding(auction2, user);
 		Bidding bidding3 = BiddingFixture.bidding(auction3, user);
 		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));

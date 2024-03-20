@@ -48,8 +48,7 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
 	@Query("SELECT b FROM Bidding b "
 		+ "WHERE b.auction.seller.id = :sellerId "
 		+ "ORDER BY b.auction.createdAt DESC")
-	Slice<Bidding> findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(
-		Long sellerId, Pageable pageable);
+	Slice<Bidding> findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(Long sellerId, Pageable pageable);
 
 	@Query("SELECT b FROM Bidding b WHERE b.auction.seller.id = :sellerId "
 		+ "AND b.auction.status = :auctionStatus "
