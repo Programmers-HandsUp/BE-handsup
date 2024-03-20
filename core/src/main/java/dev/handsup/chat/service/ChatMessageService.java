@@ -39,15 +39,7 @@ public class ChatMessageService {
 		ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
 		User sender = getUserById(request.senderId());
-		User receiver;
-
-		if (chatRoom.getSeller().equals(sender)) {
-			receiver = chatRoom.getBidder();
-		} else {
-			receiver = chatRoom.getSeller();
-		}
-
-		sendMessage(sender, receiver, chatRoom);
+		sendMessage(sender, chatRoom.getReceiver(sender), chatRoom);
 
 		return ChatMessageMapper.toChatMessageResponse(savedChatMessage);
 	}
