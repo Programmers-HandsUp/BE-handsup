@@ -130,7 +130,7 @@ class ChatRoomServiceTest {
 		Bidding bidding = BiddingFixture.bidding(auction, bidder, TradingStatus.PREPARING);
 		ChatRoom chatRoom = ChatRoomFixture.chatRoom(bidding);
 
-		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
+		given(biddingRepository.findBiddingWithAuction(anyLong())).willReturn(Optional.of(bidding));
 		given(chatRoomRepository.findById(chatRoom.getId())).willReturn(Optional.of(chatRoom));
 
 		//when
@@ -177,7 +177,7 @@ class ChatRoomServiceTest {
 		ChatMessage chatMessage2 = ChatMessageFixture.chatMessage(chatRoom, bidder);
 
 		given(chatRoomRepository.findById(1L)).willReturn(Optional.of(chatRoom));
-		given(chatMessageRepository.findByChatRoomOrderByCreatedAt(chatRoom, pageRequest))
+		given(chatMessageRepository.findByChatRoomOrderByCreatedAtDesc(chatRoom, pageRequest))
 			.willReturn(new SliceImpl<>(List.of(chatMessage1, chatMessage2), pageRequest, false));
 
 		//when

@@ -11,6 +11,7 @@ import static lombok.AccessLevel.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.util.Assert;
 
@@ -22,6 +23,7 @@ import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.comment.exception.CommentErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.common.exception.ValidationException;
 import dev.handsup.user.domain.User;
@@ -157,11 +159,11 @@ public class Auction extends TimeBaseEntity {
 		);
 	}
 
-	public void changeAuctionStatusTrading() {
+	public void updateAuctionStatusTrading() {
 		status = AuctionStatus.TRADING;
 	}
 
-	public void changeAuctionStatusCompleted() {
+	public void updateAuctionStatusCompleted() {
 		if (status != TRADING) {
 			throw new ValidationException(AuctionErrorCode.CAN_NOT_COMPLETE_AUCTION);
 		}
@@ -190,5 +192,15 @@ public class Auction extends TimeBaseEntity {
 
 	public void updateBuyer(User bidder) {
 		this.buyer = bidder;
+	}
+
+	public boolean isSeller(User user) {
+		return Objects.equals(seller.getId(), user.getId());
+	}
+
+	public void validateIfCommentAvailable() {
+		if (status != BIDDING) {
+			throw new ValidationException(CommentErrorCode.COMMENT_NOT_AVAIL_AUCTION);
+		}
 	}
 }

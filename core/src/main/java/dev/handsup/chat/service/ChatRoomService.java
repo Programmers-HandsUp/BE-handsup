@@ -39,7 +39,7 @@ public class ChatRoomService {
 
 	@Transactional
 	public RegisterChatRoomResponse registerChatRoom(Long auctionId, Long biddingId, User user) {
-		Bidding bidding = getBiddingById(biddingId);
+		Bidding bidding = getBiddingWithAuctionAndBidderById(biddingId);
 		validateAuthorization(user, bidding);
 		validateAuctionTrading(bidding.getAuction());
 
@@ -72,7 +72,7 @@ public class ChatRoomService {
 	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithId(Long chatRoomId, User user) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
-		Bidding currentBidding = getBiddingById(chatRoom.getCurrentBiddingId());
+		Bidding currentBidding = getBiddingWithAuctionById(chatRoom.getCurrentBiddingId());
 		User receiver = getReceiver(user, chatRoom);
 		return ChatRoomMapper.toChatRoomDetailResponse(chatRoom, currentBidding, receiver);
 	}
@@ -80,7 +80,7 @@ public class ChatRoomService {
 	// 입찰자 목록에서 조회
 	@Transactional(readOnly = true)
 	public ChatRoomDetailResponse getChatRoomWithBiddingId(Long biddingId, User user) {
-		Bidding bidding = getBiddingById(biddingId);
+		Bidding bidding = getBiddingWithAuctionAndBidderById(biddingId);
 		validateAuthorization(user, bidding);
 		User receiver = bidding.getBidder();
 		ChatRoom chatRoom = getChatRoomByCurrentBidding(bidding);
@@ -91,7 +91,7 @@ public class ChatRoomService {
 	public PageResponse<ChatMessageResponse> getChatRoomMessages(Long chatRoomId, Pageable pageable) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
 		Slice<ChatMessageResponse> responsePage = chatMessageRepository
-			.findByChatRoomOrderByCreatedAt(chatRoom, pageable)
+			.findByChatRoomOrderByCreatedAtDesc(chatRoom, pageable)
 			.map(ChatMessageMapper::toChatMessageResponse);
 		return CommonMapper.toPageResponse(responsePage);
 	}
@@ -116,8 +116,13 @@ public class ChatRoomService {
 		}
 	}
 
-	private Bidding getBiddingById(Long biddingId) {
+	private Bidding getBiddingWithAuctionAndBidderById(Long biddingId) {
 		return biddingRepository.findBiddingWithAuctionAndBidder(biddingId)
+			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
+	}
+
+	private Bidding getBiddingWithAuctionById(Long biddingId) {
+		return biddingRepository.findBiddingWithAuction(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
 

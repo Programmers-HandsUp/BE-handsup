@@ -35,7 +35,6 @@ public class ChatMessageService {
 	@Transactional
 	public ChatMessageResponse registerChatMessage(Long chatRoomId, ChatMessageRequest request) {
 		ChatRoom chatRoom = getChatRoomById(chatRoomId);
-
 		ChatMessage chatMessage = ChatMessageMapper.toChatMessage(chatRoom, request);
 		ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 

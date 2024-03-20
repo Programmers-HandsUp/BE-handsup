@@ -137,7 +137,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		Auction auction1 = AuctionFixture.auction(category1);
 		Auction auction2 = AuctionFixture.auction(category2);
 		Auction auction3 = AuctionFixture.auction(category2);
-		auction1.changeAuctionStatusTrading();
+		auction1.updateAuctionStatusTrading();
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
 
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
