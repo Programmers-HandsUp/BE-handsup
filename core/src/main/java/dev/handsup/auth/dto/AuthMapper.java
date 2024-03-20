@@ -39,7 +39,7 @@ public class AuthMapper {
 		return ResponseCookie.from("refreshToken", response.refreshToken())
 			.path("/")
 			.sameSite("None")
-			.httpOnly(false)
+			.httpOnly(true)
 			.secure(true)
 			.maxAge(Duration.ofDays(15))
 			.build();
