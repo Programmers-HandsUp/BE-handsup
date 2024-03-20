@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
@@ -74,7 +73,6 @@ class ChatRoomServiceTest {
 		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
-		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
 		given(chatRoomRepository.findByAuctionIdAndBidder(1L, bidder))
 			.willReturn(Optional.empty());
 		given(chatRoomRepository.save(any(ChatRoom.class))).willReturn(chatRoom);
@@ -97,7 +95,6 @@ class ChatRoomServiceTest {
 		given(biddingRepository.findBiddingWithAuctionAndBidder(anyLong())).willReturn(Optional.of(bidding));
 
 		given(auction.getSeller()).willReturn(seller); //validateAuthorization
-		given(auction.getStatus()).willReturn(AuctionStatus.TRADING);
 		given(chatRoomRepository.findByAuctionIdAndBidder(1L, bidder))
 			.willReturn(Optional.of(chatRoom));
 

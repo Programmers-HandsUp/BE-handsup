@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.bidding.domain.Bidding;
@@ -115,8 +116,8 @@ class ChatRoomApiControllerTest extends ApiTestSupport {
 				.header(AUTHORIZATION, "Bearer " + accessToken)
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value(ChatRoomErrorCode.NOT_TRADING_AUCTION.getMessage()))
-			.andExpect(jsonPath("$.code").value(ChatRoomErrorCode.NOT_TRADING_AUCTION.getCode()));
+			.andExpect(jsonPath("$.message").value(AuctionErrorCode.NOT_TRADING_AUCTION.getMessage()))
+			.andExpect(jsonPath("$.code").value(AuctionErrorCode.NOT_TRADING_AUCTION.getCode()));
 	}
 
 	@DisplayName("[유저가 속한 채팅방을 모두 조회할 수 있다.]")
