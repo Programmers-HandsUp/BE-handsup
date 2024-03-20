@@ -289,27 +289,35 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 	void updateAuctionStatus() {
 		//given
 		LocalDate today = LocalDate.now();
-		Auction auction1 = AuctionFixture.auction(category1, today.minusDays(1)); // 마감 일자(endDate)
-		Auction auction2 = AuctionFixture.auction(category1, today);
-		Auction auction3 = AuctionFixture.auction(category1, today.plusDays(1));
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+
+		Auction endedAuctionWithBidder = AuctionFixture.auction(category1, today.minusDays(1)); // 마감 일자(endDate)
+		Auction endedAuctionWithOutBidder = AuctionFixture.auction(category1, today.minusDays(1)); // 마감 일자(endDate)
+		Auction biddingAuction1 = AuctionFixture.auction(category1, today);
+		Auction biddingAuction2 = AuctionFixture.auction(category1, today.plusDays(1));
+
+		ReflectionTestUtils.setField(endedAuctionWithBidder, "biddingCount", 1);
+		auctionRepository.saveAll(
+			List.of(endedAuctionWithBidder, endedAuctionWithOutBidder, biddingAuction1, biddingAuction2));
 
 		//when
 		//벌크 업데이트(영속성 컨텍스트 거치지 않음) 후 영속성 컨텍스트 비움
-		auctionQueryRepository.updateAuctionStatusTrading();
+		auctionQueryRepository.updateAuctionStatusAfterEndDate();
 
 		em.flush();
 		em.clear();
 
-		Auction savedAuction1 = auctionRepository.findById(auction1.getId()).orElseThrow();
-		Auction savedAuction2 = auctionRepository.findById(auction2.getId()).orElseThrow();
-		Auction savedAuction3 = auctionRepository.findById(auction3.getId()).orElseThrow();
+		Auction savedEndedAuctionWithBidder = auctionRepository.findById(endedAuctionWithBidder.getId()).orElseThrow();
+		Auction savedEndedAuctionWithOutBidder = auctionRepository.findById(endedAuctionWithOutBidder.getId())
+			.orElseThrow();
+		Auction savedBiddingAuction1 = auctionRepository.findById(biddingAuction1.getId()).orElseThrow();
+		Auction savedBiddingAuction2 = auctionRepository.findById(biddingAuction2.getId()).orElseThrow();
 
 		//then
 		assertAll(
-			() -> assertThat(savedAuction1.getStatus()).isEqualTo(AuctionStatus.TRADING),
-			() -> assertThat(savedAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING),
-			() -> assertThat(savedAuction3.getStatus()).isEqualTo(AuctionStatus.BIDDING)
+			() -> assertThat(savedEndedAuctionWithBidder.getStatus()).isEqualTo(AuctionStatus.TRADING),
+			() -> assertThat(savedEndedAuctionWithOutBidder.getStatus()).isEqualTo(AuctionStatus.CANCELED),
+			() -> assertThat(savedBiddingAuction1.getStatus()).isEqualTo(AuctionStatus.BIDDING),
+			() -> assertThat(savedBiddingAuction2.getStatus()).isEqualTo(AuctionStatus.BIDDING)
 		);
 	}
 }
