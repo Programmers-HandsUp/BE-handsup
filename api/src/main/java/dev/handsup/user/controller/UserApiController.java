@@ -107,7 +107,7 @@ public class UserApiController {
 
 	@GetMapping("/api/users/buys")
 	@Operation(summary = "사용자 구매 내역 조회 API",
-		description = "사용자 구매 내역을 전체/입찰 중/거래 중/완료 로 조회한다")
+		description = "사용자 구매 내역을 전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
 	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getUserBuyHistory(
 		@Parameter(hidden = true) @JwtAuthorization User user,
 		@RequestParam(value = "auctionStatus", required = false) AuctionStatus auctionStatus,
@@ -121,10 +121,10 @@ public class UserApiController {
 	@NoAuth
 	@GetMapping("/api/users/{userId}/sales")
 	@Operation(summary = "사용자 판매 내역 조회 API",
-		description = "사용자 판매 내역을 전체/입찰 중/거래 중/완료 로 조회한다")
+		description = "사용자 판매 내역을 전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
 	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getUserSaleHistory(
 		@PathVariable Long userId,
-		@RequestParam("auctionStatus") AuctionStatus auctionStatus,
+		@RequestParam(value = "auctionStatus", required = false) AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
 		PageResponse<AuctionSimpleResponse> response = userService
