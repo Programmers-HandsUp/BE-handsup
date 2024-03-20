@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +79,6 @@ class ReviewApiControllerTest extends ApiTestSupport {
 		reviewLabelRepository.saveAll(List.of(reviewLabelManner, reviewLabelCheap));
 	}
 
-	@Disabled
 	@Test
 	@Transactional
 	@DisplayName("[리뷰 등록 API] 작성자가 경매에 대한 리뷰를 등록한다")
