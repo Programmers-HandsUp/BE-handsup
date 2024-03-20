@@ -29,9 +29,9 @@ import dev.handsup.user.domain.User;
 @DisplayName("[Comment 통합 테스트]")
 class CommentApiControllerTest extends ApiTestSupport {
 
-	private Auction auction;
 	private final User seller = user;
 	private final User bidder = UserFixture.user2();
+	private Auction auction;
 	private ProductCategory productCategory;
 	@Autowired
 	private CommentRepository commentRepository;

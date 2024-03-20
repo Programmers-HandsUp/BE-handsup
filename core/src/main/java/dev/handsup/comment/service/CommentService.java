@@ -37,7 +37,7 @@ public class CommentService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<CommentResponse> getAuctionComments(Long auctionId, Pageable pageable){
+	public PageResponse<CommentResponse> getAuctionComments(Long auctionId, Pageable pageable) {
 		Auction auction = getAuctionById(auctionId);
 
 		Slice<CommentResponse> responsePage = commentRepository

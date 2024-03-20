@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class CommentFixture {
 
-	public static Comment comment(Auction auction, User writer){
+	public static Comment comment(Auction auction, User writer) {
 		return Comment.of(
 			"와",
 			auction,
