@@ -63,7 +63,7 @@ public class ChatRoom extends TimeBaseEntity {
 			.build();
 	}
 
-	public User getReceiver(User sender){
+	public User getReceiver(User sender) {
 		return this.seller.equals(sender) ? bidder : seller;
 	}
 

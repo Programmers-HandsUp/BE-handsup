@@ -211,8 +211,8 @@ public class Auction extends TimeBaseEntity {
 		}
 	}
 
-	public void validateIfSeller(User user){
-		if (!Objects.equals(seller.getId(), user.getId())){
+	public void validateIfSeller(User user) {
+		if (!Objects.equals(seller.getId(), user.getId())) {
 			throw new ValidationException(NOT_AUCTION_SELLER);
 		}
 	}

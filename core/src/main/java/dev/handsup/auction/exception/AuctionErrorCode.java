@@ -19,7 +19,6 @@ public enum AuctionErrorCode implements ErrorCode {
 
 	NOT_TRADING_AUCTION("거래 상태의 경매가 아닙니다.", "AU_008");
 
-
 	private final String message;
 	private final String code;
 }
