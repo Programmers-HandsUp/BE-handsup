@@ -11,6 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public class BiddingFixture {
 
+	public static Bidding bidding(Long id, Auction auction, User user) {
+		return new Bidding(
+			id,
+			40000,
+			auction,
+			user,
+			TradingStatus.WAITING
+		);
+	}
+
 	public static Bidding bidding(Auction auction, User user) {
 		return new Bidding(
 			1L,

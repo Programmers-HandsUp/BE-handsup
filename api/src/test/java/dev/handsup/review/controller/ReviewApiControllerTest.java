@@ -33,6 +33,7 @@ import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ReviewFixture;
 import dev.handsup.fixture.ReviewLabelFixture;
+import dev.handsup.notification.repository.FCMTokenRepository;
 import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.ReviewLabel;
 import dev.handsup.review.domain.ReviewLabelValue;
@@ -47,7 +48,9 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
 
+	private Auction auction;
 	private final Review review = ReviewFixture.review(1L);
+
 	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
 		1L, ReviewLabelValue.MANNER.getDescription()
 	);
@@ -67,7 +70,8 @@ class ReviewApiControllerTest extends ApiTestSupport {
 	private BiddingService biddingService;
 	@Autowired
 	private UserRepository userRepository;
-	private Auction auction;
+	@Autowired
+	private FCMTokenRepository fcmTokenRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -82,11 +86,11 @@ class ReviewApiControllerTest extends ApiTestSupport {
 	@DisplayName("[리뷰 등록 API] 작성자가 경매에 대한 리뷰를 등록한다")
 	void registerReviewTest() throws Exception {
 		// given
+		fcmTokenRepository.saveFcmToken(auction.getSeller().getEmail(), "fcmToken123");
 		ReflectionTestUtils.setField(auction, "status", AuctionStatus.TRADING);
 		Long auctionId = auction.getId();
 		int beforeSellerScore = auction.getSeller().getScore();
-		LocalDateTime now = LocalDateTime.now();
-		ReflectionTestUtils.setField(review, "createdAt", now);
+		ReflectionTestUtils.setField(review, "createdAt", LocalDateTime.now());
 
 		Bidding bidding = new Bidding(
 			this.auction.getInitPrice() + 1000, this.auction, user, TradingStatus.PROGRESSING);

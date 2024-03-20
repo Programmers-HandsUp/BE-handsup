@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.common.exception.NotFoundException;
@@ -43,8 +44,10 @@ public class FCMService {
 
 		String fcmToken = getFcmToken(receiverEmail);
 		Message message = Message.builder()
-			.putData("title", notificationType.getTitle())
-			.putData("content", senderNickname + notificationType.getContent())
+			.setNotification(Notification.builder()
+				.setTitle(notificationType.getTitle())
+				.setBody(senderNickname + notificationType.getContent())
+				.build())
 			.setToken(fcmToken)
 			.build();
 
