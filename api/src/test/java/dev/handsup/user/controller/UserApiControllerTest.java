@@ -16,9 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategoryValue;
@@ -216,9 +216,9 @@ class UserApiControllerTest extends ApiTestSupport {
 	}
 
 	@Test
-	@Transactional
-	@DisplayName("[사용자 구매 내역 조회 API] 전체")
-	void getAuctionsUserBuy_All() throws Exception {
+	@DisplayName("[사용자 구매 내역 조회 API] 사용자 구매 내역을 "
+		+ "전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
+	void getUserBuyHistory_All() throws Exception {
 		// given
 		LocalDateTime now = LocalDateTime.now();
 		Auction auction1 = AuctionFixture.auction(UserFixture.user(2L, "user2@naver.com"));
@@ -233,9 +233,9 @@ class UserApiControllerTest extends ApiTestSupport {
 			auction3.getProduct().getProductCategory()
 		));
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-		Bidding bidding1 = BiddingFixture.bidding(auction1, user);//
-		Bidding bidding2 = BiddingFixture.bidding(auction2, user);
-		Bidding bidding3 = BiddingFixture.bidding(auction3, user);
+		Bidding bidding1 = BiddingFixture.bidding(1L, auction1, user);
+		Bidding bidding2 = BiddingFixture.bidding(2L, auction2, user);
+		Bidding bidding3 = BiddingFixture.bidding(3L, auction3, user);
 		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
 
 		PageRequest pageRequest = PageRequest.of(0, 5);
@@ -248,7 +248,69 @@ class UserApiControllerTest extends ApiTestSupport {
 				.content(toJson(pageRequest)))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content.size()").value(3))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction1.getId()));
+			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auction2.getId()))
+			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
+
+		mockMvc.perform(get("/api/users/buys")
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.param("auctionStatus", String.valueOf(AuctionStatus.BIDDING))
+				.contentType(APPLICATION_JSON)
+				.content(toJson(pageRequest)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(3))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auction2.getId()))
+			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
+	}
+
+	@Test
+	@DisplayName("[사용자 판매 내역 조회 API] 사용자 판매 내역을 "
+		+ "전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
+	void getUserSaleHistory() throws Exception {
+		// given
+		LocalDateTime now = LocalDateTime.now();
+		Auction auction1 = AuctionFixture.auction(1L, user);
+		Auction auction2 = AuctionFixture.auction(2L, user);
+		Auction auction3 = AuctionFixture.auction(3L, user);
+		ReflectionTestUtils.setField(auction1, "createdAt", now.minusMinutes(1));
+		ReflectionTestUtils.setField(auction2, "createdAt", now);
+		ReflectionTestUtils.setField(auction3, "createdAt", now.plusMinutes(1));
+		productCategoryRepository.saveAll(List.of(
+			auction1.getProduct().getProductCategory(),
+			auction2.getProduct().getProductCategory(),
+			auction3.getProduct().getProductCategory()
+		));
+		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+		Bidding bidding1 = BiddingFixture.bidding(1L, auction1, user);
+		Bidding bidding2 = BiddingFixture.bidding(2L, auction2, user);
+		Bidding bidding3 = BiddingFixture.bidding(3L, auction3, user);
+		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
+
+		PageRequest pageRequest = PageRequest.of(0, 5);
+
+		// when, then
+		mockMvc.perform(get("/api/users/{userId}/sales", user.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.param("auctionStatus", (String)null)
+				.contentType(APPLICATION_JSON)
+				.content(toJson(pageRequest)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(3))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auction2.getId()))
+			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
+
+		mockMvc.perform(get("/api/users/{userId}/sales", user.getId())
+				.header(AUTHORIZATION, "Bearer " + accessToken)
+				.param("auctionStatus", String.valueOf(AuctionStatus.BIDDING))
+				.contentType(APPLICATION_JSON)
+				.content(toJson(pageRequest)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.content.size()").value(3))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auction2.getId()))
+			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
 	}
 
 }
