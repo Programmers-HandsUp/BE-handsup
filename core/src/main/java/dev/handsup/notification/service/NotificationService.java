@@ -20,9 +20,11 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.exception.UserErrorCode;
 import dev.handsup.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class NotificationService {
 
 	private final NotificationRepository notificationRepository;
@@ -48,7 +50,7 @@ public class NotificationService {
 		notificationRepository.save(notification);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public PageResponse<NotificationResponse> getNotifications(User user, Pageable pageable) {
 		Slice<NotificationResponse> notificationResponsePage = notificationRepository
 			.findByReceiverEmailOrderByCreatedAtDesc(user.getEmail(), pageable)
@@ -68,7 +70,8 @@ public class NotificationService {
 			});
 
 		// User 의 readNotificationCount 갱신
-		user.setReadNotificationCount(notificationResponsePage.getSize());
+		log.info("notificationResponsePage.getSize() = " + notificationResponsePage.getSize());
+		user.updateReadNotificationCount(notificationResponsePage.getSize());
 
 		return CommonMapper.toPageResponse(notificationResponsePage);
 	}
