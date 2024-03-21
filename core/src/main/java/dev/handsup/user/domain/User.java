@@ -135,7 +135,7 @@ public class User extends TimeBaseEntity {
 	}
 
 	//== 비즈니스 메서드==//
-	public void setReadNotificationCount(long readNotificationCount) {
+	public void updateReadNotificationCount(long readNotificationCount) {
 		this.readNotificationCount = readNotificationCount;
 	}
 
