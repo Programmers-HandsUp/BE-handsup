@@ -7,7 +7,7 @@ public record UserBuyHistoryResponse(
 	String auctionImageUrl,
 	String auctionCreatedAt,
 	String auctionEndDateTime,
-	int buyPrice,
+	Integer buyPrice,
 	String auctionStatus
 ) {
 	public static UserBuyHistoryResponse of(
@@ -16,7 +16,7 @@ public record UserBuyHistoryResponse(
 		String auctionImageUrl,
 		String auctionCreatedAt,
 		String auctionEndDateTime,
-		int buyPrice,
+		Integer buyPrice,
 		String auctionStatus
 	) {
 		return new UserBuyHistoryResponse(

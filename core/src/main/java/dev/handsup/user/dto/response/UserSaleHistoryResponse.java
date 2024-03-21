@@ -8,7 +8,7 @@ public record UserSaleHistoryResponse(
 	String auctionCreatedAt,
 	String auctionEndDateTime,
 	int maxBiddingPrice,
-	int salePrice,
+	Integer salePrice,
 	String auctionStatus
 ) {
 	public static UserSaleHistoryResponse of(
@@ -18,7 +18,7 @@ public record UserSaleHistoryResponse(
 		String auctionCreatedAt,
 		String auctionEndDateTime,
 		int maxBiddingPrice,
-		int salePrice,
+		Integer salePrice,
 		String auctionStatus
 	) {
 		return new UserSaleHistoryResponse(
