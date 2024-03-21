@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
@@ -18,10 +17,12 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
 import dev.handsup.user.dto.response.JoinUserResponse;
+import dev.handsup.user.dto.response.UserBuyHistoryResponse;
 import dev.handsup.user.dto.response.UserDetailResponse;
 import dev.handsup.user.dto.response.UserProfileResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
+import dev.handsup.user.dto.response.UserSaleHistoryResponse;
 import dev.handsup.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -108,12 +109,12 @@ public class UserApiController {
 	@GetMapping("/api/users/buys")
 	@Operation(summary = "사용자 구매 내역 조회 API",
 		description = "사용자 구매 내역을 전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
-	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getUserBuyHistory(
+	public ResponseEntity<PageResponse<UserBuyHistoryResponse>> getUserBuyHistory(
 		@Parameter(hidden = true) @JwtAuthorization User user,
 		@RequestParam(value = "auctionStatus", required = false) AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		PageResponse<AuctionSimpleResponse> response = userService
+		PageResponse<UserBuyHistoryResponse> response = userService
 			.getUserBuyHistory(user, auctionStatus, pageable);
 		return ResponseEntity.ok(response);
 	}
@@ -122,12 +123,12 @@ public class UserApiController {
 	@GetMapping("/api/users/{userId}/sales")
 	@Operation(summary = "사용자 판매 내역 조회 API",
 		description = "사용자 판매 내역을 전체/입찰 중/거래 중/완료 별로 경매의 최신 등록 순으로 조회한다")
-	public ResponseEntity<PageResponse<AuctionSimpleResponse>> getUserSaleHistory(
+	public ResponseEntity<PageResponse<UserSaleHistoryResponse>> getUserSaleHistory(
 		@PathVariable Long userId,
 		@RequestParam(value = "auctionStatus", required = false) AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		PageResponse<AuctionSimpleResponse> response = userService
+		PageResponse<UserSaleHistoryResponse> response = userService
 			.getUserSaleHistory(userId, auctionStatus, pageable);
 		return ResponseEntity.ok(response);
 	}
