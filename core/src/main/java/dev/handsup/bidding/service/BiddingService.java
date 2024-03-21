@@ -85,8 +85,11 @@ public class BiddingService {
 
 		bidding.updateTradingStatusComplete();
 		bidding.getAuction().updateBuyer(bidding.getBidder());
+		bidding.getAuction().updateWinningPrice(bidding.getBiddingPrice());
 		bidding.getAuction().updateAuctionStatusCompleted();
+
 		sendMessage(seller, bidding, NotificationType.COMPLETED_PURCHASE_TRADING);
+
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
