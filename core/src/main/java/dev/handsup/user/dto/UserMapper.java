@@ -2,14 +2,21 @@ package dev.handsup.user.dto;
 
 import static lombok.AccessLevel.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import dev.handsup.auction.domain.Auction;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.review.domain.Review;
 import dev.handsup.review.domain.UserReviewLabel;
 import dev.handsup.user.domain.Address;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.request.JoinUserRequest;
+import dev.handsup.user.dto.response.UserBuyHistoryResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
+import dev.handsup.user.dto.response.UserSaleHistoryResponse;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -42,6 +49,40 @@ public class UserMapper {
 			review.getWriter().getNickname(),
 			review.getWriter().getProfileImageUrl(),
 			review.getContent()
+		);
+	}
+
+	public static UserBuyHistoryResponse toUserBuyHistoryResponse(Auction auction) {
+		return UserBuyHistoryResponse.of(
+			auction.getId(),
+			auction.getTitle(),
+			auction.getProduct().getImages().get(0).getImageUrl(),
+			auction.getCreatedAt().toString(),
+			auction.getWinningPrice(),
+			auction.getStatus().getLabel()
+		);
+	}
+
+	public static UserSaleHistoryResponse toUserSaleHistoryResponse(Auction auction) {
+		LocalDateTime endDateTime = auction.getEndDate().atTime(LocalTime.MIDNIGHT);
+		LocalDateTime now = LocalDateTime.now();
+		Duration leftDuration = Duration.between(now, endDateTime);
+
+		long days = leftDuration.toDays();
+		long hours = leftDuration.toHours() % 24;
+		long minutes = leftDuration.toMinutes() % 60;
+		long seconds = leftDuration.toSeconds() % 60;
+		String leftAuctionTime = String.format("%d일 %d시간 %d분 %d초", days, hours, minutes, seconds);
+
+		return UserSaleHistoryResponse.of(
+			auction.getId(),
+			auction.getTitle(),
+			auction.getProduct().getImages().get(0).getImageUrl(),
+			leftAuctionTime,
+			auction.getCreatedAt().toString(),
+			auction.getCurrentBiddingPrice(),
+			auction.getWinningPrice(),
+			auction.getStatus().getLabel()
 		);
 	}
 }
