@@ -68,7 +68,7 @@ public class NotificationService {
 			});
 
 		// 사용자의 읽은 알림 수 갱신
-		user.setReadNotificationCount(notificationResponsePage.getContent().size());
+		user.updateReadNotificationCount(notificationResponsePage.getContent().size());
 		userRepository.save(user);
 
 		return CommonMapper.toPageResponse(notificationResponsePage);
