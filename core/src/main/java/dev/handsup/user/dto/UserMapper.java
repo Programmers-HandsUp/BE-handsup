@@ -31,9 +31,7 @@ public class UserMapper {
 
 	public static UserReviewLabelResponse toUserReviewLabelResponse(UserReviewLabel userReviewLabel) {
 		return UserReviewLabelResponse.of(
-			userReviewLabel.getId(),
-			userReviewLabel.getReviewLabel().getId(),
-			userReviewLabel.getUser().getId(),
+			userReviewLabel.getReviewLabel().getValue(),
 			userReviewLabel.getCount()
 		);
 	}

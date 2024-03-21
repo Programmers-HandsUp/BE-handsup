@@ -143,13 +143,9 @@ class UserApiControllerTest extends ApiTestSupport {
 				.contentType(APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.content.size()").value(2))
-			.andExpect(jsonPath("$.content[0].userReviewLabelId").value(1L))
-			.andExpect(jsonPath("$.content[0].reviewLabelId").value(reviewLabel1.getId()))
-			.andExpect(jsonPath("$.content[0].userId").value(user.getId()))
+			.andExpect(jsonPath("$.content[0].reviewLabelValue").value(reviewLabel1.getValue()))
 			.andExpect(jsonPath("$.content[0].count").value(1))
-			.andExpect(jsonPath("$.content[1].userReviewLabelId").value(2L))
-			.andExpect(jsonPath("$.content[1].reviewLabelId").value(reviewLabel2.getId()))
-			.andExpect(jsonPath("$.content[1].userId").value(user.getId()))
+			.andExpect(jsonPath("$.content[1].reviewLabelValue").value(reviewLabel2.getValue()))
 			.andExpect(jsonPath("$.content[1].count").value(1));
 	}
 
