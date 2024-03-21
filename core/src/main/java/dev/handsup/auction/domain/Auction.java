@@ -80,8 +80,8 @@ public class Auction extends TimeBaseEntity {
 	@Column(name = "current_bidding_price", nullable = false)
 	private int currentBiddingPrice;
 
-	@Column(name = "winning_price")
-	private int winningPrice;
+	@Column(name = "buy_price")
+	private int buyPrice;
 
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;
@@ -200,8 +200,8 @@ public class Auction extends TimeBaseEntity {
 		this.buyer = bidder;
 	}
 
-	public void updateWinningPrice(int winningPrice) {
-		this.winningPrice = winningPrice;
+	public void updateBuyPrice(int buyPrice) {
+		this.buyPrice = buyPrice;
 	}
 
 	public boolean isSeller(User user) {
