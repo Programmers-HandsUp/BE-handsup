@@ -2,6 +2,8 @@ package dev.handsup.user.dto;
 
 import static lombok.AccessLevel.*;
 
+import java.time.LocalTime;
+
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auth.domain.EncryptHelper;
 import dev.handsup.review.domain.Review;
@@ -54,7 +56,8 @@ public class UserMapper {
 			auction.getTitle(),
 			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getCreatedAt().toString(),
-			auction.getWinningPrice(),
+			auction.getEndDate().atTime(LocalTime.MIDNIGHT).toString(),
+			auction.getBuyPrice(),
 			auction.getStatus().getLabel()
 		);
 	}
@@ -65,8 +68,9 @@ public class UserMapper {
 			auction.getTitle(),
 			auction.getProduct().getImages().get(0).getImageUrl(),
 			auction.getCreatedAt().toString(),
+			auction.getEndDate().atTime(LocalTime.MIDNIGHT).toString(),
 			auction.getCurrentBiddingPrice(),
-			auction.getWinningPrice(),
+			auction.getBuyPrice(),
 			auction.getStatus().getLabel()
 		);
 	}
