@@ -3,6 +3,7 @@ package dev.handsup.comment.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.repository.auction.AuctionRepository;
@@ -55,6 +57,7 @@ class CommentServiceTest {
 		RegisterCommentRequest request = new RegisterCommentRequest("와");
 
 		Comment comment = CommentFixture.comment(auction, writer);
+		ReflectionTestUtils.setField(comment, "createdAt", LocalDateTime.now());
 
 		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
 		given(commentRepository.save(any(Comment.class))).willReturn(comment);
@@ -72,6 +75,7 @@ class CommentServiceTest {
 		//given
 		PageRequest pageRequest = PageRequest.of(0, 5);
 		Comment comment = CommentFixture.comment(auction, writer);
+		ReflectionTestUtils.setField(comment, "createdAt", LocalDateTime.now());
 
 		given(auctionRepository.findById(auction.getId()))
 			.willReturn(Optional.of(auction));
