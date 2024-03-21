@@ -81,7 +81,7 @@ public class Auction extends TimeBaseEntity {
 	private int currentBiddingPrice;
 
 	@Column(name = "buy_price")
-	private int buyPrice;
+	private Integer buyPrice;
 
 	@Column(name = "end_date", nullable = false)
 	private LocalDate endDate;

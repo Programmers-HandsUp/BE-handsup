@@ -20,11 +20,9 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.exception.UserErrorCode;
 import dev.handsup.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class NotificationService {
 
 	private final NotificationRepository notificationRepository;
@@ -69,9 +67,9 @@ public class NotificationService {
 				);
 			});
 
-		// User 의 readNotificationCount 갱신
-		log.info("notificationResponsePage.getSize() = " + notificationResponsePage.getSize());
-		user.updateReadNotificationCount(notificationResponsePage.getSize());
+		// 사용자의 읽은 알림 수 갱신
+		user.updateReadNotificationCount(notificationResponsePage.getContent().size());
+		userRepository.save(user);
 
 		return CommonMapper.toPageResponse(notificationResponsePage);
 	}
