@@ -15,7 +15,9 @@ public enum AuctionErrorCode implements ErrorCode {
 	NOT_FOUND_PRODUCT_CATEGORY("상품 카테고리를 올바르게 입력해주세요.", "AU_004"),
 	INVALID_SORT_INPUT("정렬 기준을 올바르게 입력해주세요.", "AU_005"),
 	EMPTY_SORT_INPUT("정렬 기준을 입력해주세요.", "AU_006"),
-	CAN_NOT_COMPLETE_AUCTION("경매를 완료 상태로 변경할 수 없습니다.", "AU_007");
+	CAN_NOT_COMPLETE_AUCTION("경매를 완료 상태로 변경할 수 없습니다.", "AU_007"),
+
+	NOT_TRADING_AUCTION("거래 상태의 경매가 아닙니다.", "AU_008");
 
 	private final String message;
 	private final String code;

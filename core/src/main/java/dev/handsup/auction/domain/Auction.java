@@ -2,6 +2,7 @@ package dev.handsup.auction.domain;
 
 import static dev.handsup.auction.domain.auction_field.AuctionStatus.*;
 import static dev.handsup.common.exception.CommonValidationError.*;
+import static dev.handsup.user.exception.UserErrorCode.*;
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.ConstraintMode.*;
 import static jakarta.persistence.EnumType.*;
@@ -162,6 +163,12 @@ public class Auction extends TimeBaseEntity {
 		);
 	}
 
+	public void validateAuctionTrading() {
+		if (status != TRADING) {
+			throw new ValidationException(AuctionErrorCode.NOT_TRADING_AUCTION);
+		}
+	}
+
 	public void updateAuctionStatusTrading() {
 		status = AuctionStatus.TRADING;
 	}
@@ -204,6 +211,12 @@ public class Auction extends TimeBaseEntity {
 	public void validateIfCommentAvailable() {
 		if (status != BIDDING) {
 			throw new ValidationException(CommentErrorCode.COMMENT_NOT_AVAIL_AUCTION);
+		}
+	}
+
+	public void validateIfSeller(User user) {
+		if (!Objects.equals(seller.getId(), user.getId())) {
+			throw new ValidationException(NOT_AUCTION_SELLER);
 		}
 	}
 }
