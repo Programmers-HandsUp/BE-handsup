@@ -48,7 +48,7 @@ public class NotificationService {
 		notificationRepository.save(notification);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public PageResponse<NotificationResponse> getNotifications(User user, Pageable pageable) {
 		Slice<NotificationResponse> notificationResponsePage = notificationRepository
 			.findByReceiverEmailOrderByCreatedAtDesc(user.getEmail(), pageable)
@@ -67,8 +67,9 @@ public class NotificationService {
 				);
 			});
 
-		// User 의 readNotificationCount 갱신
-		user.setReadNotificationCount(notificationResponsePage.getSize());
+		// 사용자의 읽은 알림 수 갱신
+		user.setReadNotificationCount(notificationResponsePage.getContent().size());
+		userRepository.save(user);
 
 		return CommonMapper.toPageResponse(notificationResponsePage);
 	}
