@@ -278,10 +278,6 @@ class UserApiControllerTest extends ApiTestSupport {
 			auction3.getProduct().getProductCategory()
 		));
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-		Bidding bidding1 = BiddingFixture.bidding(1L, auction1, user);
-		Bidding bidding2 = BiddingFixture.bidding(2L, auction2, user);
-		Bidding bidding3 = BiddingFixture.bidding(3L, auction3, user);
-		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
 
 		PageRequest pageRequest = PageRequest.of(0, 5);
 
