@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.user.domain.User;
 
 public interface AuctionRepository extends JpaRepository<Auction, Long> {
