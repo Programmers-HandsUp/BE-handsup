@@ -40,7 +40,7 @@ public class AuthMapper {
 			.path("/")
 			.sameSite("None")
 			.httpOnly(true)
-			.secure(true)
+			.secure(false)
 			.maxAge(Duration.ofDays(15))
 			.build();
 	}
