@@ -46,7 +46,7 @@ public class CommentService {
 			user.getEmail(),
 			user.getNickname(),
 			auction.getSeller().getEmail(),
-			NotificationType.BOOKMARK,
+			NotificationType.COMMENT,
 			auction
 		);
 	}
