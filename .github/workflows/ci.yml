@@ -13,8 +13,13 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Seoul'
     steps:
       - uses: actions/checkout@v3
+
+      - name: Check the timezone
+        run: date
 
       # 자바 버전 설정
       - name: Set up JDK 17

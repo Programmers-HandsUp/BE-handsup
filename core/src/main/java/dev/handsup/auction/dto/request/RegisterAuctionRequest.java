@@ -22,7 +22,7 @@ public record RegisterAuctionRequest(
 	int initPrice,
 
 	@NotNull(message = "endDate 은 필수입니다.")
-	@JsonFormat(pattern = "yyyy-MM-dd") //localDate 형식으로 받음
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul") //localDate 형식으로 받음
 	LocalDate endDate,
 
 	@NotBlank(message = "productStatus 은 필수입니다.")
