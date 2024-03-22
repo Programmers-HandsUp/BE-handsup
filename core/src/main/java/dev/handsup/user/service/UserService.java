@@ -11,6 +11,7 @@ import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
@@ -45,6 +46,7 @@ public class UserService {
 	private final UserReviewLabelRepository userReviewLabelRepository;
 	private final ReviewRepository reviewRepository;
 	private final BiddingRepository biddingRepository;
+	private final AuctionRepository auctionRepository;
 
 	private void validateDuplicateEmail(String email) {
 		if (userRepository.findByEmail(email).isPresent()) {
@@ -150,18 +152,18 @@ public class UserService {
 		AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		Slice<UserSaleHistoryResponse> auctionUserBuyResponsePage;
+		Slice<UserSaleHistoryResponse> auctionUserSaleResponsePage;
 
 		if (auctionStatus == null) {
-			auctionUserBuyResponsePage = biddingRepository
-				.findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(userId, pageable)
-				.map(bidding -> UserMapper.toUserSaleHistoryResponse(bidding.getAuction()));
+			auctionUserSaleResponsePage = auctionRepository
+				.findBySeller_IdOrderByCreatedAtDesc(userId, pageable)
+				.map(UserMapper::toUserSaleHistoryResponse);
 		} else {
-			auctionUserBuyResponsePage = biddingRepository
-				.findByAuction_Seller_IdAndAuction_StatusOrderByAuction_CreatedAtDesc(userId, auctionStatus, pageable)
-				.map(bidding -> UserMapper.toUserSaleHistoryResponse(bidding.getAuction()));
+			auctionUserSaleResponsePage = auctionRepository
+				.findBySeller_IdAndStatusOrderByCreatedAtDesc(userId, auctionStatus, pageable)
+				.map(UserMapper::toUserSaleHistoryResponse);
 		}
 
-		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
+		return CommonMapper.toPageResponse(auctionUserSaleResponsePage);
 	}
 }

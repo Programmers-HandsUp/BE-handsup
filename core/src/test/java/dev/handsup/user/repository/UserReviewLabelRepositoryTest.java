@@ -33,7 +33,7 @@ class UserReviewLabelRepositoryTest extends DataJpaTestSupport {
 	@DisplayName("[UserReviewLabel 엔티티의 count 필드를 update 할 수 있다.]")
 	void testUpdateCount() {
 		// given
-		ReviewLabel reviewLabel = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
+		ReviewLabel reviewLabel = ReviewLabel.from(ReviewLabelValue.MANNER.getLabel());
 		reviewLabelRepository.save(reviewLabel);
 
 		UserReviewLabel userReviewLabel = UserReviewLabel.of(reviewLabel, user);
