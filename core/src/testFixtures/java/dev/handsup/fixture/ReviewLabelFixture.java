@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PRIVATE)
 public final class ReviewLabelFixture {
 
-	static final String VALUE_MANNER = ReviewLabelValue.MANNER.getDescription();
-	static final String VALUE_CHEAP = ReviewLabelValue.CHEAP_PRICE.getDescription();
+	static final String VALUE_MANNER = ReviewLabelValue.MANNER.getLabel();
+	static final String VALUE_CHEAP = ReviewLabelValue.CHEAP_PRICE.getLabel();
 
 	public static ReviewLabel reviewLabelManner() {
 		return ReviewLabel.from(VALUE_MANNER);

@@ -130,8 +130,8 @@ class UserApiControllerTest extends ApiTestSupport {
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {
 		// given
-		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
-		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP_PRICE.getDescription());
+		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getLabel());
+		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP_PRICE.getLabel());
 		reviewLabelRepository.saveAll(
 			List.of(reviewLabel1, reviewLabel2)
 		);
