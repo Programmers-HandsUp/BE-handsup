@@ -150,18 +150,18 @@ public class UserService {
 		AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		Slice<UserSaleHistoryResponse> auctionUserBuyResponsePage;
+		Slice<UserSaleHistoryResponse> auctionUserSaleResponsePage;
 
 		if (auctionStatus == null) {
-			auctionUserBuyResponsePage = biddingRepository
+			auctionUserSaleResponsePage = biddingRepository
 				.findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(userId, pageable)
 				.map(bidding -> UserMapper.toUserSaleHistoryResponse(bidding.getAuction()));
 		} else {
-			auctionUserBuyResponsePage = biddingRepository
+			auctionUserSaleResponsePage = biddingRepository
 				.findByAuction_Seller_IdAndAuction_StatusOrderByAuction_CreatedAtDesc(userId, auctionStatus, pageable)
 				.map(bidding -> UserMapper.toUserSaleHistoryResponse(bidding.getAuction()));
 		}
 
-		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
+		return CommonMapper.toPageResponse(auctionUserSaleResponsePage);
 	}
 }
