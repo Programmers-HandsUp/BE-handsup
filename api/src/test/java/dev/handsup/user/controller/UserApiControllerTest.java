@@ -130,8 +130,8 @@ class UserApiControllerTest extends ApiTestSupport {
 	@DisplayName("[[유저 리뷰 라벨 조회 API] 유저의 리뷰 라벨이 id 기준 오름차순으로 반환된다]")
 	void getUserReviewLabelsTest() throws Exception {
 		// given
-		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getDescription());
-		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP_PRICE.getDescription());
+		ReviewLabel reviewLabel1 = ReviewLabel.from(ReviewLabelValue.MANNER.getLabel());
+		ReviewLabel reviewLabel2 = ReviewLabel.from(ReviewLabelValue.CHEAP_PRICE.getLabel());
 		reviewLabelRepository.saveAll(
 			List.of(reviewLabel1, reviewLabel2)
 		);
@@ -278,10 +278,6 @@ class UserApiControllerTest extends ApiTestSupport {
 			auction3.getProduct().getProductCategory()
 		));
 		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-		Bidding bidding1 = BiddingFixture.bidding(1L, auction1, user);
-		Bidding bidding2 = BiddingFixture.bidding(2L, auction2, user);
-		Bidding bidding3 = BiddingFixture.bidding(3L, auction3, user);
-		biddingRepository.saveAll(List.of(bidding1, bidding2, bidding3));
 
 		PageRequest pageRequest = PageRequest.of(0, 5);
 

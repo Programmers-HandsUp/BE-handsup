@@ -15,5 +15,5 @@ public enum ReviewLabelValue {
 	ACCURATE_CONDITION("물품 상태 사진과 같아요"),
 	DIRECT_TRADING("직접 와서 거래해요");
 
-	private final String description;
+	private final String label;
 }

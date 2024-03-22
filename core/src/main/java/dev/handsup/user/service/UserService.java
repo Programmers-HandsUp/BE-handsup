@@ -10,9 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.mapper.AuctionMapper;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auth.domain.EncryptHelper;
@@ -26,9 +25,11 @@ import dev.handsup.user.domain.User;
 import dev.handsup.user.dto.UserMapper;
 import dev.handsup.user.dto.request.JoinUserRequest;
 import dev.handsup.user.dto.response.EmailAvailabilityResponse;
+import dev.handsup.user.dto.response.UserBuyHistoryResponse;
 import dev.handsup.user.dto.response.UserProfileResponse;
 import dev.handsup.user.dto.response.UserReviewLabelResponse;
 import dev.handsup.user.dto.response.UserReviewResponse;
+import dev.handsup.user.dto.response.UserSaleHistoryResponse;
 import dev.handsup.user.exception.UserErrorCode;
 import dev.handsup.user.repository.UserRepository;
 import dev.handsup.user.repository.UserReviewLabelRepository;
@@ -45,6 +46,7 @@ public class UserService {
 	private final UserReviewLabelRepository userReviewLabelRepository;
 	private final ReviewRepository reviewRepository;
 	private final BiddingRepository biddingRepository;
+	private final AuctionRepository auctionRepository;
 
 	private void validateDuplicateEmail(String email) {
 		if (userRepository.findByEmail(email).isPresent()) {
@@ -124,44 +126,44 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionSimpleResponse> getUserBuyHistory(
+	public PageResponse<UserBuyHistoryResponse> getUserBuyHistory(
 		User user,
 		AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		Slice<AuctionSimpleResponse> auctionUserBuyResponsePage;
+		Slice<UserBuyHistoryResponse> auctionUserBuyResponsePage;
 
 		if (auctionStatus == null) {
 			auctionUserBuyResponsePage = biddingRepository
 				.findByBidderOrderByAuction_CreatedAtDesc(user, pageable)
-				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+				.map(bidding -> UserMapper.toUserBuyHistoryResponse(bidding.getAuction()));
 		} else {
 			auctionUserBuyResponsePage = biddingRepository
 				.findByBidderAndAuction_StatusOrderByAuction_CreatedAtDesc(user, auctionStatus, pageable)
-				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+				.map(bidding -> UserMapper.toUserBuyHistoryResponse(bidding.getAuction()));
 		}
 
 		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
 	}
 
 	@Transactional(readOnly = true)
-	public PageResponse<AuctionSimpleResponse> getUserSaleHistory(
+	public PageResponse<UserSaleHistoryResponse> getUserSaleHistory(
 		Long userId,
 		AuctionStatus auctionStatus,
 		Pageable pageable
 	) {
-		Slice<AuctionSimpleResponse> auctionUserBuyResponsePage;
+		Slice<UserSaleHistoryResponse> auctionUserSaleResponsePage;
 
 		if (auctionStatus == null) {
-			auctionUserBuyResponsePage = biddingRepository
-				.findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(userId, pageable)
-				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+			auctionUserSaleResponsePage = auctionRepository
+				.findBySeller_IdOrderByCreatedAtDesc(userId, pageable)
+				.map(UserMapper::toUserSaleHistoryResponse);
 		} else {
-			auctionUserBuyResponsePage = biddingRepository
-				.findByAuction_Seller_IdAndAuction_StatusOrderByAuction_CreatedAtDesc(userId, auctionStatus, pageable)
-				.map(bidding -> AuctionMapper.toAuctionSimpleResponse(bidding.getAuction()));
+			auctionUserSaleResponsePage = auctionRepository
+				.findBySeller_IdAndStatusOrderByCreatedAtDesc(userId, auctionStatus, pageable)
+				.map(UserMapper::toUserSaleHistoryResponse);
 		}
 
-		return CommonMapper.toPageResponse(auctionUserBuyResponsePage);
+		return CommonMapper.toPageResponse(auctionUserSaleResponsePage);
 	}
 }

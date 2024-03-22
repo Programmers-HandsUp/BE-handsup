@@ -38,8 +38,6 @@ public interface BiddingRepository extends JpaRepository<Bidding, Long> {
 	Slice<Bidding> findByBidderAndAuction_StatusOrderByAuction_CreatedAtDesc(
 		User bidder, AuctionStatus auctionStatus, Pageable pageable);
 
-	Slice<Bidding> findByAuction_Seller_IdOrderByAuction_CreatedAtDesc(Long sellerId, Pageable pageable);
+	Long countByBiddingPrice(int biddingPrice);
 
-	Slice<Bidding> findByAuction_Seller_IdAndAuction_StatusOrderByAuction_CreatedAtDesc(
-		Long sellerId, AuctionStatus auctionStatus, Pageable pageable);
 }

@@ -47,16 +47,15 @@ import dev.handsup.user.repository.UserRepository;
 @DisplayName("[Review 통합 테스트]")
 class ReviewApiControllerTest extends ApiTestSupport {
 
-	private Auction auction;
 	private final Review review = ReviewFixture.review(1L);
-
 	private final ReviewLabel reviewLabelManner = ReviewLabelFixture.reviewLabel(
-		1L, ReviewLabelValue.MANNER.getDescription()
+		1L, ReviewLabelValue.MANNER.getLabel()
 	);
 	private final ReviewLabel reviewLabelCheap = ReviewLabelFixture.reviewLabel(
-		2L, ReviewLabelValue.CHEAP_PRICE.getDescription()
+		2L, ReviewLabelValue.CHEAP_PRICE.getLabel()
 	);
 	private final List<Long> reviewLabelIds = List.of(1L, 2L);
+	private Auction auction;
 	@Autowired
 	private ReviewRepository reviewRepository;
 	@Autowired

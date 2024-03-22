@@ -22,7 +22,8 @@ public class CommentMapper {
 			comment.getWriter().getNickname(),
 			comment.getWriter().getProfileImageUrl(),
 			comment.getContent(),
-			comment.getAuction().isSeller(writer)
+			comment.getAuction().isSeller(writer),
+			comment.getCreatedAt().toString()
 		);
 	}
 }
