@@ -43,15 +43,15 @@ public class BiddingService {
 		validateNotSelfBidding(bidder, auction); // 입찰 불가한 판매자 아닌지 검증
 
 		return biddingServiceProvider.getObject()
-			.updateBiddingPriceAndCount(auction, request, bidder);
+			.registerBiddingWithLock(auction, request.biddingPrice(), bidder);
 	}
 
 	@DistributeLock(key = "'auction_' + #auction.getId()") // auctionId 값을 추출하여 락 키로 사용
-	public BiddingResponse updateBiddingPriceAndCount(Auction auction, RegisterBiddingRequest request, User bidder) {
-		validateBiddingPrice(request.biddingPrice(), auction); // 경매 입찰 최고가보다 입찰가 높은지 확인
-		auction.updateCurrentBiddingPrice(request.biddingPrice()); // 경매 입찰 최고가 갱신
+	public BiddingResponse registerBiddingWithLock(Auction auction, int biddingPrice, User bidder) {
+		validateBiddingPrice(biddingPrice, auction); // 경매 입찰 최고가보다 입찰가 높은지 확인
+		auction.updateCurrentBiddingPrice(biddingPrice); // 경매 입찰 최고가 갱신
 		auction.increaseBiddingCount(); // 경매 입찰 수 + 1
-		Bidding bidding = BiddingMapper.toBidding(request, auction, bidder);
+		Bidding bidding = BiddingMapper.toBidding(biddingPrice, auction, bidder);
 		return BiddingMapper.toBiddingResponse(biddingRepository.save(bidding));
 	}
 

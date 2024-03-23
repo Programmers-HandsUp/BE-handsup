@@ -4,7 +4,6 @@ import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.bidding.domain.Bidding;
-import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
 import dev.handsup.bidding.dto.response.BiddingResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
@@ -25,9 +24,9 @@ public class BiddingMapper {
 		);
 	}
 
-	public static Bidding toBidding(RegisterBiddingRequest request, Auction auction, User bidder) {
+	public static Bidding toBidding(int biddingPrice, Auction auction, User bidder) {
 		return Bidding.of(
-			request.biddingPrice(),
+			biddingPrice,
 			auction,
 			bidder
 		);
