@@ -24,7 +24,6 @@ import dev.handsup.fixture.UserFixture;
 import dev.handsup.support.TestContainerSupport;
 import dev.handsup.user.domain.User;
 import dev.handsup.user.repository.UserRepository;
-import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 @SpringBootTest
@@ -34,9 +33,6 @@ class BiddingConcurrencyTest extends TestContainerSupport {
 
 	private Auction auction;
 	private User user;
-
-	@Autowired
-	private EntityManager em;
 
 	@Autowired
 	private BiddingService biddingService;
@@ -60,49 +56,18 @@ class BiddingConcurrencyTest extends TestContainerSupport {
 		user = userRepository.save(UserFixture.user1());
 	}
 
-	// @DisplayName("[경매 필드 업데이트 요청을 동시에 500개 처리한다.]")
-	// @Test
-	// void concurrency_test() throws InterruptedException {
-	// 	int threadCount = 500; // 요청 스레드 수
-	// 	ExecutorService executorService = Executors.newFixedThreadPool(32);
-	// 	CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 수행 중인 작업이 완료될 때까지 대기할 수 있도록 돕는 클래스
-	//
-	// 	// 여러 스레드에서 동시에 경매 필드값 업데이트 요청 수
-	// 	for (int i = 0; i< threadCount; i++){
-	// 		int finalI = i;
-	// 		executorService.submit(() -> {
-	// 			try {
-	// 				biddingService.updateBiddingPriceAndCount(auction, 40000+finalI);
-	// 				System.out.println("40000+finalI = " + 40000 + finalI);
-	// 				System.out.println("auction.getCurrentBiddingPrice() = " + auction.getCurrentBiddingPrice());
-	// 			} catch(Exception e){
-	// 				throw new ValidationException(e.getMessage());
-	// 			}
-	// 			finally {
-	// 				latch.countDown();
-	// 			}
-	// 		});
-	// 	}
-	//
-	// 	latch.await(); //다른 스레드에서 수행중인 작업이 완료될 때까지 대기
-	// 	assertEquals(500, auction.getBiddingCount());
-	// 	assertEquals(auction.getCurrentBiddingPrice(), 40000+threadCount-1);
-	// }
-
 	@DisplayName("[동일한 경매 금액으로 입찰 시 하나의 입찰만 저장된다.]")
 	@Test
 	void concurrency_test2() throws InterruptedException {
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(auction.getInitPrice()+1000);
-		int threadCount = 10; // 요청 스레드 수
+		int threadCount = 30; // 요청 스레드 수
 		ExecutorService executorService = Executors.newFixedThreadPool(3);
 		CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 수행 중인 작업이 완료될 때까지 대기할 수 있도록 돕는 클래스
 
-		// 여러 스레드에서 동시에 경매 필드값 업데이트 요청 수
 		for (int i = 0; i< threadCount; i++){
 			executorService.submit(() -> {
 				try {
 					biddingService.registerBidding(request, auction.getId(), user);
-					em.flush();
 				}
 				finally {
 					latch.countDown();
