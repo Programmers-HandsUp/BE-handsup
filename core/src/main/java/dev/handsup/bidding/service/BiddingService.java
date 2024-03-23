@@ -1,5 +1,6 @@
 package dev.handsup.bidding.service;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import dev.handsup.common.dto.CommonMapper;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.common.exception.ValidationException;
+import dev.handsup.common.redisson.DistributeLock;
 import dev.handsup.notification.domain.NotificationType;
 import dev.handsup.notification.service.FCMService;
 import dev.handsup.user.domain.User;
@@ -31,41 +33,25 @@ public class BiddingService {
 	private final BiddingQueryRepository biddingQueryRepository;
 	private final AuctionService auctionService;
 	private final FCMService fcmService;
+	private final ObjectProvider<BiddingService> biddingServiceProvider;
 
-	private void validateBiddingPrice(int biddingPrice, Auction auction) {
-		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
-
-		if (maxBiddingPrice == null) {
-			// 입찰 내역이 없는 경우, 최소 입찰가부터 입찰 가능
-			if (biddingPrice < auction.getInitPrice()) {
-				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_LESS_THAN_INIT_PRICE);
-			}
-		} else {
-			// 최고 입찰가보다 1000원 이상일 때만 입찰 가능
-			if (biddingPrice < (maxBiddingPrice + 1000)) {
-				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_NOT_HIGH_ENOUGH);
-			}
-		}
-	}
 
 	@Transactional
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
 		Auction auction = auctionService.getAuctionById(auctionId);
+		validateNotSelfBidding(bidder, auction);
 
-		if (auction.getSeller().equals(bidder)) {
-			throw new ValidationException(BiddingErrorCode.NOT_ALLOW_SELF_BIDDING);
-		}
+		biddingServiceProvider.getObject()
+			.updateBiddingPriceAndCount(auction, request.biddingPrice()); // 해당 경매에 대해 입찰가, 입찰 수 업데이트
+		Bidding bidding = BiddingMapper.toBidding(request, auction, bidder);
+		return BiddingMapper.toBiddingResponse(biddingRepository.save(bidding));
+	}
 
-		validateBiddingPrice(request.biddingPrice(), auction);
-
-		Bidding savedBidding = biddingRepository.save(
-			BiddingMapper.toBidding(request, auction, bidder)
-		);
-
-		auction.updateCurrentBiddingPrice(savedBidding.getBiddingPrice());
+	@DistributeLock(key = "'auction_' + #auction.getId()") // auctionId 값을 추출하여 락 키로 사용
+	public void updateBiddingPriceAndCount(Auction auction, int biddingPrice) {
+		validateBiddingPrice(biddingPrice, auction);
+		auction.updateCurrentBiddingPrice(biddingPrice);
 		auction.increaseBiddingCount();
-
-		return BiddingMapper.toBiddingResponse(savedBidding);
 	}
 
 	@Transactional(readOnly = true)
@@ -105,6 +91,28 @@ public class BiddingService {
 		sendMessage(user, nextBidding, NotificationType.PURCHASE_WINNING);
 
 		return BiddingMapper.toBiddingResponse(bidding);
+	}
+
+	private void validateBiddingPrice(int biddingPrice, Auction auction) {
+		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
+
+		if (maxBiddingPrice == null) {
+			// 입찰 내역이 없는 경우, 최소 입찰가부터 입찰 가능
+			if (biddingPrice < auction.getInitPrice()) {
+				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_LESS_THAN_INIT_PRICE);
+			}
+		} else {
+			// 최고 입찰가보다 1000원 이상일 때만 입찰 가능
+			if (biddingPrice < (maxBiddingPrice + 1000)) {
+				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_NOT_HIGH_ENOUGH);
+			}
+		}
+	}
+
+	private void validateNotSelfBidding(User bidder, Auction auction) {
+		if (auction.getSeller().equals(bidder)) {
+			throw new ValidationException(BiddingErrorCode.NOT_ALLOW_SELF_BIDDING);
+		}
 	}
 
 	public Bidding findBiddingById(Long biddingId) {
