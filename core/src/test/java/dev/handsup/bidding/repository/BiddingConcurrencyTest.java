@@ -69,6 +69,9 @@ class BiddingConcurrencyTest extends TestContainerSupport {
 				try {
 					biddingService.registerBidding(request, auction.getId(), user);
 				}
+				catch (Exception e){
+					log.info(e.getMessage());
+				}
 				finally {
 					latch.countDown();
 				}

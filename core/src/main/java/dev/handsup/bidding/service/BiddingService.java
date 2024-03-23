@@ -1,6 +1,5 @@
 package dev.handsup.bidding.service;
 
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -34,24 +33,18 @@ public class BiddingService {
 	private final BiddingQueryRepository biddingQueryRepository;
 	private final AuctionRepository auctionRepository;
 	private final FCMService fcmService;
-	private final ObjectProvider<BiddingService> biddingServiceProvider;
 
 
 	@Transactional
+	@DistributeLock(key = "'auction_' + #auctionId") // auctionId 값을 추출하여 락 키로 사용
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
 		Auction auction = getAuctionById(auctionId);
-		validateNotSelfBidding(bidder, auction); // 입찰 불가한 판매자 아닌지 검증
 
-		return biddingServiceProvider.getObject()
-			.registerBiddingWithLock(auction, request.biddingPrice(), bidder);
-	}
-
-	@DistributeLock(key = "'auction_' + #auction.getId()") // auctionId 값을 추출하여 락 키로 사용
-	public BiddingResponse registerBiddingWithLock(Auction auction, int biddingPrice, User bidder) {
-		validateBiddingPrice(biddingPrice, auction); // 경매 입찰 최고가보다 입찰가 높은지 확인
-		auction.updateCurrentBiddingPrice(biddingPrice); // 경매 입찰 최고가 갱신
+		validateBiddingPrice(request.biddingPrice(), auction); // 경매 입찰 최고가보다 입찰가 높은지 확인
+		auction.updateCurrentBiddingPrice(request.biddingPrice()); // 경매 입찰 최고가 갱신
 		auction.increaseBiddingCount(); // 경매 입찰 수 + 1
-		Bidding bidding = BiddingMapper.toBidding(biddingPrice, auction, bidder);
+		Bidding bidding = BiddingMapper.toBidding(request.biddingPrice(), auction, bidder);
+
 		return BiddingMapper.toBiddingResponse(biddingRepository.save(bidding));
 	}
 
@@ -107,12 +100,6 @@ public class BiddingService {
 			if (biddingPrice < (maxBiddingPrice + 1000)) {
 				throw new ValidationException(BiddingErrorCode.BIDDING_PRICE_NOT_HIGH_ENOUGH);
 			}
-		}
-	}
-
-	private void validateNotSelfBidding(User bidder, Auction auction) {
-		if (auction.getSeller().equals(bidder)) {
-			throw new ValidationException(BiddingErrorCode.NOT_ALLOW_SELF_BIDDING);
 		}
 	}
 
