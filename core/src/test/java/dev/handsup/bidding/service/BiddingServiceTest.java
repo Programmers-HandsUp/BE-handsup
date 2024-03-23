@@ -15,7 +15,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -54,8 +53,6 @@ class BiddingServiceTest {
 	private AuctionRepository auctionRepository;
 	@Mock
 	private FCMService fcmService;
-	@Mock
-	private ObjectProvider<BiddingService> biddingServiceProvider;
 
 	@InjectMocks
 	private BiddingService biddingService;
@@ -99,7 +96,6 @@ class BiddingServiceTest {
 			user
 		);
 		ReflectionTestUtils.setField(bidding, "createdAt", LocalDateTime.now());
-		given(biddingServiceProvider.getObject()).willReturn(biddingService);
 		given(biddingRepository.save(any(Bidding.class))).willReturn(bidding);
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(19000);
 
