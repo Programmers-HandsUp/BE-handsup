@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.service.AuctionService;
+import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.dto.BiddingMapper;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
@@ -31,27 +32,27 @@ public class BiddingService {
 
 	private final BiddingRepository biddingRepository;
 	private final BiddingQueryRepository biddingQueryRepository;
-	private final AuctionService auctionService;
+	private final AuctionRepository auctionRepository;
 	private final FCMService fcmService;
 	private final ObjectProvider<BiddingService> biddingServiceProvider;
 
 
 	@Transactional
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
-		Auction auction = auctionService.getAuctionById(auctionId);
-		validateNotSelfBidding(bidder, auction);
+		Auction auction = getAuctionById(auctionId);
+		validateNotSelfBidding(bidder, auction); // 입찰 불가한 판매자 아닌지 검증
 
 		biddingServiceProvider.getObject()
-			.updateBiddingPriceAndCount(auction, request.biddingPrice()); // 해당 경매에 대해 입찰가, 입찰 수 업데이트
+			.updateBiddingPriceAndCount(auction, request.biddingPrice());
 		Bidding bidding = BiddingMapper.toBidding(request, auction, bidder);
 		return BiddingMapper.toBiddingResponse(biddingRepository.save(bidding));
 	}
 
 	@DistributeLock(key = "'auction_' + #auction.getId()") // auctionId 값을 추출하여 락 키로 사용
 	public void updateBiddingPriceAndCount(Auction auction, int biddingPrice) {
-		validateBiddingPrice(biddingPrice, auction);
-		auction.updateCurrentBiddingPrice(biddingPrice);
-		auction.increaseBiddingCount();
+		validateBiddingPrice(biddingPrice, auction); // 경매 입찰 최고가보다 입찰가 높은지 확인
+		auction.updateCurrentBiddingPrice(biddingPrice); // 경매 입찰 최고가 갱신
+		auction.increaseBiddingCount(); // 경매 입찰 수 + 1
 	}
 
 	@Transactional(readOnly = true)
@@ -93,7 +94,7 @@ public class BiddingService {
 		return BiddingMapper.toBiddingResponse(bidding);
 	}
 
-	private void validateBiddingPrice(int biddingPrice, Auction auction) {
+	public void validateBiddingPrice(int biddingPrice, Auction auction) {
 		Integer maxBiddingPrice = biddingRepository.findMaxBiddingPriceByAuctionId(auction.getId());
 
 		if (maxBiddingPrice == null) {
@@ -115,9 +116,14 @@ public class BiddingService {
 		}
 	}
 
-	public Bidding findBiddingById(Long biddingId) {
+	private Bidding findBiddingById(Long biddingId) {
 		return biddingRepository.findById(biddingId)
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
+	}
+
+	private Auction getAuctionById(Long auctionId){
+		return auctionRepository.findById(auctionId)
+			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}
 
 	private void sendMessage(User seller, Bidding bidding, NotificationType completedPurchaseTrading) {
