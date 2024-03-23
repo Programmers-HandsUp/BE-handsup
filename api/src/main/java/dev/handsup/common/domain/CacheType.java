@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum CacheType {
-	USERS(
-		"users",      	// 캐시 이름: users
-		10 * 60,       				// 만료 시간: 10 분
+	AUCTIONS(
+		"auctions",      	// 캐시 이름: users
+		10 * 60,       				// 만료 시간: 5 분
 		10000         				// 최대 갯수: 10000
 	);
 

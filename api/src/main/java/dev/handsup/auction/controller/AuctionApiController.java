@@ -1,5 +1,6 @@
 package dev.handsup.auction.controller;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,6 +59,7 @@ public class AuctionApiController {
 	@Operation(summary = "경매 추천 API", description = "정렬 조건에 따라 경매를 추천한다.")
 	@ApiResponse(useReturnTypeSchema = true)
 	@GetMapping("/recommend")
+	@Cacheable(cacheNames = "auctions")
 	public ResponseEntity<PageResponse<RecommendAuctionResponse>> getRecommendAuctions(
 		@RequestParam(value = "si", required = false) String si,
 		@RequestParam(value = "gu", required = false) String gu,
@@ -79,4 +81,5 @@ public class AuctionApiController {
 			pageable);
 		return ResponseEntity.ok(response);
 	}
+
 }
