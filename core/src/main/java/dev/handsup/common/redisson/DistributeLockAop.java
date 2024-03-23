@@ -11,6 +11,7 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
+import dev.handsup.common.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,14 +44,14 @@ public class DistributeLockAop {
 			boolean hasLock = rLock.tryLock(waitTime, leaseTime, unit);
 
 			if (!hasLock) {
-				return false;
+				throw new ValidationException(LockErrorCode.FAILED_TO_GET_LOCK);
 			}
 
 			log.info("get lock success {}", key);
 			// 실제 수행 로직
 			return aopForTransaction.proceed(joinPoint);
 
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 			log.info("get lock fail {}", key);
 			throw new InterruptedException();
