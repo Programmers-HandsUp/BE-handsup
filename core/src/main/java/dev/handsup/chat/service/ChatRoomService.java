@@ -112,6 +112,6 @@ public class ChatRoomService {
 	}
 
 	private User getReceiver(User user, ChatRoom chatRoom) {
-		return chatRoom.getBidder().equals(user) ? chatRoom.getSeller() : chatRoom.getBidder();
+		return chatRoom.getBidder().getId().equals(user.getId()) ? chatRoom.getSeller() : chatRoom.getBidder();
 	}
 }
