@@ -59,7 +59,7 @@ public class AuctionMapper {
 			auction.getStatus().getLabel(),
 			auction.getInitPrice(),
 			auction.getCurrentBiddingPrice(),
-			auction.getEndDate().toString(),
+			auction.getEndDate().atStartOfDay().toString(),
 			product.getStatus().getLabel(),
 			product.getPurchaseTime().getLabel(),
 			product.getDescription(),
@@ -97,7 +97,7 @@ public class AuctionMapper {
 			auction.getBookmarkCount(),
 			auction.getBiddingCount(),
 			auction.getCreatedAt().toString(),
-			auction.getEndDate().toString()
+			auction.getEndDate().atStartOfDay().toString()
 		);
 	}
 
