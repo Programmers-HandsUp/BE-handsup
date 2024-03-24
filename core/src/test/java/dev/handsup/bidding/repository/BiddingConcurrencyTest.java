@@ -50,27 +50,27 @@ class BiddingConcurrencyTest extends TestContainerSupport {
 	private BiddingRepository biddingRepository;
 
 	@BeforeEach
-	void setUp(){
+	void setUp() {
 		ProductCategory productCategory = productCategoryRepository.save(ProductCategory.from("디지털 기기"));
 		auction = auctionRepository.save(AuctionFixture.auction(productCategory));
 		user = userRepository.save(UserFixture.user1());
 	}
 
-	@DisplayName("[동일한 경매 금액으로 입찰 시 하나의 입찰만 저장된다.]")
+	@DisplayName("[동시에 500개 요청 시, 입찰 금액이 모두 같다면 하나의 입찰만 저장된다.]")
 	@Test
-	void concurrency_test2() throws InterruptedException {
-		RegisterBiddingRequest request = RegisterBiddingRequest.from(auction.getInitPrice()+1000);
-		int threadCount = 30; // 요청 스레드 수
-		ExecutorService executorService = Executors.newFixedThreadPool(3);
-		CountDownLatch latch = new CountDownLatch(threadCount); // 다른 스레드에서 수행 중인 작업이 완료될 때까지 대기할 수 있도록 돕는 클래스
+	void concurrency_test() throws InterruptedException {
+		RegisterBiddingRequest request = RegisterBiddingRequest.from(auction.getInitPrice() + 1000);
+		int threadCount = 100;
+		ExecutorService executorService = Executors.newFixedThreadPool(32);
+		CountDownLatch latch = new CountDownLatch(threadCount);
 
-		for (int i = 0; i< threadCount; i++){
+		for (int i = 0; i < threadCount; i++) {
 			executorService.submit(() -> {
 				try {
 					biddingService.registerBidding(request, auction.getId(), user);
 				}
 				catch (Exception e){
-					log.info(e.getMessage());
+					log.info("{concurrency test error = {}", e.getMessage());
 				}
 				finally {
 					latch.countDown();
@@ -78,7 +78,7 @@ class BiddingConcurrencyTest extends TestContainerSupport {
 			});
 		}
 
-		latch.await(); //다른 스레드에서 수행중인 작업이 완료될 때까지 대기
+		latch.await();
 		Assertions.assertThat(biddingRepository.findAll()).hasSize(1);
 	}
 }
