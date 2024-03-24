@@ -37,7 +37,8 @@ public class DistributeLockAop {
 		final TimeUnit unit = annotation.timeUnit();
 		final String lockName = annotation.key();
 
-		String key = REDISSON_KEY_PREFIX + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), lockName);
+		String key = REDISSON_KEY_PREFIX + CustomSpringELParser.getDynamicValue(signature.getParameterNames(),
+			joinPoint.getArgs(), lockName);
 		RLock rLock = redissonClient.getLock(key);
 
 		try {

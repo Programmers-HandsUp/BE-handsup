@@ -11,7 +11,10 @@ import java.util.concurrent.TimeUnit;
 public @interface DistributeLock {
 
 	String key(); // 락 이름
+
 	TimeUnit timeUnit() default TimeUnit.SECONDS; // 시간 단위
+
 	long waitTime() default 5L; // 대기 시간
+
 	long leaseTime() default 3L; // 임대 시간
 }

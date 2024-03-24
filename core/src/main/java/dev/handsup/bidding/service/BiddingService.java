@@ -34,7 +34,6 @@ public class BiddingService {
 	private final AuctionRepository auctionRepository;
 	private final FCMService fcmService;
 
-
 	@Transactional
 	@DistributeLock(key = "'auction_' + #auctionId") // auctionId 값을 추출하여 락 키로 사용
 	public BiddingResponse registerBidding(RegisterBiddingRequest request, Long auctionId, User bidder) {
@@ -108,7 +107,7 @@ public class BiddingService {
 			.orElseThrow(() -> new NotFoundException(BiddingErrorCode.NOT_FOUND_BIDDING));
 	}
 
-	private Auction getAuctionById(Long auctionId){
+	private Auction getAuctionById(Long auctionId) {
 		return auctionRepository.findById(auctionId)
 			.orElseThrow(() -> new NotFoundException(AuctionErrorCode.NOT_FOUND_AUCTION));
 	}

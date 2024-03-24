@@ -64,7 +64,7 @@ class BiddingServiceTest {
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
 
 		// when & then
-		assertThatThrownBy(() -> biddingService.validateBiddingPrice(auction.getInitPrice()-1, auction))
+		assertThatThrownBy(() -> biddingService.validateBiddingPrice(auction.getInitPrice() - 1, auction))
 			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(BIDDING_PRICE_LESS_THAN_INIT_PRICE.getMessage());
 	}
