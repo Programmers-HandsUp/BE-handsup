@@ -52,7 +52,11 @@ public class FCMService {
 		send(message, receiverEmail);
 
 		notificationService.saveNotification(
-			senderEmail, receiverEmail, notificationType.getContent(), notificationType, auction
+			senderEmail,
+			receiverEmail,
+			senderNickname + notificationType.getContent(),
+			notificationType,
+			auction
 		);
 	}
 

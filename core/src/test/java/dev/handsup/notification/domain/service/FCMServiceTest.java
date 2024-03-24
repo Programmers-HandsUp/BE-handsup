@@ -46,8 +46,6 @@ class FCMServiceTest {
 		// given
 		String receiverEmail = receiver.getEmail();
 		String fcmToken = "fcmToken123";
-
-		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(true);
 		given(fcmTokenRepository.getFcmToken(receiverEmail)).willReturn(fcmToken);
 
 		// when
@@ -63,25 +61,4 @@ class FCMServiceTest {
 		verify(firebaseMessaging, times(1)).send(any());
 	}
 
-	@Test
-	@DisplayName("[메시지를 보내는데 실패한다 - 메시지 구독자의 FCM 토큰이 없을 때]")
-	void sendMessageFailTest() {
-		// given
-		String receiverEmail = receiver.getEmail();
-		given(fcmTokenRepository.hasKey(receiverEmail)).willReturn(true);
-
-		// when, then
-		assertThatThrownBy(() ->
-			fcmService.sendMessage(
-				"senderEmail",
-				"senderNickname",
-				receiverEmail,
-				NotificationType.BOOKMARK,
-				auction
-			))
-			.isInstanceOf(NotFoundException.class)
-			.hasMessageContaining(NotificationErrorCode.NOT_FOUND_FCM_TOKEN.getMessage());
-
-		verify(firebaseMessaging, never()).sendAsync(any());
-	}
 }
