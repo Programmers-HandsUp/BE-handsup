@@ -97,12 +97,11 @@ class AuctionServiceTest {
 
 		// when
 		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user1());
-
 		// then
 		assertAll(
 			() -> assertThat(response.title()).isEqualTo(request.title()),
 			() -> assertThat(response.tradeMethod()).isEqualTo(request.tradeMethod()),
-			() -> assertThat(response.endDate()).isEqualTo(request.endDate().toString()),
+			() -> assertThat(response.endDate()).isEqualTo(request.endDate().atStartOfDay().toString()),
 			() -> assertThat(response.purchaseTime()).isEqualTo(request.purchaseTime()),
 			() -> assertThat(response.productCategory()).isEqualTo(request.productCategory())
 		);
