@@ -54,6 +54,7 @@ public class Bidding extends TimeBaseEntity {
 
 	@Builder
 	private Bidding(int biddingPrice, Auction auction, User bidder) {
+		auction.validateNotSeller(bidder);
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;
@@ -62,6 +63,7 @@ public class Bidding extends TimeBaseEntity {
 
 	// 테스트용
 	public Bidding(Long id, int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
+		auction.validateNotSeller(bidder);
 		this.id = id;
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
@@ -71,6 +73,7 @@ public class Bidding extends TimeBaseEntity {
 
 	// 테스트용
 	public Bidding(int biddingPrice, Auction auction, User bidder, TradingStatus tradingStatus) {
+		auction.validateNotSeller(bidder);
 		this.biddingPrice = biddingPrice;
 		this.auction = auction;
 		this.bidder = bidder;

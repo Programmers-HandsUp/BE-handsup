@@ -31,6 +31,15 @@ public class BiddingFixture {
 		);
 	}
 
+	public static Bidding bidding(User user, Auction auction) {
+		return new Bidding(
+			40000,
+			auction,
+			user,
+			TradingStatus.WAITING
+		);
+	}
+
 	public static Bidding bidding(Auction auction, User user, TradingStatus status) {
 		return new Bidding(
 			1L,

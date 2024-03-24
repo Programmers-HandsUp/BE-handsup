@@ -24,6 +24,7 @@ import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.exception.AuctionErrorCode;
+import dev.handsup.bidding.exception.BiddingErrorCode;
 import dev.handsup.comment.exception.CommentErrorCode;
 import dev.handsup.common.entity.TimeBaseEntity;
 import dev.handsup.common.exception.ValidationException;
@@ -217,6 +218,12 @@ public class Auction extends TimeBaseEntity {
 	public void validateIfSeller(User user) {
 		if (!Objects.equals(seller.getId(), user.getId())) {
 			throw new ValidationException(NOT_AUCTION_SELLER);
+		}
+	}
+
+	public void validateNotSeller(User user) {
+		if (getSeller().equals(user)) {
+			throw new ValidationException(BiddingErrorCode.NOT_ALLOW_SELF_BIDDING);
 		}
 	}
 }

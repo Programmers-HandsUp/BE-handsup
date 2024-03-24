@@ -23,7 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
-import dev.handsup.auction.service.AuctionService;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.bidding.domain.Bidding;
 import dev.handsup.bidding.domain.TradingStatus;
 import dev.handsup.bidding.dto.request.RegisterBiddingRequest;
@@ -50,9 +50,10 @@ class BiddingServiceTest {
 	@Mock
 	private BiddingQueryRepository biddingQueryRepository;
 	@Mock
-	private AuctionService auctionService;
+	private AuctionRepository auctionRepository;
 	@Mock
 	private FCMService fcmService;
+
 	@InjectMocks
 	private BiddingService biddingService;
 
@@ -62,12 +63,8 @@ class BiddingServiceTest {
 		// given
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(null);
 
-		RegisterBiddingRequest request = RegisterBiddingRequest.from(9000);
-		Long auctionId = auction.getId();
-		given(auctionService.getAuctionById(auctionId)).willReturn(auction);
-
 		// when & then
-		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
+		assertThatThrownBy(() -> biddingService.validateBiddingPrice(auction.getInitPrice() - 1, auction))
 			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(BIDDING_PRICE_LESS_THAN_INIT_PRICE.getMessage());
 	}
@@ -76,15 +73,11 @@ class BiddingServiceTest {
 	@DisplayName("[입찰가가 최고 입찰가보다 1000원 이상 높지 않으면 예외를 발생시킨다]")
 	void validateBiddingPrice_NotHighEnough_ThrowsException() {
 		// given
-		Integer maxBiddingPrice = 15000;
+		int maxBiddingPrice = 15000;
 		given(biddingRepository.findMaxBiddingPriceByAuctionId(any(Long.class))).willReturn(maxBiddingPrice);
 
-		RegisterBiddingRequest request = RegisterBiddingRequest.from(15500);
-		Long auctionId = auction.getId();
-		given(auctionService.getAuctionById(auctionId)).willReturn(auction);
-
 		// when & then
-		assertThatThrownBy(() -> biddingService.registerBidding(request, auctionId, user))
+		assertThatThrownBy(() -> biddingService.validateBiddingPrice(maxBiddingPrice + 999, auction))
 			.isInstanceOf(ValidationException.class)
 			.hasMessageContaining(BIDDING_PRICE_NOT_HIGH_ENOUGH.getMessage());
 	}
@@ -95,7 +88,8 @@ class BiddingServiceTest {
 		// given
 		RegisterBiddingRequest request = RegisterBiddingRequest.from(20000);
 
-		given(auctionService.getAuctionById(auction.getId())).willReturn(auction);
+		given(auctionRepository.findById(auction.getId())).willReturn(Optional.of(auction));
+
 		Bidding bidding = Bidding.of(
 			request.biddingPrice(),
 			auction,
