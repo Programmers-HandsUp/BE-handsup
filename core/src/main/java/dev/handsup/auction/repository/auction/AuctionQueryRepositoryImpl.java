@@ -164,11 +164,11 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 	}
 
 	private BooleanExpression initPriceMin(Integer minPrice) {
-		return (minPrice != null) ? auction.initPrice.goe(minPrice) : null;
+		return (minPrice != null) ? auction.currentBiddingPrice.goe(minPrice) : null;
 	}
 
 	private BooleanExpression initPriceMax(Integer maxPrice) {
-		return (maxPrice != null) ? auction.initPrice.loe(maxPrice) : null;
+		return (maxPrice != null) ? auction.currentBiddingPrice.loe(maxPrice) : null;
 	}
 
 	private BooleanExpression isNewProductEq(Boolean isNewProduct) {
