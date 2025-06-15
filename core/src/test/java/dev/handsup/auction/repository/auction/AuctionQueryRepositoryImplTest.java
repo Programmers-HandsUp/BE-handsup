@@ -56,9 +56,9 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 		productCategoryRepository.saveAll(List.of(category1, category2));
 	}
 
-	@DisplayName("[경매 시작 금액에 min값을 설정해 필터링할 수 있다.(minGoe)]")
+	@DisplayName("[최근 입찰가에 대한 하한 조건을 걸 수 있다.]")
 	@Test
-	void searchAuction_initPrice_min_filter() {
+	void searchAuction_currentBiddingPrice_min_filter() {
 		//given
 		Auction auction1 = AuctionFixture.auction(category1, 2000);
 		Auction auction2 = AuctionFixture.auction(category2, 5000);
@@ -83,7 +83,7 @@ class AuctionQueryRepositoryImplTest extends DataJpaTestSupport {
 
 	@DisplayName("[경매 시작 금액에 max값을 설정해 필터링할 수 있다.(maxLoe)]")
 	@Test
-	void searchAuction_initPrice_max_filter() {
+	void searchAuction_currentBiddingPrice_max_filter() {
 		//given
 		Auction auction1 = AuctionFixture.auction(category1, 2000);
 		Auction auction2 = AuctionFixture.auction(category2, 5000);
