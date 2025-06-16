@@ -67,6 +67,21 @@ public class AuctionSearchQueryRepositoryImpl implements AuctionSearchQueryRepos
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
+	@Override
+	public Slice<AuctionSearch> findByProductCategories(List<String> productCategories, Pageable pageable) {
+		List<AuctionSearch> content = queryFactory.select(auctionSearch)
+			.from(auctionSearch)
+			.where(
+				auctionSearch.category.in(productCategories)
+			)
+			.orderBy(auctionSearch.bookmarkCount.desc())
+			.limit(pageable.getPageSize() + 1L)
+			.offset(pageable.getOffset())
+			.fetch();
+		boolean hasNext = hasNext(pageable.getPageSize(), content);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
 
 	private OrderSpecifier<?> auctionSearchSort(Pageable pageable) {
 		return pageable.getSort().stream()
