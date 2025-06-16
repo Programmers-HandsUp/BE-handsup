@@ -1,0 +1,67 @@
+### 기본 검색 (키워드만)
+POST http://localhost:8080/api/auctions/search?page=0&size=10&sort=최신순
+Content-Type: application/json
+
+{
+  "keyword": "에어팟"
+}
+
+###
+
+
+
+### 카테고리, 거래방식 등 복합 검색 예시
+POST http://localhost:8080/api/auctions/search?page=0&size=10&sort=최신순
+Content-Type: application/json
+
+{
+  "keyword": "에어팟",
+"productCategory": "디지털 기기",
+  "si": "서울시",
+  "gu": "강남구",
+  "dong": "역삼동"
+}
+
+### 카테고리, 거래방식 등 복합 검색 예시
+POST http://localhost:8080/api/auctions/search/v2?page=0&size=10&sort=최신순
+Content-Type: application/json
+
+{
+  "keyword": "에어팟",
+  "productCategory": "디지털 기기",
+  "si": "서울시",
+  "gu": "강남구",
+  "dong": "역삼동"
+}
+
+###
+
+### 북마크순 정렬 검색
+POST http://localhost:8080/api/auctions/search?page=0&size=10&sort=북마크수
+Content-Type: application/json
+
+{
+  "keyword": "에어팟"
+}
+
+###
+
+### 마감일 임박순 + 카테고리
+POST http://localhost:8080/api/auctions/search?page=0&size=10&sort=마감일
+Content-Type: application/json
+
+{
+  "keyword": "청소기",
+  "productCategory": "APPLIANCES"
+}
+
+###
+
+### 검색결과 없는 경우(키워드 없음)
+POST http://localhost:8080/api/auctions/search?page=0&size=10
+Content-Type: application/json
+
+{
+  "keyword": "존재하지않는상품명"
+}
+

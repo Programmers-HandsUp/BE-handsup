@@ -1,0 +1,21 @@
+### GET request to example server
+POST http://localhost:8080/api/auctions
+Content-Type: application/json
+Authorization: Bearer eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjEsImlhdCI6MTc0OTk4ODQ3NiwiZXhwIjoyMDY1MzQ4NDc2fQ._I9ddh2ADiTV6aIitn19RRkW2sglpkRbRMZtlqC7xeM
+
+{
+  "title": "에어팟 거의 새거",
+  "productCategory": "디지털 기기",
+  "initPrice": 3000,
+  "endDate": "2024-02-17",
+  "productStatus": "깨끗해요",
+  "purchaseTime": "6개월 이하",
+  "description": "거의 새거임",
+  "tradeMethod": "직거래",
+  "imageUrls": [
+    "https://s3.ap-northeast-2.amazonaws.com/handsup-bucket/images/f2ed3069-3c65-4cb5-97dc-2f24a64ca103.jpg"
+  ],
+  "si": "서울시",
+  "gu": "성북구",
+  "dong": "동선동"
+}

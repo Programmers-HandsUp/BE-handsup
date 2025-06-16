@@ -1,0 +1,4 @@
+### 경매 추천 - 지역 필터(서울시 관악구 봉천동)
+### 최근생성, 마감일, 입찰수, 북마크수
+GET http://localhost:8080/api/auctions/recommend?page=0&size=10&sort=최근생성&si=서울시&gu=관악구&dong=봉천동
+Content-Type: application/json
