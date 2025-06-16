@@ -222,4 +222,27 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		//then
 		assertThat(auctionSearches).containsExactly(auctionSearch2, auctionSearch1);
 	}
+
+	@DisplayName("[사용자 선호 카테고리에 속하는 해당하는 경매를 북마크순으로 조회할 수 있다.]")
+	@Test
+	void findByProductCategories() {
+		//given
+		int bookmarkCnt = 0;
+		String notPreferredCategory = "스포츠/레저";
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, category1.getValue(),1L);
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, category2.getValue(),2L);
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, notPreferredCategory,3L);
+
+		ReflectionTestUtils.setField(auctionSearch1, "bookmarkCount", bookmarkCnt+2);
+		ReflectionTestUtils.setField(auctionSearch2, "bookmarkCount", bookmarkCnt+1);
+		ReflectionTestUtils.setField(auctionSearch3, "bookmarkCount", bookmarkCnt);
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2, auctionSearch3));
+
+		//when
+		List<AuctionSearch> auctionSearches = auctionSearchRepository.findByProductCategories(
+			List.of(category1.getValue(), category2.getValue()), pageRequest).getContent();
+		//then
+		assertThat(auctionSearches).containsExactly(auctionSearch1, auctionSearch2);
+
+	}
 }

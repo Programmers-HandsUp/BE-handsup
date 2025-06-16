@@ -39,6 +39,21 @@ public class AuctionSearchFixture {
 		return auctionSearch;
 	}
 
+	public static AuctionSearch auctionSearch(Long auctionId, String category, Long productId) {
+		return AuctionSearch.builder()
+			.auctionId(auctionId)
+			.productId(productId)
+			.category(category)
+			.isNewProduct(false)
+			.title(TITLE)
+			.imgUrl(IMAGE_URL)
+			.endDate(END_DATE)
+			.tradingLocation(TradingLocation.of(SI, GU, DONG))
+			.tradeMethod(TradeMethod.DIRECT)
+			.createdAt(LocalDateTime.now())
+			.build();
+	}
+
 	public static AuctionSearch auctionSearch(Long auctionId, Long productId, TradeMethod tradeMethod) {
 		return AuctionSearch.builder()
 			.auctionId(auctionId)
