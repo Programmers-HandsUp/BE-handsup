@@ -65,3 +65,10 @@ Content-Type: application/json
   "keyword": "존재하지않는상품명"
 }
 
+
+### 경매 추천
+GET http://localhost:8080/api/auctions/recommend?si=서울시&gu=강남구&dong=역삼동&page=0&size=10&sort=북마크수
+
+
+### 경매 추천 ver2
+GET http://localhost:8080/api/auctions/recommend?si=서울시&gu=강남구&dong=역삼동&page=0&size=10&sort=북마크수
