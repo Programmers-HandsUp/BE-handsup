@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
+import dev.handsup.auction.dto.response.AuctionSearchResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auth.annotation.NoAuth;
 import dev.handsup.common.dto.PageResponse;
@@ -35,6 +36,17 @@ public class SearchApiController {
 		@Valid @RequestBody AuctionSearchCondition condition,
 		Pageable pageable) {
 		PageResponse<AuctionSimpleResponse> response = searchService.searchAuctions(condition, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@NoAuth
+	@Operation(summary = "경매 검색 API", description = "경매를 검색한다")
+	@ApiResponse(useReturnTypeSchema = true)
+	@PostMapping("/v2")
+	public ResponseEntity<PageResponse<AuctionSearchResponse>> optimizedSearchAuctions(
+		@Valid @RequestBody AuctionSearchCondition condition,
+		Pageable pageable) {
+		PageResponse<AuctionSearchResponse> response = searchService.optimizedSearchAuctions(condition, pageable);
 		return ResponseEntity.ok(response);
 	}
 
