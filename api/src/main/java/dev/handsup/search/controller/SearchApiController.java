@@ -15,10 +15,13 @@ import dev.handsup.auction.dto.response.AuctionSearchResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
 import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auth.annotation.NoAuth;
+import dev.handsup.auth.jwt.JwtAuthorization;
 import dev.handsup.common.dto.PageResponse;
 import dev.handsup.search.dto.PopularKeywordsResponse;
 import dev.handsup.search.service.SearchService;
+import dev.handsup.user.domain.User;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -74,6 +77,18 @@ public class SearchApiController {
 		Pageable pageable
 	) {
 		PageResponse<RecommendAuctionResponse> response = searchService.getRecommendAuctions(si, gu, dong, pageable);
+		return ResponseEntity.ok(response);
+	}
+
+	@Operation(summary = "유저 선호 카테고리 경매 조회 API", description = "유저가 선호하는 카테고리의 경매를 조회한다.")
+	@ApiResponse(useReturnTypeSchema = true)
+	@GetMapping("/recommend/category")
+	public ResponseEntity<PageResponse<RecommendAuctionResponse>> getUserPreferredCategoryAuctionsV2(
+		@Parameter(hidden = true) @JwtAuthorization User user,
+		Pageable pageable
+	) {
+		PageResponse<RecommendAuctionResponse> response = searchService.getUserPreferredCategoryAuctions(user,
+			pageable);
 		return ResponseEntity.ok(response);
 	}
 }
