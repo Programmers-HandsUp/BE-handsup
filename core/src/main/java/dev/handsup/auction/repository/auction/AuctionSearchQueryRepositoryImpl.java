@@ -41,7 +41,7 @@ public class AuctionSearchQueryRepositoryImpl implements AuctionSearchQueryRepos
 				isNewProductEq(condition.isNewProduct()),
 				isProgressEq(condition.isProgress())
 			)
-			.orderBy(searchAuctionSort(pageable))
+			.orderBy(auctionSearchSort(pageable))
 			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
 			.fetch();
@@ -49,7 +49,26 @@ public class AuctionSearchQueryRepositoryImpl implements AuctionSearchQueryRepos
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
 
-	private OrderSpecifier<?> searchAuctionSort(Pageable pageable) {
+	@Override
+	public Slice<AuctionSearch> sortAuctionByCriteria(String si, String gu, String dong, Pageable pageable) {
+		List<AuctionSearch> content = queryFactory.select(auctionSearch)
+			.from(auctionSearch)
+			.where(
+				auctionSearch.isProgress.isTrue(),
+				siEq(si),
+				guEq(gu),
+				dongEq(dong)
+			)
+			.orderBy(auctionSearchSort(pageable))
+			.limit(pageable.getPageSize() + 1L)
+			.offset(pageable.getOffset())
+			.fetch();
+		boolean hasNext = hasNext(pageable.getPageSize(), content);
+		return new SliceImpl<>(content, pageable, hasNext);
+	}
+
+
+	private OrderSpecifier<?> auctionSearchSort(Pageable pageable) {
 		return pageable.getSort().stream()
 			.findFirst()
 			.map(order -> switch (order.getProperty()) {
