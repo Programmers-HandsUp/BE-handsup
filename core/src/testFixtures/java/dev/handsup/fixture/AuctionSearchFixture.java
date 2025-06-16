@@ -10,7 +10,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
-import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -22,22 +21,6 @@ public class AuctionSearchFixture {
 	static final String GU = "성북구";
 	static final String DONG = "동선동";
 	static final String IMAGE_URL = "image.jpg";
-
-	public static AuctionSearch auctionSearch(Long auctionId, Long productId, ProductCategory productCategory, int currentBiddingPrice) {
-		AuctionSearch auctionSearch = AuctionSearch.builder()
-			.auctionId(auctionId)
-			.productId(productId)
-			.category(productCategory.getValue())
-			.isNewProduct(false)
-			.title(TITLE)
-			.imgUrl(IMAGE_URL)
-			.endDate(END_DATE)
-			.tradingLocation(TradingLocation.of(SI, GU, DONG))
-			.tradeMethod(TradeMethod.DIRECT)
-			.createdAt(LocalDateTime.now())
-			.build();
-		return auctionSearch;
-	}
 
 	public static AuctionSearch auctionSearch(Long auctionId, Long productId, int currentBiddingPrice) {
 		AuctionSearch auctionSearch = AuctionSearch.builder()
@@ -96,6 +79,21 @@ public class AuctionSearchFixture {
 			.imgUrl(IMAGE_URL)
 			.endDate(END_DATE)
 			.tradingLocation(TradingLocation.of(SI, GU, DONG))
+			.tradeMethod(TradeMethod.DIRECT)
+			.createdAt(LocalDateTime.now())
+			.build();
+	}
+
+	public static AuctionSearch auctionSearch(Long auctionId, Long productId,TradingLocation tradingLocation) {
+		return  AuctionSearch.builder()
+			.auctionId(auctionId)
+			.productId(productId)
+			.category(DIGITAL_DEVICE)
+			.isNewProduct(true)
+			.title(TITLE)
+			.imgUrl(IMAGE_URL)
+			.endDate(END_DATE)
+			.tradingLocation(tradingLocation)
 			.tradeMethod(TradeMethod.DIRECT)
 			.createdAt(LocalDateTime.now())
 			.build();

@@ -10,10 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
@@ -171,5 +173,53 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 			() -> assertThat(auctionSearches).hasSize(2),
 			() -> assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch1)
 		);
+	}
+
+	@DisplayName("[입찰수 순으로 경매를 조회할 수 있다.]")
+	@Test
+	void sortAuctionByCriteria_biddingCount() {
+		//given
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, 1L);
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, 2L);
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, 3L);
+
+		int biddingCnt = 0;
+		ReflectionTestUtils.setField(auctionSearch1, "biddingCount", biddingCnt);
+		ReflectionTestUtils.setField(auctionSearch2, "biddingCount", biddingCnt+1);
+		ReflectionTestUtils.setField(auctionSearch3, "biddingCount", biddingCnt+2);
+
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2,auctionSearch3));
+
+
+		PageRequest request = PageRequest.of(0, 10, Sort.by("입찰수"));
+		//when
+		List<AuctionSearch> auctionSearches = auctionSearchRepository.sortAuctionByCriteria(null, null, null, request)
+			.getContent();
+		//then
+		assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch2, auctionSearch1);
+	}
+
+	@DisplayName("[특정 지역 필터 + 북마크순으로 경매를 조회할 수 있다.]")
+	@Test
+	void sortAuctionByCriteria_bookmarkCount() {
+		//given
+		String si = "서울시", gu = "서초구", dong1 = "방배동", dong2 = "반포동";
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, 1L, TradingLocation.of(si,gu,dong1));
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, 2L,TradingLocation.of(si,gu,dong1));
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, 3L,TradingLocation.of(si,gu,dong2));
+
+		int bookmarkCnt = 0;
+		ReflectionTestUtils.setField(auctionSearch1, "bookmarkCount", bookmarkCnt);
+		ReflectionTestUtils.setField(auctionSearch2, "bookmarkCount", bookmarkCnt+1);
+		ReflectionTestUtils.setField(auctionSearch3, "bookmarkCount", bookmarkCnt+2);
+
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2, auctionSearch3));
+		PageRequest request = PageRequest.of(0, 10, Sort.by("북마크수"));
+
+		//when
+		List<AuctionSearch> auctionSearches = auctionSearchRepository.sortAuctionByCriteria(si, gu, dong1, request)
+			.getContent();
+		//then
+		assertThat(auctionSearches).containsExactly(auctionSearch2, auctionSearch1);
 	}
 }
