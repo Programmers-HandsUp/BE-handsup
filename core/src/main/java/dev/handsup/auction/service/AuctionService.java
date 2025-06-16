@@ -11,12 +11,14 @@ import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.mapper.AuctionMapper;
+import dev.handsup.auction.dto.mapper.AuctionSearchMapper;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.CommonMapper;
@@ -30,14 +32,17 @@ import lombok.RequiredArgsConstructor;
 public class AuctionService {
 
 	private final AuctionRepository auctionRepository;
+	private final AuctionSearchRepository auctionSearchRepository;
 	private final ProductCategoryRepository productCategoryRepository;
 	private final PreferredProductCategoryRepository preferredProductCategoryRepository;
 	private final AuctionQueryRepository auctionQueryRepository;
 
 	public AuctionDetailResponse registerAuction(RegisterAuctionRequest request, User user) {
 		ProductCategory productCategory = getProductCategoryByValue(request.productCategory());
-		Auction auction = AuctionMapper.toAuction(request, productCategory, user);
-		return AuctionMapper.toAuctionDetailResponse(auctionRepository.save(auction));
+		Auction auction = auctionRepository.save(AuctionMapper.toAuction(request, productCategory, user));
+		auctionSearchRepository.save(AuctionSearchMapper.toAuctionSearch(auction));
+
+		return AuctionMapper.toAuctionDetailResponse(auction);
 	}
 
 	@Transactional(readOnly = true)
