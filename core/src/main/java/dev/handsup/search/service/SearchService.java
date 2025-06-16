@@ -10,6 +10,7 @@ import dev.handsup.auction.dto.mapper.AuctionSearchMapper;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.dto.response.AuctionSearchResponse;
 import dev.handsup.auction.dto.response.AuctionSimpleResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
@@ -43,6 +44,15 @@ public class SearchService {
 			.map(AuctionSearchMapper::toAuctionSearchResponse);
 		redisSearchRepository.increaseSearchCount(condition.keyword());
 
+		return CommonMapper.toPageResponse(auctionResponsePage);
+	}
+
+	@Transactional(readOnly = true)
+	public PageResponse<RecommendAuctionResponse> getRecommendAuctions(String si, String gu, String dong,
+		Pageable pageable) {
+		Slice<RecommendAuctionResponse> auctionResponsePage = auctionSearchRepository
+			.sortAuctionByCriteria(si, gu, dong, pageable)
+			.map(AuctionSearchMapper::toRecommendAuctionResponse);
 		return CommonMapper.toPageResponse(auctionResponsePage);
 	}
 

@@ -7,6 +7,7 @@ import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.dto.response.AuctionSearchResponse;
+import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -37,6 +38,20 @@ public class AuctionSearchMapper {
 			auctionSearch.getTradingLocation().getDong(),
 			auctionSearch.getCreatedAt().toString(),
 			auctionSearch.isProgress()
+		);
+	}
+
+	public static RecommendAuctionResponse toRecommendAuctionResponse(AuctionSearch auctionSearch) {
+		return RecommendAuctionResponse.of(
+			auctionSearch.getId(),
+			auctionSearch.getTitle(),
+			auctionSearch.getTradingLocation().getDong(),
+			auctionSearch.getCurrentBiddingPrice(),
+			auctionSearch.getImgUrl(),
+			auctionSearch.getBookmarkCount(),
+			auctionSearch.getBiddingCount(),
+			auctionSearch.getCreatedAt().toString(),
+			auctionSearch.getEndDate().atStartOfDay().toString()
 		);
 	}
 }
