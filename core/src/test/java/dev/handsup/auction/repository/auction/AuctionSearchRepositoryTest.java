@@ -1,7 +1,6 @@
 package dev.handsup.auction.repository.auction;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -13,15 +12,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.DataJpaTestSupport;
 import dev.handsup.fixture.AuctionSearchFixture;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchCondition;
 import jakarta.persistence.EntityManager;
 
 class AuctionSearchRepositoryTest extends DataJpaTestSupport {
@@ -52,7 +51,6 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 	@Test
 	void searchAuction_currentBiddingPrice_min_filter() {
 		//given
-
 		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, 1L, 2000);
 		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, 2L,  5000);
 		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, 3L,  10000);
@@ -70,10 +68,7 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		List<AuctionSearch> auctionSearches = auctionSearchRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
-		assertAll(
-			() -> assertThat(auctionSearches).hasSize(2),
-			() -> assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch2)
-		);
+		assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch2);
 	}
 
 
@@ -96,10 +91,7 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		List<AuctionSearch> auctionSearches = auctionSearchRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
-		assertAll(
-			() -> assertThat(auctionSearches).hasSize(2),
-			() -> assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch1)
-		);
+		assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch1);
 	}
 
 	@DisplayName("[진행 중인 경매만 필터링할 수 있다. (isProgressEq)]")
@@ -122,10 +114,7 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		List<AuctionSearch> auctionSearches = auctionSearchRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
-		assertAll(
-			() -> assertThat(auctionSearches).hasSize(2),
-			() -> assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch2)
-		);
+		assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch2);
 	}
 
 	@DisplayName("[거래 방식으로 경매를 필터링할 수 있다. (tradeMethodEq)]")
@@ -147,10 +136,7 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		List<AuctionSearch> auctionSearches = auctionSearchRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
-		assertAll(
-			() -> assertThat(auctionSearches).hasSize(1),
-			() -> assertThat(auctionSearches.get(0)).isEqualTo(auctionSearch1)
-		);
+		assertThat(auctionSearches).containsExactly(auctionSearch1);
 	}
 
 	@DisplayName("[검색 키워드로 필터링할 수 있다. (keywordContains)]")
@@ -169,10 +155,7 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 		List<AuctionSearch> auctionSearches = auctionSearchRepository.searchAuctions(condition, pageRequest).getContent();
 
 		//then
-		assertAll(
-			() -> assertThat(auctionSearches).hasSize(2),
-			() -> assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch1)
-		);
+		assertThat(auctionSearches).containsExactly(auctionSearch3, auctionSearch1);
 	}
 
 	@DisplayName("[입찰수 순으로 경매를 조회할 수 있다.]")
@@ -243,6 +226,5 @@ class AuctionSearchRepositoryTest extends DataJpaTestSupport {
 			List.of(category1.getValue(), category2.getValue()), pageRequest).getContent();
 		//then
 		assertThat(auctionSearches).containsExactly(auctionSearch1, auctionSearch2);
-
 	}
 }

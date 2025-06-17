@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -15,27 +14,25 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.repository.auction.AuctionQueryRepository;
+import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.dto.PageResponse;
-import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.AuctionSearchFixture;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchCondition;
+import dev.handsup.search.dto.AuctionSearchResponse;
 import dev.handsup.search.dto.PopularKeywordResponse;
 import dev.handsup.search.dto.PopularKeywordsResponse;
 
 @DisplayName("[검색 service 테스트]")
 @ExtendWith(MockitoExtension.class)
 class SearchServiceTest {
-	private final Auction auction = AuctionFixture.auction();
 	private final int PAGE_NUMBER = 0;
 	private final int PAGE_SIZE = 5;
 
 	@Mock
-	private AuctionQueryRepository auctionQueryRepository;
+	private AuctionSearchRepository auctionSearchRepository;
 
 	@Mock
 	private RedisSearchRepository redisSearchRepository;
@@ -47,23 +44,23 @@ class SearchServiceTest {
 	@Test
 	void searchAuctions() {
 		//given
-		ReflectionTestUtils.setField(auction, "createdAt", LocalDateTime.now());
+		AuctionSearch auctionSearch = AuctionSearchFixture.auctionSearch(1L,1L);
 
 		PageRequest pageRequest = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
 			.keyword("버즈")
 			.build();
 
-		given(auctionQueryRepository.searchAuctions(condition, pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
+		given(auctionSearchRepository.searchAuctions(condition, pageRequest))
+			.willReturn(new SliceImpl<>(List.of(auctionSearch), pageRequest, false));
 
 		//when
-		PageResponse<AuctionSimpleResponse> response
-			= searchService.searchAuctions(condition, pageRequest);
+		PageResponse<AuctionSearchResponse> response
+			= searchService.searchAuctionsV2(condition, pageRequest);
 
 		//then
-		AuctionSimpleResponse auctionSimpleResponse = response.content().get(0);
-		assertThat(auctionSimpleResponse).isNotNull();
+		AuctionSearchResponse auctionSearchResponse = response.content().get(0);
+		assertThat(auctionSearchResponse).isNotNull();
 		verify(redisSearchRepository).increaseSearchCount(condition.keyword());
 	}
 

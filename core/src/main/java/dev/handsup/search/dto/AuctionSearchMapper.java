@@ -1,13 +1,12 @@
-package dev.handsup.auction.dto.mapper;
+package dev.handsup.search.dto;
 
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.AuctionSearch;
+import dev.handsup.search.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.product.Product;
-import dev.handsup.auction.dto.response.AuctionSearchResponse;
-import dev.handsup.auction.dto.response.RecommendAuctionResponse;
+import dev.handsup.recommend.dto.RecommendAuctionResponse;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)

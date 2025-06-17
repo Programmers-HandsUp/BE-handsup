@@ -3,7 +3,7 @@ package dev.handsup.auction.scheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import dev.handsup.auction.repository.auction.AuctionQueryRepository;
+import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class AuctionScheduler {
-	private final AuctionQueryRepository auctionQueryRepository;
+	private final AuctionRepository auctionRepository;
 	private final AuctionSearchRepository auctionSearchRepository;
 
 	@Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
 	public void updateAuctionStatus() {
-		auctionQueryRepository.updateAuctionStatusAfterEndDate();
+		auctionRepository.updateAuctionStatusAfterEndDate();
 	}
 
 	@Scheduled(cron = "0 */3 * * * *")

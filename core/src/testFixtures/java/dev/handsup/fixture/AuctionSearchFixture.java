@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.test.util.ReflectionTestUtils;
 
-import dev.handsup.auction.domain.AuctionSearch;
+import dev.handsup.search.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
 import lombok.NoArgsConstructor;
@@ -37,6 +37,21 @@ public class AuctionSearchFixture {
 			.build();
 		ReflectionTestUtils.setField(auctionSearch, "currentBiddingPrice", currentBiddingPrice);
 		return auctionSearch;
+	}
+
+	public static AuctionSearch auctionSearch(Long auctionId, Long productId,TradingLocation tradingLocation, LocalDate endDate) {
+		return  AuctionSearch.builder()
+			.auctionId(auctionId)
+			.productId(productId)
+			.category(DIGITAL_DEVICE)
+			.isNewProduct(true)
+			.title(TITLE)
+			.imgUrl(IMAGE_URL)
+			.endDate(endDate)
+			.tradingLocation(tradingLocation)
+			.tradeMethod(TradeMethod.DIRECT)
+			.createdAt(LocalDateTime.now())
+			.build();
 	}
 
 	public static AuctionSearch auctionSearch(Long auctionId, String category, Long productId) {

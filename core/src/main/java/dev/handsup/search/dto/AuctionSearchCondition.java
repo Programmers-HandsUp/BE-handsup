@@ -1,4 +1,4 @@
-package dev.handsup.auction.dto.request;
+package dev.handsup.search.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

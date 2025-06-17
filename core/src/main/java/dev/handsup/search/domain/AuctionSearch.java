@@ -1,4 +1,4 @@
-package dev.handsup.auction.domain;
+package dev.handsup.search.domain;
 
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;

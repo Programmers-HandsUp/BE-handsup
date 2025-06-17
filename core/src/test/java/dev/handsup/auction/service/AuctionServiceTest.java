@@ -16,55 +16,38 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
-import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
-import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.mapper.AuctionSearchMapper;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
-import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
 import dev.handsup.auction.repository.auction.AuctionSearchRepository;
-import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
-import dev.handsup.common.dto.PageResponse;
 import dev.handsup.common.exception.NotFoundException;
 import dev.handsup.fixture.AuctionFixture;
 import dev.handsup.fixture.ProductFixture;
 import dev.handsup.fixture.UserFixture;
-import dev.handsup.user.domain.User;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchMapper;
 
 @DisplayName("[경매 서비스 테스트]")
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest {
-	private final User user = UserFixture.user1();
 	private final String DIGITAL_DEVICE = "디지털 기기";
 	private final ProductCategory productCategory = ProductFixture.productCategory(DIGITAL_DEVICE);
 	private final Auction auction = AuctionFixture.auction();
-	private final PageRequest pageRequest = PageRequest.of(0, 5, Sort.by("북마크수"));
 
 	@Mock
 	private AuctionRepository auctionRepository;
 
 	@Mock
-	private AuctionQueryRepository auctionQueryRepository;
-
-	@Mock
 	private ProductCategoryRepository productCategoryRepository;
-
-	@Mock
-	private PreferredProductCategoryRepository preferredProductCategoryRepository;
 
 	@Mock
 	private AuctionSearchRepository auctionSearchRepository;
@@ -137,35 +120,5 @@ class AuctionServiceTest {
 		assertThatThrownBy(() -> auctionService.getAuctionById(auctionId))
 			.isInstanceOf(NotFoundException.class)
 			.hasMessageContaining(AuctionErrorCode.NOT_FOUND_AUCTION.getMessage());
-	}
-
-	@DisplayName("[정렬 조건에 따라 추천 경매를 조회할 수 있다.]")
-	@Test
-	void getRecommendAuctions() {
-		//given
-		given(auctionQueryRepository.sortAuctionByCriteria(null, null, null, pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
-		//when
-		PageResponse<RecommendAuctionResponse> response
-			= auctionService.getRecommendAuctions(null, null, null, pageRequest);
-		//then
-		assertThat(response.content().get(0)).isNotNull();
-	}
-
-	@DisplayName("[유저 선호 카테고리에 맞는 경매를 북마크 순으로 조회할 수 있다.]")
-	@Test
-	void getUserPreferredCategoryAuctions() {
-		//given
-		PreferredProductCategory preferredProductCategory = PreferredProductCategory.of(user, productCategory);
-		given(preferredProductCategoryRepository.findByUser(user))
-			.willReturn(List.of(preferredProductCategory));
-		given(auctionQueryRepository.findByProductCategories(List.of(productCategory), pageRequest))
-			.willReturn(new SliceImpl<>(List.of(auction), pageRequest, false));
-		//when
-		PageResponse<RecommendAuctionResponse> response = auctionService.getUserPreferredCategoryAuctions(
-			user, pageRequest);
-
-		//then
-		assertThat(response.content().get(0)).isNotNull();
 	}
 }

@@ -3,6 +3,7 @@ package dev.handsup.auction.dto.mapper;
 import static lombok.AccessLevel.*;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
@@ -12,8 +13,8 @@ import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
-import dev.handsup.auction.dto.response.AuctionSimpleResponse;
-import dev.handsup.auction.dto.response.RecommendAuctionResponse;
+import dev.handsup.recommend.dto.RecommendAuctionResponse;
+import dev.handsup.search.dto.AuctionSearchResponse;
 import dev.handsup.user.domain.User;
 import lombok.NoArgsConstructor;
 
@@ -74,8 +75,9 @@ public class AuctionMapper {
 		);
 	}
 
-	public static AuctionSimpleResponse toAuctionSimpleResponse(Auction auction) {
-		return AuctionSimpleResponse.of(
+	public static AuctionSearchResponse toAuctionSearchResponse(Auction auction) {
+		boolean isProgress = auction.getStatus()== AuctionStatus.BIDDING;
+		return AuctionSearchResponse.of(
 			auction.getId(),
 			auction.getTitle(),
 			auction.getCurrentBiddingPrice(),
@@ -83,7 +85,7 @@ public class AuctionMapper {
 			auction.getBookmarkCount(),
 			auction.getTradingLocation().getDong(),
 			auction.getCreatedAt().toString(),
-			auction.getStatus().toString()
+			isProgress
 		);
 	}
 

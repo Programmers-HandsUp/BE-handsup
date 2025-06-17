@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
-import dev.handsup.auction.domain.AuctionSearch;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchCondition;
 
 public interface AuctionSearchQueryRepository {
 	Slice<AuctionSearch> searchAuctions(AuctionSearchCondition auctionSearchCondition, Pageable pageable);

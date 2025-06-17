@@ -1,6 +1,6 @@
 package dev.handsup.auction.repository.auction;
 
-import static dev.handsup.auction.domain.QAuctionSearch.*;
+import static dev.handsup.search.domain.QAuctionSearch.*;
 import static org.springframework.util.StringUtils.*;
 
 import java.util.List;
@@ -14,9 +14,9 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchCondition;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -81,7 +81,6 @@ public class AuctionSearchQueryRepositoryImpl implements AuctionSearchQueryRepos
 		boolean hasNext = hasNext(pageable.getPageSize(), content);
 		return new SliceImpl<>(content, pageable, hasNext);
 	}
-
 
 	private OrderSpecifier<?> auctionSearchSort(Pageable pageable) {
 		return pageable.getSort().stream()

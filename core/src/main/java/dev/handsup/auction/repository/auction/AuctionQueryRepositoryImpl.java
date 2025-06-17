@@ -24,7 +24,7 @@ import dev.handsup.auction.domain.auction_field.AuctionStatus;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
+import dev.handsup.search.dto.AuctionSearchCondition;
 import lombok.RequiredArgsConstructor;
 
 @Repository

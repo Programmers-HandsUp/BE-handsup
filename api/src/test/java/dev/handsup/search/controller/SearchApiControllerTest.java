@@ -16,25 +16,26 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
-import dev.handsup.auction.dto.request.AuctionSearchCondition;
-import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.auction.repository.search.RedisSearchRepository;
 import dev.handsup.common.support.ApiTestSupport;
-import dev.handsup.fixture.AuctionFixture;
+import dev.handsup.fixture.AuctionSearchFixture;
 import dev.handsup.fixture.ProductFixture;
+import dev.handsup.search.domain.AuctionSearch;
+import dev.handsup.search.dto.AuctionSearchCondition;
 
 @DisplayName("[검색 API 통합 테스트]")
 class SearchApiControllerTest extends ApiTestSupport {
 
 	private final String DIGITAL_DEVICE = "디지털 기기";
+	private final String KEYWORD = "버즈";
+
 	private ProductCategory productCategory;
-
 	@Autowired
-	private AuctionRepository auctionRepository;
-
+	private AuctionSearchRepository auctionSearchRepository;
 	@Autowired
 	private RedisSearchRepository redisSearchRepository;
 	@Autowired
@@ -59,72 +60,89 @@ class SearchApiControllerTest extends ApiTestSupport {
 	@DisplayName("[경매를 검색해서 조회할 수 있다. 정렬 조건이 없을 경우 최신순으로 정렬한다.]")
 	@Test
 	void searchAuction() throws Exception {
-		Auction auction1 = AuctionFixture.auction(productCategory, "버즈 이어폰 팔아요");
-		Auction auction2 = AuctionFixture.auction(productCategory, "에버어즈팟");
-		Auction auction3 = AuctionFixture.auction(productCategory, "버즈 이어폰 팔아요");
-		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword("버즈").build();
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L,1L, KEYWORD+"팔까요?");
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L,2L, "버증팔아요");
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L,3L, KEYWORD+"팔아요");
 
-		mockMvc.perform(post("/api/auctions/search")
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2, auctionSearch3));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.keyword(KEYWORD)
+			.build();
+
+		mockMvc.perform(post("/api/v2/auctions/search")
 				.contentType(APPLICATION_JSON)
 				.content(toJson(condition)))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.content[0].title").value(auction1.getTitle()))
-			.andExpect(jsonPath("$.content[0].currentBiddingPrice").value(auction1.getCurrentBiddingPrice()))
-			.andExpect(jsonPath("$.content[0].bookmarkCount").value(auction1.getBookmarkCount()))
-			.andExpect(jsonPath("$.content[0].dong").value(auction1.getTradingLocation().getDong()))
+			.andExpect(jsonPath("$.content[0].title").value(auctionSearch3.getTitle()))
+			.andExpect(jsonPath("$.content[0].currentBiddingPrice").value(auctionSearch3.getCurrentBiddingPrice()))
+			.andExpect(jsonPath("$.content[0].bookmarkCount").value(auctionSearch3.getBookmarkCount()))
+			.andExpect(jsonPath("$.content[0].dong").value(auctionSearch3.getTradingLocation().getDong()))
 			.andExpect(jsonPath("$.content[0].createdAt").exists())
-			.andExpect(jsonPath("$.content[1].title").value(auction3.getTitle()));
+			.andExpect(jsonPath("$.content[1].title").value(auctionSearch1.getTitle()));
 	}
 
-	@DisplayName("[경매를 북마크 순으로 정렬할 수 있다.]")
+	@DisplayName("[경매를 지역으로 필터링하고, 북마크 순으로 정렬할 수 있다.]")
 	@Test
 	void searchAuctionSort() throws Exception {
-		Auction auction1 = AuctionFixture.auction(productCategory);
-		Auction auction2 = AuctionFixture.auction(productCategory);
-		Auction auction3 = AuctionFixture.auction(productCategory);
-		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
-		ReflectionTestUtils.setField(auction3, "bookmarkCount", 3);
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword("버즈").build();
+		String si = "서울시", gu = "서초구", dong = "방배동", trash = "반포동";
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, 1L, TradingLocation.of(si,gu,dong));
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, 2L,TradingLocation.of(si,gu,trash));
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, 3L,TradingLocation.of(si,gu,dong));
 
-		mockMvc.perform(post("/api/auctions/search")
+		int bookmarkCnt = 0;
+		ReflectionTestUtils.setField(auctionSearch1, "bookmarkCount", bookmarkCnt);
+		ReflectionTestUtils.setField(auctionSearch2, "bookmarkCount", bookmarkCnt+1);
+		ReflectionTestUtils.setField(auctionSearch3, "bookmarkCount", bookmarkCnt+2);
+
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2, auctionSearch3));
+
+		AuctionSearchCondition condition = AuctionSearchCondition.builder()
+			.si(si)
+			.gu(gu)
+			.dong(dong)
+			.keyword(KEYWORD).build();
+
+		mockMvc.perform(post("/api/v2/auctions/search")
 				.content(toJson(condition))
 				.contentType(APPLICATION_JSON)
 				.param("sort", "북마크수"))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.size").value(3))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction2.getId()))
-			.andExpect(jsonPath("$.content[1].auctionId").value(auction3.getId()))
-			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()));
+			.andExpect(jsonPath("$.size").value(2))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auctionSearch3.getAuctionId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auctionSearch1.getAuctionId()));
 	}
 
-	@DisplayName("[검색된 경매를 필터링할 수 있다.]")
+	@DisplayName("[최근 입찰 가격으로 필터링할 수 있다.]")
 	@Test
-	void searchAuctionFilter() throws Exception {
-		Auction auction1 = AuctionFixture.auction(productCategory, "버즈", 15000);
-		Auction auction2 = AuctionFixture.auction(productCategory, "에어팟", 15000);
-		Auction auction3 = AuctionFixture.auction(productCategory, "버즈 팔아요", 25000);
-		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
-		ReflectionTestUtils.setField(auction3, "bookmarkCount", 3);
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
+	void searchAuctionPriceFilter() throws Exception {
+		int minRange = 10000, maxRange = 20000;
+
+		AuctionSearch auctionSearch1 = AuctionSearchFixture.auctionSearch(1L, 1L, minRange);
+		AuctionSearch auctionSearch2 = AuctionSearchFixture.auctionSearch(2L, 2L, (maxRange));
+		AuctionSearch auctionSearch3 = AuctionSearchFixture.auctionSearch(3L, 3L, (minRange+maxRange)/2);
+		AuctionSearch auctionSearch4 = AuctionSearchFixture.auctionSearch(4L, 4L, maxRange*2);
+
+
+		auctionSearchRepository.saveAll(List.of(auctionSearch1, auctionSearch2, auctionSearch3,auctionSearch4));
 		AuctionSearchCondition condition = AuctionSearchCondition.builder()
-			.keyword("버즈")
-			.minPrice(10000)
-			.maxPrice(20000)
+			.keyword(KEYWORD)
+			.minPrice(minRange)
+			.maxPrice(maxRange)
 			.build();
 
-		mockMvc.perform(post("/api/auctions/search")
+		mockMvc.perform(post("/api/v2/auctions/search")
 				.content(toJson(condition))
-				.contentType(APPLICATION_JSON))
+				.contentType(APPLICATION_JSON)
+			.param("sort", ""))
 			.andDo(MockMvcResultHandlers.print())
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.size").value(1))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction1.getId()));
+			.andExpect(jsonPath("$.size").value(3))
+			.andExpect(jsonPath("$.content[0].auctionId").value(auctionSearch3.getId()))
+			.andExpect(jsonPath("$.content[1].auctionId").value(auctionSearch2.getId()))
+			.andExpect(jsonPath("$.content[2].auctionId").value(auctionSearch1.getId()));
 	}
 
 	@DisplayName("[인기 검색어 순으로 조회할 수 있다.]")

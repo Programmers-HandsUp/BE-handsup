@@ -12,8 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import dev.handsup.auction.domain.Auction;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
@@ -21,12 +19,10 @@ import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.auction_field.TradingLocation;
 import dev.handsup.auction.domain.product.Product;
 import dev.handsup.auction.domain.product.ProductStatus;
-import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionRepository;
-import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.support.ApiTestSupport;
 import dev.handsup.fixture.AuctionFixture;
@@ -41,9 +37,6 @@ class AuctionApiControllerTest extends ApiTestSupport {
 	private AuctionRepository auctionRepository;
 	@Autowired
 	private ProductCategoryRepository productCategoryRepository;
-
-	@Autowired
-	private PreferredProductCategoryRepository preferredProductCategoryRepository;
 
 	@BeforeEach
 	void setUp() {
@@ -127,97 +120,5 @@ class AuctionApiControllerTest extends ApiTestSupport {
 			.andExpect(jsonPath("$.tradeGu").value(tradingLocation.getGu()))
 			.andExpect(jsonPath("$.tradeDong").value(tradingLocation.getDong()))
 			.andExpect(jsonPath("$.bookmarkCount").value(auction.getBookmarkCount()));
-	}
-
-	@DisplayName("[정렬 조건과 지역 필터에 따라 경매글 목록을 반환한다.]")
-	@Test
-	void getRecommendAuctionsWithFilter() throws Exception {
-		//given
-		String si = "서울시", gu = "서초구", dong1 = "방배동", dong2 = "반포동";
-		String earlyEndDate = "2024-03-02", lateEndDate = "2024-03-10";
-		Auction auction1 = AuctionFixture.auction(productCategory, lateEndDate, si, gu, dong1);
-		Auction auction2 = AuctionFixture.auction(productCategory, earlyEndDate, si, gu, dong1);
-		Auction auction3 = AuctionFixture.auction(productCategory, lateEndDate, si, gu, dong2);
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-
-		//when
-		mockMvc.perform(get("/api/auctions/recommend").param("sort", "마감일")
-				.param("si", si)
-				.param("gu", gu)
-				.param("dong", dong1)
-				.contentType(APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.size").value(2))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction2.getId()))
-			.andExpect(jsonPath("$.content[0].endDate").value(auction2.getEndDate().atStartOfDay().toString()))
-			.andExpect(jsonPath("$.content[1].auctionId").value(auction1.getId()))
-			.andExpect(jsonPath("$.content[1].endDate").value(auction1.getEndDate().atStartOfDay().toString()))
-			.andExpect(jsonPath("$.hasNext").value(false));
-	}
-
-	@DisplayName("[정렬 조건에 따라 경매글 목록을 반환한다.]")
-	@Test
-	void getRecommendAuctionsWithOutFilter() throws Exception {
-		//given
-		Auction auction1 = AuctionFixture.auction(productCategory);
-		Auction auction2 = AuctionFixture.auction(productCategory);
-		Auction auction3 = AuctionFixture.auction(productCategory);
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-
-		//when
-		mockMvc.perform(get("/api/auctions/recommend").param("sort", "최근생성").contentType(APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.size").value(3))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction3.getId()))
-			.andExpect(jsonPath("$.content[1].auctionId").value(auction2.getId()))
-			.andExpect(jsonPath("$.content[2].auctionId").value(auction1.getId()))
-			.andExpect(jsonPath("$.hasNext").value(false));
-	}
-
-	@DisplayName("[정렬 조건이 없을 시 예외를 반환한다.]")
-	@Test
-	void getRecommendAuctions_fails() throws Exception {
-		mockMvc.perform(get("/api/auctions/recommend").contentType(APPLICATION_JSON))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(jsonPath("$.message").value(AuctionErrorCode.EMPTY_SORT_INPUT.getMessage()))
-			.andExpect(jsonPath("$.code").value(AuctionErrorCode.EMPTY_SORT_INPUT.getCode()));
-	}
-
-	@DisplayName("[정렬 조건이 잘못되면 예외를 반환한다.]")
-	@Test
-	void getRecommendAuctions_fails2() throws Exception {
-		mockMvc.perform(get("/api/auctions/recommend").contentType(APPLICATION_JSON).param("sort", "NAN"))
-			.andDo(MockMvcResultHandlers.print())
-			.andExpect(jsonPath("$.message").value(AuctionErrorCode.INVALID_SORT_INPUT.getMessage()))
-			.andExpect(jsonPath("$.code").value(AuctionErrorCode.INVALID_SORT_INPUT.getCode()));
-	}
-
-	@DisplayName("[유저 선호 카테고리 경매를 북마크 순으로 정렬한다.]")
-	@Test
-	void getUserPreferredCategoryAuctions() throws Exception {
-		ProductCategory productCategory2 = productCategoryRepository.save(ProductCategory.from("생활/주방"));
-		ProductCategory notPreferredProductCategory = productCategoryRepository.save(ProductCategory.from("티켓/교환권"));
-
-		preferredProductCategoryRepository.saveAll(List.of(
-			PreferredProductCategory.of(user, productCategory),
-			PreferredProductCategory.of(user, productCategory2)
-		));
-		Auction auction1 = AuctionFixture.auction(productCategory);
-		ReflectionTestUtils.setField(auction1, "bookmarkCount", 3);
-		Auction auction2 = AuctionFixture.auction(productCategory2);
-		ReflectionTestUtils.setField(auction2, "bookmarkCount", 5);
-
-		Auction auction3 = AuctionFixture.auction(notPreferredProductCategory);
-		auctionRepository.saveAll(List.of(auction1, auction2, auction3));
-
-		//when
-		mockMvc.perform(get("/api/auctions/recommend/category")
-				.header(AUTHORIZATION, "Bearer " + accessToken)
-				.contentType(APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.size").value(2))
-			.andExpect(jsonPath("$.content[0].auctionId").value(auction2.getId()))
-			.andExpect(jsonPath("$.content[1].auctionId").value(auction1.getId()))
-			.andExpect(jsonPath("$.hasNext").value(false));
 	}
 }
