@@ -25,8 +25,6 @@ import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
 import dev.handsup.auction.dto.request.AuctionSearchCondition;
-import dev.handsup.auction.exception.AuctionErrorCode;
-import dev.handsup.common.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -72,7 +70,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				guEq(gu),
 				dongEq(dong)
 			)
-			.orderBy(recommendAuctionSort(pageable))
+			.orderBy(searchAuctionSort(pageable))
 			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
 			.fetch();
@@ -124,19 +122,6 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				default -> auction.createdAt.desc();
 			})
 			.orElse(auction.createdAt.desc()); // 기본값 최신순
-	}
-
-	private OrderSpecifier<?> recommendAuctionSort(Pageable pageable) {
-		return pageable.getSort().stream()
-			.findFirst()
-			.map(order -> switch (order.getProperty()) {
-				case "북마크수" -> auction.bookmarkCount.desc();
-				case "마감일" -> auction.endDate.asc();
-				case "입찰수" -> auction.biddingCount.desc();
-				case "최근생성" -> auction.createdAt.desc();
-				default -> throw new ValidationException(AuctionErrorCode.INVALID_SORT_INPUT); //기본값 비허용
-			})
-			.orElseThrow(() -> new ValidationException(AuctionErrorCode.EMPTY_SORT_INPUT)); //null 비허용
 	}
 
 	private BooleanExpression keywordContains(String keyword) {
