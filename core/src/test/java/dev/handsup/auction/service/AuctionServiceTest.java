@@ -22,17 +22,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import dev.handsup.auction.domain.Auction;
+import dev.handsup.auction.domain.AuctionSearch;
 import dev.handsup.auction.domain.auction_field.PurchaseTime;
 import dev.handsup.auction.domain.auction_field.TradeMethod;
 import dev.handsup.auction.domain.product.ProductStatus;
 import dev.handsup.auction.domain.product.product_category.PreferredProductCategory;
 import dev.handsup.auction.domain.product.product_category.ProductCategory;
+import dev.handsup.auction.dto.mapper.AuctionSearchMapper;
 import dev.handsup.auction.dto.request.RegisterAuctionRequest;
 import dev.handsup.auction.dto.response.AuctionDetailResponse;
 import dev.handsup.auction.dto.response.RecommendAuctionResponse;
 import dev.handsup.auction.exception.AuctionErrorCode;
 import dev.handsup.auction.repository.auction.AuctionQueryRepository;
 import dev.handsup.auction.repository.auction.AuctionRepository;
+import dev.handsup.auction.repository.auction.AuctionSearchRepository;
 import dev.handsup.auction.repository.product.PreferredProductCategoryRepository;
 import dev.handsup.auction.repository.product.ProductCategoryRepository;
 import dev.handsup.common.dto.PageResponse;
@@ -63,6 +66,9 @@ class AuctionServiceTest {
 	@Mock
 	private PreferredProductCategoryRepository preferredProductCategoryRepository;
 
+	@Mock
+	private AuctionSearchRepository auctionSearchRepository;
+
 	@InjectMocks
 	private AuctionService auctionService;
 
@@ -90,10 +96,12 @@ class AuctionServiceTest {
 				"성북구",
 				"동선동"
 			);
+		AuctionSearch auctionSearch = AuctionSearchMapper.toAuctionSearch(auction);
 
 		given(productCategoryRepository.findByValue(DIGITAL_DEVICE))
 			.willReturn(Optional.of(productCategory));
 		given(auctionRepository.save(any(Auction.class))).willReturn(auction);
+		given(auctionSearchRepository.save(any(AuctionSearch.class))).willReturn(auctionSearch);
 
 		// when
 		AuctionDetailResponse response = auctionService.registerAuction(request, UserFixture.user1());
