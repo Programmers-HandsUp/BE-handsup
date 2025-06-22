@@ -35,10 +35,10 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 
 	@Override
 	public Slice<Auction> searchAuctions(AuctionSearchCondition condition, Pageable pageable) {
-		List<Auction> content = queryFactory.select(QAuction.auction)
+		List<Auction> content = queryFactory.select(auction)
 			.from(auction)
 			.join(auction.product, product).fetchJoin()
-			.leftJoin(product.productCategory, productCategory).fetchJoin()
+			.join(product.productCategory, productCategory).fetchJoin()
 			.where(
 				keywordContains(condition.keyword()),
 				categoryEq(condition.productCategory()),
@@ -52,8 +52,8 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 				isProgressEq(condition.isProgress())
 			)
 			.orderBy(searchAuctionSort(pageable))
-			.limit(pageable.getPageSize() + 1L)
 			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1)
 			.fetch();
 		boolean hasNext = hasNext(pageable.getPageSize(), content);
 		return new SliceImpl<>(content, pageable, hasNext);
@@ -160,7 +160,7 @@ public class AuctionQueryRepositoryImpl implements AuctionQueryRepository {
 		if (isNewProduct == null) {
 			return null;
 		}
-		if (Boolean.TRUE.equals(isNewProduct)) {
+		if (isNewProduct) {
 			return auction.product.status.eq(ProductStatus.NEW);
 		} else {
 			return auction.product.status.eq(ProductStatus.CLEAN).or(auction.product.status.eq(ProductStatus.DIRTY));
