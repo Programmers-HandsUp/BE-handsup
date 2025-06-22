@@ -37,3 +37,24 @@ SET product_category_id =
             ELSE 3                          -- 운동화
             END
 WHERE product_id BETWEEN 1 AND 500000;
+
+
+
+UPDATE product
+SET product_category_id =
+        CASE
+            WHEN MOD(product_id-1, 13) = 0 THEN 1    -- 에어팟
+            WHEN MOD(product_id-1, 13) = 1 THEN 2   -- 도서
+            WHEN MOD(product_id-1, 13) = 2 THEN 3    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 3 THEN 4    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 4 THEN 5    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 5 THEN 6    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 6 THEN 7    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 7 THEN 8    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 8 THEN 9    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 9 THEN 10    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 10 THEN 11    -- 목걸이
+            WHEN MOD(product_id-1, 13) = 11 THEN 12    -- 목걸이
+            ELSE 13                       -- 운동화
+            END
+WHERE product_id BETWEEN 1 AND 500000;

@@ -1,0 +1,18 @@
+### 경매 추천
+GET http://localhost:8080/api/auctions/recommend?si=서울시&gu=강남구&dong=역삼동&page=0&size=10&sort=북마크수
+
+
+### 경매 조건 추천 ver2
+GET http://localhost:8080/api/v2/auctions/recommend?si=서울시&gu=강남구&dong=역삼동&page=0&size=10&sort=북마크수
+
+### 경매 카테고리 추천 ver1
+GET http://localhost:8080/api/auctions/recommend/category?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjEsImlhdCI6MTc0OTk4ODQ3NiwiZXhwIjoyMDY1MzQ4NDc2fQ._I9ddh2ADiTV6aIitn19RRkW2sglpkRbRMZtlqC7xeM
+
+### 경매 카테고리 추천 ver2
+GET http://localhost:8080/api/v2/auctions/recommend/category?page=0&size=10
+Content-Type: application/json
+Authorization: Bearer eyJ0eXBlIjoiand0IiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VySWQiOjEsImlhdCI6MTc0OTk4ODQ3NiwiZXhwIjoyMDY1MzQ4NDc2fQ._I9ddh2ADiTV6aIitn19RRkW2sglpkRbRMZtlqC7xeM
+
+
